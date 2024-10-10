@@ -12,7 +12,8 @@
 
 </script>
   
-<SlimoCharter id="chart1" bind:nodes bind:edges />
-<SlimoCharter id="chart2" {nodes} {edges} />
-<!-- <SlimoCharter style="width:100%; height:100vh" bind:nodes bind:edges /> -->
+<SlimoCharter id="quarterChart" bind:nodes bind:edges /> style working due to id
+<SlimoCharter id="chart2" class="halfChart" {nodes} {edges} />  style working due to class
+<SlimoCharter class="halfChart" bind:nodes bind:edges /> style working due to class
+<SlimoCharter style="width:50%; height:50vh" bind:nodes bind:edges /> style working due to inline css
 
