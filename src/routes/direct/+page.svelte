@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import SlimoCharter from '$lib/SlimoCharter.svelte';
+  import SlimoCharter from '$lib/SlimoChart.svelte';
   // import "./style.css";
 
   // Initialize nodes and edges

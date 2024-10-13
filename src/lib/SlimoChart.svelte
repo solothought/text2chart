@@ -10,7 +10,6 @@
   
   import '@xyflow/svelte/dist/style.css';
   import StepNode from './Step.svelte';
-  // export let containerId: string;
   
   const nodeTypes = { step: StepNode };
   
@@ -21,16 +20,23 @@
   // Convert the arrays to writable stores
   let nodeStore = writable(nodes);
   let edgeStore = writable(edges);
-  // export let $$restProps;
+  import { hoverId } from './stores.js'; // Import shared store
+  
+  hoverId.subscribe(value => {
+    console.log("Current Hovered Node ID:", value);
+    // Perform operations on other nodes based on this id
+  });
 </script>
 
-<div {...$$restProps}>
-  <SvelteFlowProvider>
+<div {...$$restProps} >
+  <SvelteFlowProvider >
     <SvelteFlow {nodeTypes} bind:nodes={nodeStore} bind:edges={edgeStore} fitView defaultEdgeOptions={{
       type: 'smoothstep',
       markerEnd: { type: MarkerType.ArrowClosed, width: 20, height: 20, color: '#FF4000' },
       style: 'stroke-width: 2px; stroke: #FF4000'
-    }}>
+    }} 
+    
+    >
       <Controls />
       <Background />
       <MiniMap />
