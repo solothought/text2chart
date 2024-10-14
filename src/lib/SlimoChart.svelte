@@ -14,6 +14,7 @@
   import '@xyflow/svelte/dist/style.css';
   import StepNode from './Step.svelte';
   import CustomEdge from './CustomEdge.svelte';
+  import DownloadButton from './DownloadButton.svelte';
 
   import {highlight, traverseConnections, unhighlight} from './hoverManager.js';
   
@@ -85,6 +86,7 @@
     }} 
     
     >
+      <DownloadButton {nodes} />
       <Controls />
       <Background />
       <MiniMap />
