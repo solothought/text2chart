@@ -50,12 +50,14 @@ export function highlight(nodes, edges, nodeIds, edgeIds) {
     }
   })
   
-  // edges.forEach(edge => {
-  //   if(edgeIds.has(edge.id)){
-  //     // edge.class.add('highlight');
-  //     edge.data.highlight=true
-  //   }
-  // })
+  edges.forEach(edge => {
+    if(edgeIds.has(edge.id)){
+      edge.data = {
+        ...edge.data,
+        highlight: true
+      };
+    }
+  })
 }
 
 export function unhighlight(nodes, edges, nodeIds, edgeIds) {
@@ -68,9 +70,12 @@ export function unhighlight(nodes, edges, nodeIds, edgeIds) {
     }
   })
   
-  // edges.forEach(edge => {
-  //   if(edgeIds.has(edge.id)){
-  //     edge.class.remove('highlight');
-  //   }
-  // })
+  edges.forEach(edge => {
+    if(edgeIds.has(edge.id)){
+      edge.data = {
+        ...edge.data,
+        highlight: false
+      };
+    }
+  })
 }

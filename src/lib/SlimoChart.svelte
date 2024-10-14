@@ -13,9 +13,12 @@
   
   import '@xyflow/svelte/dist/style.css';
   import StepNode from './Step.svelte';
+  import CustomEdge from './CustomEdge.svelte';
+
   import {highlight, traverseConnections, unhighlight} from './hoverManager.js';
   
   const nodeTypes = { step: StepNode };
+  const edgeTypes = { custom: CustomEdge };
   
   // Accept nodes and edges from the parent
   export let nodes = [];
@@ -75,10 +78,10 @@
 
 <div {...$$restProps} >
   <SvelteFlowProvider >
-    <SvelteFlow {nodeTypes} bind:nodes={nodeStore} bind:edges={edgeStore} fitView defaultEdgeOptions={{
-      type: 'smoothstep',
-      markerEnd: { type: MarkerType.ArrowClosed, width: 20, height: 20, color: '#FF4000' },
-      style: 'stroke-width: 2px; stroke: #FF4000'
+    <SvelteFlow {nodeTypes} {edgeTypes} bind:nodes={nodeStore} bind:edges={edgeStore} fitView defaultEdgeOptions={{
+      type: 'custom',
+      markerEnd: { type: MarkerType.ArrowClosed, width: 20, height: 20, color: '#cac2c2' },
+      // style: 'stroke-width: 2px; stroke: #FF4000'
     }} 
     
     >

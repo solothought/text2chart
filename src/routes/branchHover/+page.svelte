@@ -11,10 +11,10 @@
   ];
 
   let edges = [
-    { id: '1-2', source: "1", target: "2" },
-    { id: '2-3', source: "2", target: "3" },
-    { id: '2-4', source: "2", target: "4" },
-    { id: '4-5', source: "4", target: "5" }
+    { id: '1-2', source: "1", target: "2" , type:"custom", data:{}},
+    { id: '2-3', source: "2", target: "3" , type:"custom", data:{}},
+    { id: '2-4', source: "2", target: "4" , type:"custom", data:{}},
+    { id: '4-5', source: "4", target: "5" , type:"custom", data:{}}
   ];
 
   const connections = { // loops or goto index is skipped from target if ...

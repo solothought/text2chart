@@ -5,8 +5,24 @@
   import { hoverId } from './stores.js'; // Import shared store
   export let id;  // node id
   // export let type;  // node type
+  // export let selected;
+  // export let selectable;
+  // export let deletable;
+  // export let sourcePosition;
+  // export let targetPosition;
+  // export let zIndex;
+  // export let dragging;
+  // export let draggable;
+  // export let dragHandle;
+  // export let parentId;
+  // export let type;
+  // export let isConnectable;
+  // export let positionAbsoluteX;
+  // export let positionAbsoluteY;
+  // export let width;
+  // export let height;
+
   export let data;  // Contains the node-specific data
-  export let parentId;  // Contains the node-specific data
   let hovered = false;
 
   const handleMouseEnter = () => {
