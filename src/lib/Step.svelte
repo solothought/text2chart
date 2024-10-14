@@ -6,6 +6,7 @@
   export let id;  // node id
   // export let type;  // node type
   export let data;  // Contains the node-specific data
+  export let parentId;  // Contains the node-specific data
   let hovered = false;
 
   const handleMouseEnter = () => {
@@ -19,7 +20,7 @@
    };
 </script>
 
-<div class="step {hovered ? 'hovered' : ''}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+<div class="step {data.highlight ? 'hovered' : ''}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
   <Handle id="t" type="target" position={Position.Top} />
   <div class="container">
     <div style={parent_style}>

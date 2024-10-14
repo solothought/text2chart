@@ -6,26 +6,71 @@
     Background, 
     MiniMap, 
     SvelteFlowProvider, 
+    // getConnectedEdges, 
+    // getIncomers, 
+    // getOutgoers,
     MarkerType} from '@xyflow/svelte';
   
   import '@xyflow/svelte/dist/style.css';
   import StepNode from './Step.svelte';
+  import {highlight, traverseConnections, unhighlight} from './hoverManager.js';
   
   const nodeTypes = { step: StepNode };
   
   // Accept nodes and edges from the parent
   export let nodes = [];
   export let edges = [];
+  
 
   // Convert the arrays to writable stores
   let nodeStore = writable(nodes);
   let edgeStore = writable(edges);
+
+  /**
+   * {
+   *  "1":{ source: [], target: [2]},
+   *  "2":{ source: [1], target: [3,4]}
+   * }
+   */
+  let connections = [];
+
+  function buildConnections() {
+    nodes.forEach(node => {
+      connections[node.id] = { source: [], target: [] };
+    });
+
+    edges.forEach(edge => {
+      connections[edge.source].target.push(edge.target);
+      connections[edge.target].source.push(edge.source);
+    });
+  }
+
   import { hoverId } from './stores.js'; // Import shared store
-  
-  hoverId.subscribe(value => {
-    console.log("Current Hovered Node ID:", value);
-    // Perform operations on other nodes based on this id
+  const hoveredPathNodes = new Set();
+  const hoveredPathEdges = new Set();
+
+  hoverId.subscribe(nodeId => {
+    if (nodeId) {
+      // console.log("Current Hovered Node ID:", nodeId);
+      traverseConnections(nodeId, connections,  hoveredPathNodes, hoveredPathEdges);
+      highlight(nodes, edges, hoveredPathNodes,hoveredPathEdges);
+
+    } else {
+      // Reset highlighting when no node is hovered
+      unhighlight(nodes, edges, hoveredPathNodes,hoveredPathEdges);
+      hoveredPathNodes.clear();
+      hoveredPathEdges.clear();
+    }
+
+    //to refresh the view
+    nodeStore.set(nodes);
+    edgeStore.set(edges);
   });
+
+  $: {
+    buildConnections(nodes, edges);
+    // console.log(connections);
+  }
 </script>
 
 <div {...$$restProps} >

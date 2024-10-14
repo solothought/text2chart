@@ -1,5 +1,5 @@
 <script>
-  import SlimoCharter from '$lib/SlimoCharter.svelte';
+  import SlimoChart from '$lib/SlimoChart.svelte';
   
   // Initialize nodes and edges
   let nodes = [
@@ -12,8 +12,8 @@
 
 </script>
   
-<SlimoCharter id="quarterChart" bind:nodes bind:edges /> style working due to id
-<SlimoCharter id="chart2" class="halfChart" {nodes} {edges} />  style working due to class
-<SlimoCharter class="halfChart" bind:nodes bind:edges /> style working due to class
-<SlimoCharter style="width:50%; height:50vh" bind:nodes bind:edges /> style working due to inline css
+<SlimoChart id="quarterChart" bind:nodes bind:edges /> style working due to id
+<SlimoChart id="chart2" class="halfChart" {nodes} {edges} />  style working due to class
+<SlimoChart class="halfChart" bind:nodes bind:edges /> style working due to class
+<SlimoChart style="width:50%; height:50vh" bind:nodes bind:edges /> style working due to inline css
 
