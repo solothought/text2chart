@@ -2,7 +2,7 @@
   import { Handle, Position } from '@xyflow/svelte';
   import { fit, parent_style } from '@leveluptuts/svelte-fit';
 
-  import { hoverId } from './stores.js'; // Import shared store
+  // import { hoverId } from './stores.js'; // Import shared store
   export let id;  // node id
   // export let type;  // node type
   // export let selected;
@@ -23,20 +23,10 @@
   // export let height;
 
   export let data;  // Contains the node-specific data
-  let hovered = false;
 
-  const handleMouseEnter = () => {
-      hovered = true;
-      hoverId.set(id);
-   };
-
-   const handleMouseLeave = () => {
-      hovered = false;
-      hoverId.set(null);
-   };
 </script>
 
-<div class="step {data.highlight ? 'hovered' : ''}" on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}>
+<div class="step {data.highlight ? 'hovered' : ''}">
   <Handle id="t" type="target" position={Position.Top} />
   <div class="container">
     <div style={parent_style}>

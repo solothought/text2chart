@@ -6,9 +6,6 @@
     Background, 
     MiniMap, 
     SvelteFlowProvider, 
-    // getConnectedEdges, 
-    // getIncomers, 
-    // getOutgoers,
     MarkerType} from '@xyflow/svelte';
   
   import '@xyflow/svelte/dist/style.css';
@@ -24,7 +21,9 @@
   // Accept nodes and edges from the parent
   export let nodes = [];
   export let edges = [];
+  // export let text = writable("");
   
+  // console.log(text);
 
   // Convert the arrays to writable stores
   let nodeStore = writable(nodes);
@@ -49,28 +48,26 @@
     });
   }
 
-  import { hoverId } from './stores.js'; // Import shared store
   const hoveredPathNodes = new Set();
   const hoveredPathEdges = new Set();
 
-  hoverId.subscribe(nodeId => {
-    if (nodeId) {
-      // console.log("Current Hovered Node ID:", nodeId);
-      traverseConnections(nodeId, connections,  hoveredPathNodes, hoveredPathEdges);
-      highlight(nodes, edges, hoveredPathNodes,hoveredPathEdges);
 
-    } else {
-      // Reset highlighting when no node is hovered
-      unhighlight(nodes, edges, hoveredPathNodes,hoveredPathEdges);
-      hoveredPathNodes.clear();
-      hoveredPathEdges.clear();
-    }
+  function onNodeMouseEnter(event){
+    const nodeId = event.detail.node.id;
+    traverseConnections(nodeId, connections,  hoveredPathNodes, hoveredPathEdges);
+    highlight(nodes, edges, hoveredPathNodes,hoveredPathEdges);
 
-    //to refresh the view
     nodeStore.set(nodes);
     edgeStore.set(edges);
-  });
+  }
+  function onNodeMouseLeave(){
+    unhighlight(nodes, edges, hoveredPathNodes,hoveredPathEdges);
+    hoveredPathNodes.clear();
+    hoveredPathEdges.clear();
 
+    nodeStore.set(nodes);
+    edgeStore.set(edges);
+  }
   $: {
     buildConnections(nodes, edges);
     // console.log(connections);
@@ -84,7 +81,8 @@
       markerEnd: { type: MarkerType.ArrowClosed, width: 20, height: 20, color: '#cac2c2' },
       // style: 'stroke-width: 2px; stroke: #FF4000'
     }} 
-    
+    on:nodemouseenter={onNodeMouseEnter}
+    on:nodemouseleave={onNodeMouseLeave}
     >
       <DownloadButton {nodes} />
       <Controls />
