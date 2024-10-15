@@ -12,6 +12,7 @@
   import StepNode from './Step.svelte';
   import CustomEdge from './CustomEdge.svelte';
   import DownloadButton from './DownloadButton.svelte';
+  import {convert} from './NodesAndEdgesBuilder.js';
 
   import {highlight, traverseConnections, unhighlight} from './hoverManager.js';
   
@@ -21,10 +22,8 @@
   // Accept nodes and edges from the parent
   export let nodes = [];
   export let edges = [];
-  // export let text = writable("");
+  export let text = "";
   
-  // console.log(text);
-
   // Convert the arrays to writable stores
   let nodeStore = writable(nodes);
   let edgeStore = writable(edges);
@@ -68,9 +67,20 @@
     nodeStore.set(nodes);
     edgeStore.set(edges);
   }
+
   $: {
-    buildConnections(nodes, edges);
-    // console.log(connections);
+    if(text.length > 0){
+      const data = convert(text);
+      nodes = data.nodes;
+      edges = data.edges;
+
+      // console.log(nodes);
+      // console.log(edges);
+    }
+    buildConnections();
+    
+    nodeStore.set(nodes);
+    edgeStore.set(edges);
   }
 </script>
 
@@ -90,4 +100,5 @@
       <MiniMap />
     </SvelteFlow>
   </SvelteFlowProvider>
+
 </div>
