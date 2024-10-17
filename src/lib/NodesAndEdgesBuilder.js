@@ -17,13 +17,16 @@ function SvelteFlowNode(id, data , position){
   }
 }
 function SvelteFlowEdge(sourceId, targetId, i, targetType){
-  console.debug(targetType)
+  // console.debug(targetType)
+  let animated = false;
   let srcHandle = "b";
   if(i!==0){//first node
     srcHandle = "r"
   }
-  if(targetType === "LOOP" && sourceId > targetId){
-    srcHandle = "l"
+  // if(targetType === "LOOP" && sourceId > targetId){
+  if(sourceId > targetId){
+    srcHandle = "l";
+    animated = true;
   }
   return {
     id : `${sourceId}-${targetId}`,
@@ -31,7 +34,8 @@ function SvelteFlowEdge(sourceId, targetId, i, targetType){
     target : targetId+"",
     label : "",
     data : {},
-    sourceHandle: srcHandle
+    sourceHandle: srcHandle,
+    animated: animated
   }
 }
 
@@ -47,15 +51,13 @@ export function convert(slimoContent){
 
 
 function _convert(flowToChart){
-  // console.debug(flowToChart.index)
-  // const endNode = SvelteFlowNode(flowToChart.exitSteps, data , position)
   const nodes = [];
   const edges = [];
   const cache = [];
 
   /**
    * 
-   * @param {Step[]} steps 
+   * @param {any[]} steps 
    * @param {obj} parentNode 
    * @param {number} row 
    * @param {number} col 
@@ -118,10 +120,9 @@ function _convert(flowToChart){
     }, calculatePosition(1,1,0) )
   nodes.push(node);
   mapStepsToNodes(step.nextStep, node, 1, 1)
-
+  
   return {nodes, edges};
 }
-
 
 function calculatePosition(row, col, i) {
   return { 
