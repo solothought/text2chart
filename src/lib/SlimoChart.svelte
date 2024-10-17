@@ -5,19 +5,19 @@
     Controls, 
     Background, 
     MiniMap, 
-    SvelteFlowProvider, 
-    MarkerType} from '@xyflow/svelte';
+    MarkerType,
+    SvelteFlowProvider} from '@xyflow/svelte';
   
   import '@xyflow/svelte/dist/style.css';
   import StepNode from './Step.svelte';
-  import CustomEdge from './CustomEdge.svelte';
+  // import CustomEdge from './CustomEdge.svelte';
   import DownloadButton from './DownloadButton.svelte';
   import {convert} from './NodesAndEdgesBuilder.js';
 
-  import {highlight, traverseConnections, unhighlight} from './hoverManager.js';
+  import {highlight, traverseConnections, unhighlight, edgeStyle, edgeMarkerStyle} from './hoverManager.js';
   
   const nodeTypes = { step: StepNode };
-  const edgeTypes = { custom: CustomEdge };
+  // const edgeTypes = { custom: CustomEdge };
   
   // Accept nodes and edges from the parent
   export let nodes = [];
@@ -67,15 +67,14 @@
     nodeStore.set(nodes);
     edgeStore.set(edges);
   }
-
   $: {
     if(text.length > 0){
       const data = convert(text);
       nodes = data.nodes;
       edges = data.edges;
 
-      // console.log(nodes);
-      // console.log(edges);
+      console.debug(nodes);
+      console.log(edges);
     }
     buildConnections();
     
@@ -86,10 +85,14 @@
 
 <div {...$$restProps} >
   <SvelteFlowProvider >
-    <SvelteFlow {nodeTypes} {edgeTypes} bind:nodes={nodeStore} bind:edges={edgeStore} fitView defaultEdgeOptions={{
-      type: 'custom',
-      markerEnd: { type: MarkerType.ArrowClosed, width: 20, height: 20, color: '#cac2c2' },
-      // style: 'stroke-width: 2px; stroke: #FF4000'
+    <SvelteFlow {nodeTypes} 
+     
+    bind:nodes={nodeStore} bind:edges={edgeStore} fitView 
+    defaultEdgeOptions={{
+      type: 'smoothstep',
+      markerEnd: edgeMarkerStyle,
+      style: edgeStyle
+
     }} 
     on:nodemouseenter={onNodeMouseEnter}
     on:nodemouseleave={onNodeMouseLeave}

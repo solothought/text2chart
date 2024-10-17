@@ -1,7 +1,20 @@
-// import { 
-//   Node, 
-//   Edge
-//   } from '@xyflow/svelte';
+import { 
+  MarkerType
+  } from '@xyflow/svelte';
+
+export const edgeStyle = "stroke-width: 2px; stroke: #cac2c2;";
+export const highlightedEdgeStyle = "stroke-width: 2px; stroke: #FF4000";
+
+export const edgeMarkerStyle = { 
+  type: MarkerType.ArrowClosed,
+  width: 20, 
+  height: 20, 
+  color: '#cac2c2' };
+export const highlightedEdgeMarkerStyle = { 
+  type: MarkerType.ArrowClosed,
+  width: 20, 
+  height: 20, 
+  color: "#FF4000" };
 
 
 // Function to handle hover over a node
@@ -52,10 +65,14 @@ export function highlight(nodes, edges, nodeIds, edgeIds) {
   
   edges.forEach(edge => {
     if(edgeIds.has(edge.id)){
-      edge.data = {
-        ...edge.data,
-        highlight: true
-      };
+      // edge.data = {
+      //   ...edge.data,
+      //   highlight: true
+      // };
+      // if(edge.class) edge.class = " highlighted-edge";
+      // else edge.class += " highlighted-edge";
+      edge.style = highlightedEdgeStyle;
+      edge.markerEnd = highlightedEdgeMarkerStyle;
     }
   })
 }
@@ -72,10 +89,18 @@ export function unhighlight(nodes, edges, nodeIds, edgeIds) {
   
   edges.forEach(edge => {
     if(edgeIds.has(edge.id)){
-      edge.data = {
-        ...edge.data,
-        highlight: false
-      };
+      // edge.data = {
+      //   ...edge.data,
+      //   highlight: false
+      // };
+      // console.log(edge.class);
+      // const classes = edge.class.split(" ");
+      // edge.class = "";
+      // classes.forEach(cls => {
+      //   if(cls !== "highlighted-edge") edge.class += cls
+      // })
+      edge.style = edgeStyle;
+      edge.markerEnd = edgeMarkerStyle;
     }
   })
 }
