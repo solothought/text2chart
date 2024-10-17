@@ -4,8 +4,8 @@ import Slimo from "slimo";
 
 const nodeWidth = 150;
 const nodeHeight = 50;
-const nodeMargin_h = 50;
-const nodeMargin_v = 50;
+const nodeMargin_h = 80;
+const nodeMargin_v = 150;
 
 function SvelteFlowNode(id, data , position){
   return {
@@ -13,16 +13,25 @@ function SvelteFlowNode(id, data , position){
     type : "step",
     data : data,
     position : position,
+    // position : {x:0,y:0},
   }
 }
-function SvelteFlowEdge(source, target, isSecondChild){
+function SvelteFlowEdge(sourceId, targetId, i, targetType){
+  console.debug(targetType)
+  let srcHandle = "b";
+  if(i!==0){//first node
+    srcHandle = "r"
+  }
+  if(targetType === "LOOP" && sourceId > targetId){
+    srcHandle = "l"
+  }
   return {
-    id : `${source}-${target}`,
-    source : source+"",
-    target : target+"",
+    id : `${sourceId}-${targetId}`,
+    source : sourceId+"",
+    target : targetId+"",
     label : "",
     data : {},
-    sourceHandle: isSecondChild? "r" : "b"
+    sourceHandle: srcHandle
   }
 }
 
@@ -86,7 +95,7 @@ function _convert(flowToChart){
           // Add edge from parent to this node
           // edges.push(SvelteFlowEdge(parentNode.data.id, nodeId));
           if (parentNode && parentNode.id) {
-            edges.push(SvelteFlowEdge(parentNode.id, nodeId, steps.length===2));
+            edges.push(SvelteFlowEdge(parentNode.id, nodeId, i, flowToChart.index[step.index].type ));
           }
 
           // Recursively process child steps
@@ -94,7 +103,7 @@ function _convert(flowToChart){
         }else{ //loop
           // edges.push(SvelteFlowEdge(parentNode.data.id, nodeId));
           if (parentNode && parentNode.id) {
-            edges.push(SvelteFlowEdge(parentNode.id, nodeId, steps.length===2));
+            edges.push(SvelteFlowEdge(parentNode.id, nodeId, i, flowToChart.index[step.index].type) );
           }
         }
       }
@@ -106,23 +115,21 @@ function _convert(flowToChart){
     msg: step.rawMsg, 
     type: step.type, 
     isStart: true
-    }, {x:nodeMargin_h, y:nodeMargin_v} )
+    }, calculatePosition(1,1,0) )
   nodes.push(node);
   mapStepsToNodes(step.nextStep, node, 1, 1)
 
   return {nodes, edges};
 }
 
-// function calculatePosition(row, col){
-//   return { x: (nodeHeight + nodeMargin_v)*row,
-//            y: (nodeWidth + nodeMargin_h)*col}
-// }
+
 function calculatePosition(row, col, i) {
   return { 
     x: (nodeWidth + nodeMargin_v) * col, // Default position if undefined
     y: (nodeHeight + nodeMargin_h) * row 
   };
 }
+
 
 const branchSteps=["IF", "ELSE_IF", "LOOP"];
 function isBranchStep(type){
