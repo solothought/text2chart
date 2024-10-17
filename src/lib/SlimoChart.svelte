@@ -5,7 +5,6 @@
     Controls, 
     Background, 
     MiniMap, 
-    MarkerType,
     SvelteFlowProvider} from '@xyflow/svelte';
   
   import '@xyflow/svelte/dist/style.css';
@@ -15,7 +14,7 @@
   import {convert} from './NodesAndEdgesBuilder.js';
 
   import {highlight, traverseConnections, unhighlight, edgeStyle, edgeMarkerStyle} from './hoverManager.js';
-  
+
   const nodeTypes = { step: StepNode };
   // const edgeTypes = { custom: CustomEdge };
   
@@ -23,7 +22,8 @@
   export let nodes = [];
   export let edges = [];
   export let text = "";
-  
+  export let flowName = "";
+
   // Convert the arrays to writable stores
   let nodeStore = writable(nodes);
   let edgeStore = writable(edges);
@@ -36,7 +36,12 @@
    */
   let connections = [];
 
-  function buildConnections() {
+  /**
+   * Build an intermediate DataType for fast traversing when styling nodes/edges
+   * @param nodes
+   * @param edges
+   */
+  function buildConnections(nodes, edges) {
     nodes.forEach(node => {
       connections[node.id] = { source: [], target: [] };
     });
@@ -72,11 +77,13 @@
       const data = convert(text);
       nodes = data.nodes;
       edges = data.edges;
+      flowName = data.flowName;
 
-      console.debug(nodes);
-      console.log(edges);
+
+      // console.debug(nodes);
+      // console.log(edges);
     }
-    buildConnections();
+    buildConnections(nodes, edges);
     
     nodeStore.set(nodes);
     edgeStore.set(edges);
@@ -86,18 +93,18 @@
 <div {...$$restProps} >
   <SvelteFlowProvider >
     <SvelteFlow {nodeTypes} 
-     
+    
     bind:nodes={nodeStore} bind:edges={edgeStore} fitView 
     defaultEdgeOptions={{
       type: 'smoothstep',
       markerEnd: edgeMarkerStyle,
       style: edgeStyle
-
     }} 
     on:nodemouseenter={onNodeMouseEnter}
     on:nodemouseleave={onNodeMouseLeave}
     >
-      <DownloadButton {nodes} />
+    <div style="position: relative;">Flow: {flowName}</div>
+    <DownloadButton nodes={nodes} fileName={flowName}/>
       <Controls />
       <Background />
       <MiniMap />

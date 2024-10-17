@@ -3,6 +3,7 @@
   import { Panel, getNodesBounds, getViewportForBounds, Background } from '@xyflow/svelte';
 
   export let nodes;
+  export let fileName;
 
   // console.log('Nodes:', nodes);
   const imageWidth = 1024;
@@ -30,7 +31,7 @@
         }
       }).then((dataUrl) => {
         const link = document.createElement('a');
-        link.download = 'svelte-flow.png';
+        link.download = `${fileName || ''}_slimo-chart.png`;
         link.href = dataUrl;
         link.click();
       });
