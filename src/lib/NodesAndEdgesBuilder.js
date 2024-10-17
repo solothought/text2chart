@@ -13,13 +13,13 @@ function SvelteFlowNode(id, data , position){
     type : "step",
     data : data,
     position : position,
-    // position : {x:0,y:0},
   }
 }
-function SvelteFlowEdge(sourceId, targetId, i, targetType){
-  // console.debug(targetType)
+function SvelteFlowEdge(sourceId, targetId, i, sourceType="", targetType){
+  console.debug(sourceType, i)
   let animated = false;
   let srcHandle = "b";
+  let label = "";
   if(i!==0){//first node
     srcHandle = "r"
   }
@@ -28,6 +28,12 @@ function SvelteFlowEdge(sourceId, targetId, i, targetType){
     srcHandle = "l";
     animated = true;
   }
+  if(sourceType === "IF" || sourceType === "ELSE_IF"){
+    if(i === 0)    label= "True";
+    else if(i === 1)    label= "False";
+  }else if(sourceType === "LOOP"){
+    if(i === 1)    label= "Exit";
+  }
   return {
     id : `${sourceId}-${targetId}`,
     source : sourceId+"",
@@ -35,10 +41,16 @@ function SvelteFlowEdge(sourceId, targetId, i, targetType){
     label : "",
     data : {},
     sourceHandle: srcHandle,
-    animated: animated
+    animated: animated,
+    label: label
   }
 }
 
+/**
+ * Parse Slimo flow to SvelteFlow compatible nodes and edges
+ * @param {string} slimoContent 
+ * @returns 
+ */
 export function convert(slimoContent){
   const flows = Slimo.parse(slimoContent);
   const flowNames = Object.keys(flows);
@@ -97,7 +109,7 @@ function _convert(flowToChart){
           // Add edge from parent to this node
           // edges.push(SvelteFlowEdge(parentNode.data.id, nodeId));
           if (parentNode && parentNode.id) {
-            edges.push(SvelteFlowEdge(parentNode.id, nodeId, i, flowToChart.index[step.index].type ));
+            edges.push(SvelteFlowEdge(parentNode.id, nodeId, i, flowToChart.index[parentNode.id -1].type, flowToChart.index[step.index].type ));
           }
 
           // Recursively process child steps
@@ -105,7 +117,7 @@ function _convert(flowToChart){
         }else{ //loop
           // edges.push(SvelteFlowEdge(parentNode.data.id, nodeId));
           if (parentNode && parentNode.id) {
-            edges.push(SvelteFlowEdge(parentNode.id, nodeId, i, flowToChart.index[step.index].type) );
+            edges.push(SvelteFlowEdge(parentNode.id, nodeId, i, flowToChart.index[parentNode.id -1].type, flowToChart.index[step.index].type) );
           }
         }
       }
@@ -121,7 +133,7 @@ function _convert(flowToChart){
   nodes.push(node);
   mapStepsToNodes(step.nextStep, node, 1, 1)
   
-  return {nodes, edges};
+  return {flowName:flowToChart.name, nodes, edges};
 }
 
 function calculatePosition(row, col, i) {
