@@ -26,7 +26,7 @@
 
 </script>
 
-<div class="step {data.highlight ? 'hovered' : ''}">
+<div class="{data.highlight ? 'hovered' : ''} {data.isEnd ? 'endStep':'step'}">
   <Handle id="t" type="target" position={Position.Top} />
   <div class="container">
     <div style={parent_style}>
@@ -39,12 +39,20 @@
 </div>
 
 <style>
+  .endStep{
+    padding: 10px;
+    border-radius: 10px;
+    background-color: black;
+    color: white;
+  }
   .step {
     padding: 10px;
     background: white;
     border: 1px solid #555;
+    color: inherit;
     border-radius: 3px;
   }
+
 
   .container {
     height: 50px;
@@ -55,5 +63,6 @@
   .hovered {
       border: 2px solid #FF4000;
       background-color: lightgrey;
+      color: inherit;
    }
 </style>
