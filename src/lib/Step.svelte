@@ -34,6 +34,8 @@
     </div>
   </div>
   <Handle id="b" type="source" position={Position.Bottom} />
+  <Handle id="l" type="source" position={Position.Left} />
+  <Handle id="r" type="source" position={Position.Right} />
 </div>
 
 <style>
@@ -45,8 +47,9 @@
   }
 
   .container {
-    height: 30px;
-    max-width: 150px;
+    height: 50px;
+    /* max-width: 150px; */
+    width: 150px;
     text-align: center;
   }
   .hovered {

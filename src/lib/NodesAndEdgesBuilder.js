@@ -1,7 +1,8 @@
 
+import { Position } from "@xyflow/svelte";
 import Slimo from "slimo";
 
-const nodeWidth = 100;
+const nodeWidth = 150;
 const nodeHeight = 50;
 const nodeMargin_h = 50;
 const nodeMargin_v = 50;
@@ -14,13 +15,14 @@ function SvelteFlowNode(id, data , position){
     position : position,
   }
 }
-function SvelteFlowEdge(source, target){
+function SvelteFlowEdge(source, target, isSecondChild){
   return {
     id : `${source}-${target}`,
     source : source+"",
     target : target+"",
     label : "",
     data : {},
+    sourceHandle: isSecondChild? "r" : "b"
   }
 }
 
@@ -36,6 +38,8 @@ export function convert(slimoContent){
 
 
 function _convert(flowToChart){
+  // console.debug(flowToChart.index)
+  // const endNode = SvelteFlowNode(flowToChart.exitSteps, data , position)
   const nodes = [];
   const edges = [];
   const cache = [];
@@ -51,6 +55,12 @@ function _convert(flowToChart){
     if(steps.length === 0 
       || steps.indexOf(null) !== -1 
       || ( isBranchStep(parentNode.data.type) && steps.length === 1)){
+        // console.debug(parentNode.data.msg);
+      // TODO: 
+      //if(flowToChart.exitSteps[parentNode.id]){ 
+        //edge to end node
+      //}
+        // console.debug(flowToChart.exitSteps[parentNode.id]);
       parentNode.data.isEnd = true; 
     }
   
@@ -69,14 +79,14 @@ function _convert(flowToChart){
           const node = SvelteFlowNode(nodeId, { 
             msg: step.rawMsg, 
             type: step.type, 
-          }, calculatePosition(row, col) );
+          }, calculatePosition(row, col, i) );
 
           nodes.push(node); // Add the node to the nodes array
 
           // Add edge from parent to this node
           // edges.push(SvelteFlowEdge(parentNode.data.id, nodeId));
           if (parentNode && parentNode.id) {
-            edges.push(SvelteFlowEdge(parentNode.id, nodeId));
+            edges.push(SvelteFlowEdge(parentNode.id, nodeId, steps.length===2));
           }
 
           // Recursively process child steps
@@ -84,7 +94,7 @@ function _convert(flowToChart){
         }else{ //loop
           // edges.push(SvelteFlowEdge(parentNode.data.id, nodeId));
           if (parentNode && parentNode.id) {
-            edges.push(SvelteFlowEdge(parentNode.id, nodeId));
+            edges.push(SvelteFlowEdge(parentNode.id, nodeId, steps.length===2));
           }
         }
       }
@@ -107,10 +117,10 @@ function _convert(flowToChart){
 //   return { x: (nodeHeight + nodeMargin_v)*row,
 //            y: (nodeWidth + nodeMargin_h)*col}
 // }
-function calculatePosition(row, col) {
+function calculatePosition(row, col, i) {
   return { 
-    x: (nodeHeight + nodeMargin_v) * col, // Default position if undefined
-    y: (nodeWidth + nodeMargin_h) * row 
+    x: (nodeWidth + nodeMargin_v) * col, // Default position if undefined
+    y: (nodeHeight + nodeMargin_h) * row 
   };
 }
 
