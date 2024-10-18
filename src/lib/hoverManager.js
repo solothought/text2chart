@@ -2,6 +2,7 @@ import {
   MarkerType
   } from '@xyflow/svelte';
 
+// TODO: when an edge is highlighted by click, set it's z-index to 1 then reset to 0;
 export const edgeStyle = "stroke-width: 2px; stroke: #cac2c2;";
 export const highlightedEdgeStyle = "stroke-width: 2px; stroke: #FF4000";
 export const labelStyle = "font-size: 10px; font-weight: inherit; color: inherit;";

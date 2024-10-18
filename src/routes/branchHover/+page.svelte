@@ -17,15 +17,15 @@
     { id: '4-5', source: "4", target: "5" , type:"custom", data:{}}
   ];
 
-  const connections = { // loops or goto index is skipped from target if ...
-    "1":{ source: [], target: [2]},
-    "2":{ source: [1], target: [3,4]}, //edges: "1-3", "1-4"
-    "3":{ source: [2], target: []},
-    "4":{ source: [2], target: [5]},
-    "5":{ source: [4], target: []},
-  }
+  // const connections = { // loops or goto index is skipped from target if ...
+  //   "1":{ source: [], target: [2]},
+  //   "2":{ source: [1], target: [3,4]}, //edges: "1-3", "1-4"
+  //   "3":{ source: [2], target: []},
+  //   "4":{ source: [2], target: [5]},
+  //   "5":{ source: [4], target: []},
+  // }
 
 </script>
   
-<SlimoChart class="halfChart" {nodes} {edges} {connections}/>  style working due to class
+<SlimoChart class="halfChart" nodes={nodes} edges={edges}/>  style working due to class
 

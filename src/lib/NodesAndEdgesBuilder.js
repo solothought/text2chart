@@ -1,5 +1,4 @@
 
-import { Position } from "@xyflow/svelte";
 import Slimo from "slimo";
 
 const nodeWidth = 150;
