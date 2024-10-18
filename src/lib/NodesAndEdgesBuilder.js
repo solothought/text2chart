@@ -16,7 +16,7 @@ function SvelteFlowNode(id, data , position){
   }
 }
 function SvelteFlowEdge(sourceId, targetId, i, sourceType="", targetType){
-  console.debug(sourceType, i)
+  // console.debug(sourceType, i)
   let animated = false;
   let srcHandle = "b";
   let label = "";
@@ -52,6 +52,7 @@ function SvelteFlowEdge(sourceId, targetId, i, sourceType="", targetType){
  * @returns 
  */
 export function convert(slimoContent){
+  // console.log("converting");
   const flows = Slimo.parse(slimoContent);
   const flowNames = Object.keys(flows);
   if(flowNames.length > 0){

@@ -81,23 +81,50 @@
     edgeStore.set(edges);
   }
 
+  const selectedEdges = new Set();
   function styleEdge(event){
-    updateEdgesStyle(edges,new Set([event.detail.edge.id]),highlightEdge, true);
+    const edgeId = event.detail.edge.id;
+    if(selectedEdges.has(edgeId)){
+      selectedEdges.delete(edgeId);
+      updateEdgesStyle(edges,new Set([event.detail.edge.id]),unhighlightEdge);
+    }else{
+      selectedEdges.add(edgeId);
+      updateEdgesStyle(edges,new Set([event.detail.edge.id]),highlightEdge);
+    }
     edgeStore.set(edges);
   }
 
-  if(text.length > 0){
-    const data = convert(text);
-    nodes = data.nodes;
-    edges = data.edges;
-    flowName = data.flowName;
-  }
-  buildConnections(nodes, edges);
-  
-  nodeStore.set(nodes);
-  edgeStore.set(edges);
+  let slimoFlow = "";
 
-  $: {  }
+  function update(){
+    if(text.length > 0 && slimoFlow !== text){
+      slimoFlow = text;
+      const data = convert(text);
+      nodes = data.nodes;
+      edges = data.edges;
+      flowName = data.flowName;
+    }
+    buildConnections(nodes, edges);
+    
+    nodeStore.set(nodes);
+    edgeStore.set(edges);
+  }
+  
+
+  $: { 
+    if(text.length > 0 && slimoFlow !== text){
+      slimoFlow = text;
+      const data = convert(text);
+      nodes = data.nodes;
+      edges = data.edges;
+      flowName = data.flowName;
+    }
+    buildConnections(nodes, edges);
+    
+    nodeStore.set(nodes);
+    edgeStore.set(edges);
+    // console.debug(text);
+  }
 </script>
 
 <div {...$$restProps} >
