@@ -4,7 +4,8 @@ import {
 
 export const edgeStyle = "stroke-width: 2px; stroke: #cac2c2;";
 export const highlightedEdgeStyle = "stroke-width: 2px; stroke: #FF4000";
-
+export const labelStyle = "font-size: 10px; font-weight: inherit; color: inherit;";
+export const highlightedLabelStyle = "font-size: 16px; font-weight: bold; color: #ff6347;";
 export const edgeMarkerStyle = { 
   type: MarkerType.ArrowClosed,
   width: 20, 
@@ -53,54 +54,57 @@ export function traverseConnections(nodeId, connections, nodeSet, edgeSet) {
  * @returns 
  */
 export function highlight(nodes, edges, nodeIds, edgeIds) {
+  updateNodesStyle(nodes, nodeIds, true);
+  updateEdgesStyle(edges, edgeIds, highlightEdge);
+}
+
+export function unhighlight(nodes, edges, nodeIds, edgeIds) {
+  updateNodesStyle(nodes, nodeIds, false);
+  updateEdgesStyle(edges, edgeIds, unhighlightEdge);
+}
+
+export function updateNodesStyle(nodes,nodeIds,shouldHighlight){
   nodes.forEach(node => {
     if(nodeIds.has(node.id)){
       //This creates a new object that ensures that Svelte's reactivity system detects the change
       node.data = {
         ...node.data,
-        highlight: true // Remove or reset the flag
+        highlight: shouldHighlight
       };
-    }
-  })
-  
-  edges.forEach(edge => {
-    if(edgeIds.has(edge.id)){
-      // edge.data = {
-      //   ...edge.data,
-      //   highlight: true
-      // };
-      // if(edge.class) edge.class = " highlighted-edge";
-      // else edge.class += " highlighted-edge";
-      edge.style = highlightedEdgeStyle;
-      edge.markerEnd = highlightedEdgeMarkerStyle;
     }
   })
 }
 
-export function unhighlight(nodes, edges, nodeIds, edgeIds) {
-  nodes.forEach(node => {
-    if(nodeIds.has(node.id)){
-      node.data = {
-        ...node.data,
-        highlight: false // Remove or reset the flag
-      };
-    }
-  })
-  
+/**
+ * 
+ * @param {[]} edges master data
+ * @param {string[]} edgeIds edges to update
+ * @param {function} cb function that apply style
+ */
+export function updateEdgesStyle(edges,edgeIds, cb){
   edges.forEach(edge => {
     if(edgeIds.has(edge.id)){
-      // edge.data = {
-      //   ...edge.data,
-      //   highlight: false
-      // };
-      // console.log(edge.class);
-      // const classes = edge.class.split(" ");
-      // edge.class = "";
-      // classes.forEach(cls => {
-      //   if(cls !== "highlighted-edge") edge.class += cls
-      // })
-      edge.style = edgeStyle;
-      edge.markerEnd = edgeMarkerStyle;
+      cb(edge);
     }
   })
+}
+
+/**
+ * apply edge and it's marker's style
+ * @param {object} edge 
+ */
+export function unhighlightEdge(edge){
+  edge.style = edgeStyle;
+  edge.markerEnd = edgeMarkerStyle;
+  edge.labelStyle = labelStyle;
+}
+
+/**
+ * apply edge and it's marker's style
+ * @param {object} edge 
+ */
+export function highlightEdge(edge){
+  edge.style = highlightedEdgeStyle;
+  edge.markerEnd = highlightedEdgeMarkerStyle;
+  edge.labelStyle = highlightedLabelStyle;
 }

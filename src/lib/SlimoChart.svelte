@@ -13,7 +13,15 @@
   import DownloadButton from './DownloadButton.svelte';
   import {convert} from './NodesAndEdgesBuilder.js';
 
-  import {highlight, traverseConnections, unhighlight, edgeStyle, edgeMarkerStyle} from './hoverManager.js';
+  import {highlight, 
+    traverseConnections, 
+    unhighlight, 
+    edgeStyle, 
+    edgeMarkerStyle, 
+    highlightedEdgeMarkerStyle, 
+    unhighlightEdge, 
+    updateEdgesStyle,
+    highlightEdge} from './hoverManager.js';
 
   const nodeTypes = { step: StepNode };
   // const edgeTypes = { custom: CustomEdge };
@@ -72,22 +80,24 @@
     nodeStore.set(nodes);
     edgeStore.set(edges);
   }
-  $: {
-    if(text.length > 0){
-      const data = convert(text);
-      nodes = data.nodes;
-      edges = data.edges;
-      flowName = data.flowName;
 
-
-      // console.debug(nodes);
-      // console.log(edges);
-    }
-    buildConnections(nodes, edges);
-    
-    nodeStore.set(nodes);
+  function styleEdge(event){
+    updateEdgesStyle(edges,new Set([event.detail.edge.id]),highlightEdge, true);
     edgeStore.set(edges);
   }
+
+  if(text.length > 0){
+    const data = convert(text);
+    nodes = data.nodes;
+    edges = data.edges;
+    flowName = data.flowName;
+  }
+  buildConnections(nodes, edges);
+  
+  nodeStore.set(nodes);
+  edgeStore.set(edges);
+
+  $: {  }
 </script>
 
 <div {...$$restProps} >
@@ -102,6 +112,7 @@
     }} 
     on:nodemouseenter={onNodeMouseEnter}
     on:nodemouseleave={onNodeMouseLeave}
+    on:edgeclick={styleEdge}
     >
     <div style="position: relative;">Flow: {flowName}</div>
     <DownloadButton nodes={nodes} fileName={flowName}/>
