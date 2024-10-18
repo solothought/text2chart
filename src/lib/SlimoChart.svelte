@@ -96,21 +96,6 @@
 
   let slimoFlow = "";
 
-  function update(){
-    if(text.length > 0 && slimoFlow !== text){
-      slimoFlow = text;
-      const data = convert(text);
-      nodes = data.nodes;
-      edges = data.edges;
-      flowName = data.flowName;
-    }
-    buildConnections(nodes, edges);
-    
-    nodeStore.set(nodes);
-    edgeStore.set(edges);
-  }
-  
-
   $: { 
     if(text.length > 0 && slimoFlow !== text){
       slimoFlow = text;
@@ -123,7 +108,6 @@
     
     nodeStore.set(nodes);
     edgeStore.set(edges);
-    // console.debug(text);
   }
 </script>
 
