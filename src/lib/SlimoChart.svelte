@@ -1,24 +1,26 @@
 <script>
   import { writable } from 'svelte/store';
+  // import { onMount } from 'svelte';
   import { 
     SvelteFlow, 
     Controls, 
     Background, 
     MiniMap, 
     SvelteFlowProvider} from '@xyflow/svelte';
-  
+
   import '@xyflow/svelte/dist/style.css';
   import StepNode from './Step.svelte';
   // import CustomEdge from './CustomEdge.svelte';
   import DownloadButton from './DownloadButton.svelte';
   import {convert} from './NodesAndEdgesBuilder.js';
+  // import config from './config.js';
 
   import {highlight, 
     traverseConnections, 
     unhighlight, 
     edgeStyle, 
     edgeMarkerStyle, 
-    highlightedEdgeMarkerStyle, 
+    // highlightedEdgeMarkerStyle, 
     unhighlightEdge, 
     updateEdgesStyle,
     highlightEdge} from './hoverManager.js';
@@ -31,6 +33,8 @@
   export let edges = [];
   export let text = "";
   export let flowName = "";
+  // export let nodeSize = {width: 180, height:72};
+  // config.nodeSize = nodeSize;
 
   // Convert the arrays to writable stores
   let nodeStore = writable(nodes);
@@ -96,6 +100,7 @@
 
   let slimoFlow = "";
 
+  
   $: { 
     if(text.length > 0 && slimoFlow !== text){
       slimoFlow = text;
@@ -108,6 +113,7 @@
     
     nodeStore.set(nodes);
     edgeStore.set(edges);
+
   }
 </script>
 
@@ -124,9 +130,10 @@
     on:nodemouseenter={onNodeMouseEnter}
     on:nodemouseleave={onNodeMouseLeave}
     on:edgeclick={styleEdge}
+
     >
-    <div style="position: relative;">Flow: {flowName}</div>
-    <DownloadButton nodes={nodes} fileName={flowName}/>
+      <div style="position: relative;">Flow: {flowName}</div>
+      <DownloadButton nodes={nodes} fileName={flowName}/>
       <Controls />
       <Background />
       <MiniMap />

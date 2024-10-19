@@ -1,26 +1,45 @@
 <script>
   import { Handle, Position } from '@xyflow/svelte';
-  import { fit, parent_style } from '@leveluptuts/svelte-fit';
+  import { onMount, afterUpdate } from 'svelte';
+  import { nodeSize } from './config.js';
 
-  // import { hoverId } from './stores.js'; // Import shared store
-  export let id;  // node id
-  // export let type;  // node type
-  // export let selected;
-  // export let selectable;
-  // export let deletable;
-  // export let sourcePosition;
-  // export let targetPosition;
-  // export let zIndex;
-  // export let dragging;
-  // export let draggable;
-  // export let dragHandle;
-  // export let parentId;
-  // export let type;
-  // export let isConnectable;
-  // export let positionAbsoluteX;
-  // export let positionAbsoluteY;
-  // export let width;
-  // export let height;
+  export const fontSize = {desire: 15, min: 10, max: 80}
+
+  function isOverflow(el) {
+    return el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight;
+  }
+
+  function resizeText(element, parent) {
+    let min = fontSize.min;
+    let max = fontSize.max;
+    let size = min;
+
+    while (min <= max) {
+      size = Math.floor((min + max) / 2);
+      element.style.fontSize = `${size}px`;
+      isOverflow(parent) ? max = --size : min = ++size;
+    }
+
+    element.style.fontSize = `${max}px`;
+  }
+
+  let containerElement;
+  let textElement;
+
+  function applyFit() {
+    if (containerElement && textElement) {
+      resizeText(textElement, containerElement);
+    }
+  }
+
+  onMount(() => {
+    applyFit();
+  });
+
+  afterUpdate(() => {
+    applyFit();
+  });
+
 
   export let data;  // Contains the node-specific data
 </script>
@@ -35,9 +54,9 @@
     {/if}
   </div>
   <Handle class="hndl" id="t" type="target" position={Position.Top} />
-  <div class="container">
-    <div style={parent_style}>
-      <p use:fit>{data.msg}</p>
+  <div class="container" style="width:{nodeSize.width}px; height:{nodeSize.height}px;" bind:this={containerElement}>
+    <div class="msgWrapper">
+      <p bind:this={textElement}>{data.msg}</p>
     </div>
   </div>
   <Handle class="hndl" id="b" type="source" position={Position.Bottom} />
@@ -46,7 +65,11 @@
 </div>
 
 <style>
-
+  .msgWrapper{
+    display: inline-block; 
+    width: 100%; 
+    height: 100%;
+  }
   :global(.hndl) {
     visibility: hidden;
   }
@@ -67,15 +90,10 @@
 
   .container {
     position: relative;
-    width: 150px;
-    height: 50px;
+    /* width: 150px;
+    height: 50px; */
     text-align: center;
   }
-
-  /* This will extra zoom the small text and pull text up */
-  /* p { 
-    margin: 0;
-  } */
 
   .hovered {
       border: 2px solid #FF4000;

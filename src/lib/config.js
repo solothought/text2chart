@@ -1,0 +1,1 @@
+export let nodeSize = {width: 180, height:72}

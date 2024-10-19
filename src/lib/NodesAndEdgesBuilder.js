@@ -1,10 +1,10 @@
-
 import Slimo from "slimo";
+import { nodeSize } from './config.js';
 
-const nodeWidth = 150;
-const nodeHeight = 50;
-const nodeMargin_h = 80;
-const nodeMargin_v = 150;
+const nodeWidth = nodeSize.width;
+const nodeHeight = nodeSize.height;
+const nodeMargin_h = nodeSize.height*1.5;
+const nodeMargin_v = nodeSize.width*1.1;
 
 function SvelteFlowNode(id, data , position){
   return {
@@ -52,15 +52,21 @@ function SvelteFlowEdge(sourceId, targetId, i, sourceType="", targetType){
  */
 export function convert(slimoContent){
   // console.log("converting");
-  const flows = Slimo.parse(slimoContent);
-  const flowNames = Object.keys(flows);
-  if(flowNames.length > 0){
+  try{
+    const flows = Slimo.parse(slimoContent);
+    const flowNames = Object.keys(flows);
+    if(flowNames.length > 0){
 
-    const flowToChart = flows[flowNames[0]][0];
-    return _convert(flowToChart);
+      const flowToChart = flows[flowNames[0]][0];
+      if(flowToChart.steps.length > 0) {
+        // return _convert(flowToChart);
+          return _convert(flowToChart);
+        }
+    }
+  }catch(e){
   }
+  return {flowName:"", nodes:[], edges:[]};
 }
-
 
 function _convert(flowToChart){
   const nodes = [];
@@ -131,7 +137,9 @@ function _convert(flowToChart){
     isStart: true
     }, calculatePosition(1,1,0) )
   nodes.push(node);
-  mapStepsToNodes(step.nextStep, node, 1, 1)
+  // if(Object.keys(flowToChart.index).length > 1)  {
+    mapStepsToNodes(step.nextStep, node, 1, 1)
+  // }
   
   return {flowName:flowToChart.name, nodes, edges};
 }
