@@ -46,7 +46,7 @@
    *  "2":{ source: [1], target: [3,4]}
    * }
    */
-  let connections = [];
+  let connections = {};
 
   /**
    * Build an intermediate DataType for fast traversing when styling nodes/edges
@@ -58,7 +58,9 @@
       connections[node.id] = { source: [], target: [] };
     });
 
+    // console.log(connections);
     edges.forEach(edge => {
+      // console.log(edge)
       connections[edge.source].target.push(edge.target);
       connections[edge.target].source.push(edge.source);
     });
@@ -104,12 +106,15 @@
   $: { 
     if(text.length > 0 && slimoFlow !== text){
       slimoFlow = text;
-      const data = convert(text);
-      nodes = data.nodes;
-      edges = data.edges;
-      flowName = data.flowName;
+      const flowsData = convert(text);
+      if(flowsData.length > 0){ //TODO: support multiple flows
+        nodes = flowsData[0].nodes;
+        edges = flowsData[0].edges;
+        flowName = flowsData[0].flowName;
+      }
     }
     buildConnections(nodes, edges);
+    // console.debug(connections);
     
     nodeStore.set(nodes);
     edgeStore.set(edges);

@@ -1,4 +1,4 @@
-import Slimo from "slimo";
+import parse from "@solothought/text2obj/flow";
 import { nodeSize } from './config.js';
 
 const nodeWidth = nodeSize.width;
@@ -6,7 +6,7 @@ const nodeHeight = nodeSize.height;
 const nodeMargin_h = nodeSize.height*1.5;
 const nodeMargin_v = nodeSize.width*1.1;
 
-function SvelteFlowNode(id, data , position){
+function SvelteFlowNode(id, data , position){ //TODO: use class
   return {
     id : id+"",
     type : "step",
@@ -14,13 +14,13 @@ function SvelteFlowNode(id, data , position){
     position : position,
   }
 }
-function SvelteFlowEdge(sourceId, targetId, i, sourceType="", targetType){
+function SvelteFlowEdge(sourceId, targetId, i, sourceType="", targetType){ //TODO: use class
   // console.debug(sourceType, i)
   let animated = false;
   let srcHandle = "b";
   let label = "";
-  if(i!==0){//first node
-    srcHandle = "r"
+  if(isBranchStep(sourceType)){//first node
+    if(i==0)  srcHandle = "r";
   }
   // if(targetType === "LOOP" && sourceId > targetId){
   if(sourceId > targetId){
@@ -46,109 +46,76 @@ function SvelteFlowEdge(sourceId, targetId, i, sourceType="", targetType){
 }
 
 /**
- * Parse Slimo flow to SvelteFlow compatible nodes and edges
- * @param {string} slimoContent 
+ * Parse flow to SvelteFlow compatible nodes and edges
+ * @param {string} flowContent 
  * @returns 
  */
-export function convert(slimoContent){
-  // console.log("converting");
+export function convert(flowContent){
+  const nodesAndEdges = [];
   try{
-    const flows = Slimo.parse(slimoContent);
-    const flowNames = Object.keys(flows);
-    if(flowNames.length > 0){
-
-      const flowToChart = flows[flowNames[0]][0];
-      if(flowToChart.steps.length > 0) {
-        // return _convert(flowToChart);
-          return _convert(flowToChart);
-        }
+    const flows = parse(flowContent); // returns [Flow]
+    for (let i = 0; i < flows.length; i++) {
+      const flow = flows[i];
+      if(flow.steps.length > 0) {
+        const nAe = mapStepsToNodes(flow);
+        // console.log(nAe.edges);
+        // console.log(nAe.nodes);
+        nodesAndEdges.push(nAe);
+      }
     }
   }catch(e){
+    //TODO: notify error
+    console.error(e);
   }
-  return {flowName:"", nodes:[], edges:[]};
+  // console.debug(nodesAndEdges);
+  return nodesAndEdges;
 }
 
-function _convert(flowToChart){
-  const nodes = [];
-  const edges = [];
-  const cache = [];
 
-  /**
-   * 
-   * @param {any[]} steps 
-   * @param {obj} parentNode 
-   * @param {number} row 
-   * @param {number} col 
-   */
-  function mapStepsToNodes(steps, parentNode, row, col){
-    if(steps.length === 0 
-      || steps.indexOf(null) !== -1 
-      || ( isBranchStep(parentNode.data.type) && steps.length === 1)){
-        // console.debug(parentNode.data.msg);
-      // TODO: 
-      //if(flowToChart.exitSteps[parentNode.id]){ 
-        //edge to end node
-      //}
-        // console.debug(flowToChart.exitSteps[parentNode.id]);
-      parentNode.data.isEnd = true; 
-    }
-  
-    steps.forEach((step, i) => {
-      if(i === 0) {
-        row++;
-      }else{
-        row++; col++;
-      };
-      // const step =  flow.index[index];
-      if(step !== null){
-        const nodeId = step.index + 1;
-        if( cache.indexOf(step.index) === -1){
-          cache.push(step.index); // Avoid duplicating nodes
-          // Create new node
-          const node = SvelteFlowNode(nodeId, { 
-            msg: step.rawMsg, 
-            type: step.type, 
-          }, calculatePosition(row, col, i) );
+function mapStepsToNodes(flow){
+  const nodes=[];
+  const edges=[];
+  let i = 0, rows=0;
+  for (; i < flow.steps.length; i++) {
+    const step = flow.steps[i];
 
-          nodes.push(node); // Add the node to the nodes array
+    if(flow.links[i]){
+      //Add node
+      const nodeId = i;
+      const node = SvelteFlowNode(nodeId, { 
+        msg: step.rawMsg, 
+        type: step.type, 
+        }, nodePosition(i,flow.leveledSteps) )
+      nodes.push(node);
 
-          // Add edge from parent to this node
-          // edges.push(SvelteFlowEdge(parentNode.data.id, nodeId));
-          if (parentNode && parentNode.id) {
-            edges.push(SvelteFlowEdge(parentNode.id, nodeId, i, flowToChart.index[parentNode.id -1].type, flowToChart.index[step.index].type ));
-          }
-
-          // Recursively process child steps
-          mapStepsToNodes(step.nextStep, node, row, col);
-        }else{ //loop
-          // edges.push(SvelteFlowEdge(parentNode.data.id, nodeId));
-          if (parentNode && parentNode.id) {
-            edges.push(SvelteFlowEdge(parentNode.id, nodeId, i, flowToChart.index[parentNode.id -1].type, flowToChart.index[step.index].type) );
-          }
+      //Add edge
+      for (let j = 0; j < flow.links[i].length; j++) {
+        const targetId = flow.links[i][j];
+        if(targetId === -1){
+          node.data.isEnd = true;          
+        }else{
+          if(!flow.links[targetId]) throw new Error(`Link for Step ${targetId} is not present`);
+          const edge = SvelteFlowEdge(nodeId, targetId, j, step.type, flow.steps[targetId].type);
+          edges.push(edge);
         }
       }
-    });
+    }
   }
-
-  const step = flowToChart.steps[0]; //at root, there is one step only
-  const node = SvelteFlowNode(step.index + 1, { 
-    msg: step.rawMsg, 
-    type: step.type, 
-    isStart: true
-    }, calculatePosition(1,1,0) )
-  nodes.push(node);
-  // if(Object.keys(flowToChart.index).length > 1)  {
-    mapStepsToNodes(step.nextStep, node, 1, 1)
-  // }
-  
-  return {flowName:flowToChart.name, nodes, edges};
+  // for first node
+  nodes[0].data.isStart = true;
+  // console.debug(nodes);
+  return {flowName:  flow.name, nodes, edges}
 }
 
-function calculatePosition(row, col, i) {
-  return { 
-    x: (nodeWidth + nodeMargin_v) * col, // Default position if undefined
-    y: (nodeHeight + nodeMargin_h) * row 
-  };
+function nodePosition(stepId, indentations){
+  for (let i = 0; i < indentations.length; i++) {
+    if(indentations[i].includes(stepId)){
+      return { 
+        x: (nodeWidth + nodeMargin_v) * i, // Default position if undefined
+        y: (nodeHeight + nodeMargin_h) * stepId 
+      };
+    }
+  }
 }
 
 
