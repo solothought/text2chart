@@ -6,6 +6,9 @@ const nodeHeight = nodeSize.height;
 const nodeMargin_h = nodeSize.height*1.5;
 const nodeMargin_v = nodeSize.width*1.1;
 
+const deltaX = nodeWidth + nodeMargin_v;
+const deltaY = nodeHeight + nodeMargin_h;
+
 function SvelteFlowNode(id, data , position){ //TODO: use class
   return {
     id : id+"",
@@ -18,9 +21,13 @@ function SvelteFlowEdge(sourceId, targetId, i, sourceType="", targetType){ //TOD
   // console.debug(sourceType, i)
   let animated = false;
   let srcHandle = "b";
+  let targetHandle = "t";
   let label = "";
   if(isBranchStep(sourceType)){//first node
-    if(i==0)  srcHandle = "r";
+    if(i==0)  {
+      srcHandle = "r";
+      targetHandle= "lt";
+    }
   }
   // if(targetType === "LOOP" && sourceId > targetId){
   if(sourceId > targetId){
@@ -40,6 +47,7 @@ function SvelteFlowEdge(sourceId, targetId, i, sourceType="", targetType){ //TOD
     label : "",
     data : {},
     sourceHandle: srcHandle,
+    targetHandle: targetHandle,
     animated: animated,
     label: label
   }
@@ -75,22 +83,44 @@ export function convert(flowContent){
 function mapStepsToNodes(flow){
   const nodes=[];
   const edges=[];
-  let i = 0, rows=0;
-  for (; i < flow.steps.length; i++) {
-    const step = flow.steps[i];
+  let lastNode;
+  const parentStack = [];
+  let nodeId = 0, row=-1;
+  for (; nodeId < flow.steps.length; nodeId++) {
+    const step = flow.steps[nodeId];
 
-    if(flow.links[i]){
+    if(flow.links[nodeId]){
+      row++;
+      let position;
+      if(!lastNode) position={x:0,y:0};
+      else{
+        const lastStep = flow.steps[lastNode.id];
+        if(lastStep.indent === step.indent) {//same level
+          position = {x:lastNode.position.x, y:lastNode.position.y+deltaY}
+        }else if(lastStep.indent < step.indent){ //child-parent step
+          row--; //graph expands horizontally
+          position = {x:lastNode.position.x+deltaX, y:lastNode.position.y}
+        }else{
+          const parentNode = parentStack.pop();
+          position = {x:parentNode.position.x, y:(row*deltaY)}
+        }
+      }
+
       //Add node
-      const nodeId = i;
       const node = SvelteFlowNode(nodeId, { 
         msg: step.rawMsg, 
         type: step.type, 
-        }, nodePosition(i,flow.leveledSteps) )
+        // }, nodePosition(nodeId,flow.leveledSteps, nodes) )
+        }, position )
       nodes.push(node);
 
+      lastNode = node;
+      if(isBranchStep(step.type)){
+        parentStack.push(node);
+      }
       //Add edge
-      for (let j = 0; j < flow.links[i].length; j++) {
-        const targetId = flow.links[i][j];
+      for (let j = 0; j < flow.links[nodeId].length; j++) {
+        const targetId = flow.links[nodeId][j];
         if(targetId === -1){
           node.data.isEnd = true;          
         }else{
@@ -103,21 +133,8 @@ function mapStepsToNodes(flow){
   }
   // for first node
   nodes[0].data.isStart = true;
-  // console.debug(nodes);
   return {flowName:  flow.name, nodes, edges}
 }
-
-function nodePosition(stepId, indentations){
-  for (let i = 0; i < indentations.length; i++) {
-    if(indentations[i].includes(stepId)){
-      return { 
-        x: (nodeWidth + nodeMargin_v) * i, // Default position if undefined
-        y: (nodeHeight + nodeMargin_h) * stepId 
-      };
-    }
-  }
-}
-
 
 const branchSteps=["IF", "ELSE_IF", "LOOP"];
 function isBranchStep(type){
