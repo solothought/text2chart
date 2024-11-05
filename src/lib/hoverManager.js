@@ -19,31 +19,48 @@ export const highlightedEdgeMarkerStyle = {
   color: "#FF4000" };
 
 
-// Function to handle hover over a node
-export function traverseConnections(nodeId, connections, nodeSet, edgeSet) {
-  // Traverse upwards (source) and downwards (target)
-  function traverseUpwards(currentNode) {
-    if (!nodeSet.has(currentNode)) {
-      nodeSet.add(currentNode);
-      connections[currentNode].source.forEach(sourceNode => {
-        edgeSet.add(`${sourceNode}-${currentNode}`);
-        traverseUpwards(sourceNode);
-      });
-    }
-  }
+/**
+ * Select nodes to handle hover over a node
+ * @param {number} nodeId 
+ * @param {Object} connections 
+ * @param {Set<number>} nodeSet 
+ * @param {Set<number>} edgeSet 
+ */
+export function traverseConnections(nodeId, connections) {
+  const nSetUp = new Set();
+  const eSetUp = new Set();
+  const nSetDown = new Set();
+  const eSetDown = new Set();
 
-  function traverseDownwards(currentNode) {
-    if (!nodeSet.has(currentNode)) {
-      nodeSet.add(currentNode);
-      connections[currentNode].target.forEach(targetNode => {
-        edgeSet.add(`${currentNode}-${targetNode}`);
-        traverseDownwards(targetNode);
-      });
-    }
-  }
+  traverseUpwards(nodeId, connections, nSetUp, eSetUp);
+  // console.debug(nodeSet);
+  traverseDownwards(nodeId, connections, nSetDown, eSetDown);
+  // console.debug(nodeSet);
 
-  traverseUpwards(nodeId);
-  traverseDownwards(nodeId);
+  return {
+    seletedNodes: new Set([...nSetUp, ...nSetDown]),
+    seletedEdges: new Set([...eSetUp, ...eSetDown])
+  }
+}
+
+function traverseUpwards(currentNode, connections, nodeSet, edgeSet) {
+  if (!nodeSet.has(currentNode)) {
+    nodeSet.add(currentNode);
+    connections[currentNode].parent.forEach(parentNode => {
+      edgeSet.add(`${parentNode}-${currentNode}`);
+      traverseUpwards(parentNode, connections, nodeSet, edgeSet);
+    });
+  }
+}
+
+function traverseDownwards(currentNode, connections, nodeSet, edgeSet) {
+  if (!nodeSet.has(currentNode)) {
+    nodeSet.add(currentNode);
+    connections[currentNode].target.forEach(targetNode => {
+      edgeSet.add(`${currentNode}-${targetNode}`);
+      traverseDownwards(targetNode, connections, nodeSet, edgeSet);
+    });
+  }
 }
 
 /**

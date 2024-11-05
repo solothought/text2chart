@@ -46,33 +46,17 @@
    *  "2":{ source: [1], target: [3,4]}
    * }
    */
-  let connections = {};
+  let connections = {}; //an intermediate DataType for fast traversing when styling nodes/edges
 
-  /**
-   * Build an intermediate DataType for fast traversing when styling nodes/edges
-   * @param nodes
-   * @param edges
-   */
-  function buildConnections(nodes, edges) {
-    nodes.forEach(node => {
-      connections[node.id] = { source: [], target: [] };
-    });
-
-    // console.log(connections);
-    edges.forEach(edge => {
-      // console.log(edge)
-      connections[edge.source].target.push(edge.target);
-      connections[edge.target].source.push(edge.source);
-    });
-  }
-
-  const hoveredPathNodes = new Set();
-  const hoveredPathEdges = new Set();
+  let hoveredPathNodes = new Set();
+  let hoveredPathEdges = new Set();
 
 
   function onNodeMouseEnter(event){
     const nodeId = event.detail.node.id;
-    traverseConnections(nodeId, connections,  hoveredPathNodes, hoveredPathEdges);
+    const selection = traverseConnections(nodeId, connections);
+    hoveredPathNodes = selection.seletedNodes;
+    hoveredPathEdges = selection.seletedEdges;
     highlight(nodes, edges, hoveredPathNodes,hoveredPathEdges);
 
     nodeStore.set(nodes);
@@ -110,11 +94,10 @@
       if(flowsData.length > 0){ //TODO: support multiple flows
         nodes = flowsData[0].nodes;
         edges = flowsData[0].edges;
+        connections = flowsData[0].connections;
         flowName = flowsData[0].flowName;
       }
     }
-    buildConnections(nodes, edges);
-    // console.debug(connections);
     
     nodeStore.set(nodes);
     edgeStore.set(edges);

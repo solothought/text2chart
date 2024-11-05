@@ -85,6 +85,7 @@ export function convert(flowContent){
 function mapStepsToNodes(flow){
   const nodes=[];
   const edges=[];
+  const connections = {};
   let lastNode;
   const parentStack = [];
   let nodeId = 0, row=-1;
@@ -94,6 +95,9 @@ function mapStepsToNodes(flow){
     if(flow.links[nodeId]){
       row++;
       let position;
+      if(connections[nodeId]) connections[nodeId].target = [...flow.links[nodeId].map(String)];
+      else connections[nodeId] = {target: [...flow.links[nodeId].map(String)], parent: []};
+    
       if(!lastNode) position={x:0,y:0};
       else{
         const lastStep = flow.steps[lastNode.id];
@@ -122,6 +126,10 @@ function mapStepsToNodes(flow){
       //Add edge
       for (let j = 0; j < flow.links[nodeId].length; j++) {
         const targetId = flow.links[nodeId][j];
+        
+        if(!connections[targetId]) connections[targetId] = {target:[], parent:[]}
+        if(targetId > nodeId) connections[targetId].parent.push(String(nodeId));
+
         if(targetId === -1){
           node.data.isEnd = true;          
         }else{
@@ -134,7 +142,9 @@ function mapStepsToNodes(flow){
   }
   // for first node
   nodes[0].data.isStart = true;
-  return {flowName:  flow.name, nodes, edges}
+  // console.debug(connections);
+  
+  return {flowName:  flow.name, nodes, edges, connections}
 }
 
 const branchSteps=["IF", "ELSE_IF", "LOOP"];
