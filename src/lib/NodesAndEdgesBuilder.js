@@ -20,8 +20,10 @@ function SvelteFlowNode(id, data , position){ //TODO: use class
 function SvelteFlowEdge(sourceId, targetId, i, sourceType="", targetType){ //TODO: use class
   // console.debug(sourceType, i)
   let animated = false;
-  let srcHandle = "b";
-  let targetHandle = "t";
+  // let srcHandle = "b";
+  // let targetHandle = "t";
+  let srcHandle = "";
+  let targetHandle = "";
   let label = "";
   if(isBranchStep(sourceType)){//first node
     if(i==0)  {
@@ -110,7 +112,6 @@ function mapStepsToNodes(flow){
       const node = SvelteFlowNode(nodeId, { 
         msg: step.rawMsg, 
         type: step.type, 
-        // }, nodePosition(nodeId,flow.leveledSteps, nodes) )
         }, position )
       nodes.push(node);
 

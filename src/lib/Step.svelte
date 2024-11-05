@@ -53,6 +53,7 @@
       <svg class="icon {data.isEnd ? 'invert':''}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="78px" height="112px" viewBox="-0.5 -0.5 78 112"><g><g data-cell-id="0"><g data-cell-id="1"><g data-cell-id="cL7QPJKOe-qMU4ihb_zf-2"/><g data-cell-id="cL7QPJKOe-qMU4ihb_zf-5"><g><path d="M 11 21 Q 11 61 57 61" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2" stroke-miterlimit="10" pointer-events="stroke"/></g></g><g data-cell-id="cL7QPJKOe-qMU4ihb_zf-6"><g><path d="M 11 21 L 11 91" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2" stroke-miterlimit="10" pointer-events="stroke"/></g></g><g data-cell-id="cL7QPJKOe-qMU4ihb_zf-3"><g><ellipse cx="11" cy="11" rx="10" ry="10" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2" pointer-events="all"/></g></g><g data-cell-id="cL7QPJKOe-qMU4ihb_zf-4"><g><ellipse cx="67" cy="61" rx="10" ry="10" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2" pointer-events="all"/></g></g><g data-cell-id="cL7QPJKOe-qMU4ihb_zf-8"><g><ellipse cx="11" cy="101" rx="10" ry="10" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2" pointer-events="all"/></g></g></g></g></g></svg>
     {/if}
   </div>
+  <!-- <Handle class="hndl" id="tt" type="target" position={Position.Top} /> -->
   <Handle class="hndl" id="t" type="target" position={Position.Top} />
   <div class="container" style="width:{nodeSize.width}px; height:{nodeSize.height}px;" bind:this={containerElement}>
     <div class="msgWrapper">
@@ -60,8 +61,11 @@
     </div>
   </div>
   <Handle class="hndl" id="b" type="source" position={Position.Bottom} />
+  <Handle class="hndl" id="bt" type="target" position={Position.Bottom} />
   <Handle class="hndl" id="l" type="source" position={Position.Left} />
+  <Handle class="hndl" id="lt" type="target" position={Position.Left} />
   <Handle class="hndl" id="r" type="source" position={Position.Right} />
+  <Handle class="hndl" id="rt" type="target" position={Position.Right} />
 </div>
 
 <style>
@@ -74,17 +78,18 @@
     visibility: hidden;
   }
   .endStep{
-    padding: 10px;
-    border-radius: 35px;
+    padding: 5px;
+    border-radius: 5px;
     background-color: black;
     color: white;
+    border: 1px solid #555;
   }
   .step {
     padding: 5px;
-    background: white;
-    border: 1px solid #555;
-    color: inherit;
     border-radius: 5px;
+    background: white;
+    color: inherit;
+    border: 1px solid #555;
   }
 
 
