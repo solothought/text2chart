@@ -26,16 +26,16 @@ export const highlightedEdgeMarkerStyle = {
  * @param {Set<number>} nodeSet 
  * @param {Set<number>} edgeSet 
  */
-export function traverseConnections(nodeId, connections) {
+export function traverseConnections(nodeId, connections, selectDirection) {
   const nSetUp = new Set();
   const eSetUp = new Set();
   const nSetDown = new Set();
   const eSetDown = new Set();
 
-  traverseUpwards(nodeId, connections, nSetUp, eSetUp);
-  // console.debug(nodeSet);
-  traverseDownwards(nodeId, connections, nSetDown, eSetDown);
-  // console.debug(nodeSet);
+  if(selectDirection === 0 || selectDirection === 2)
+    traverseUpwards(nodeId, connections, nSetUp, eSetUp);
+  if(selectDirection === 1 || selectDirection === 2)
+    traverseDownwards(nodeId, connections, nSetDown, eSetDown);
 
   return {
     seletedNodes: new Set([...nSetUp, ...nSetDown]),

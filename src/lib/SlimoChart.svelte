@@ -1,6 +1,6 @@
 <script>
   import { writable } from 'svelte/store';
-  // import { onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import { 
     SvelteFlow, 
     Controls, 
@@ -39,7 +39,7 @@
   // Convert the arrays to writable stores
   let nodeStore = writable(nodes);
   let edgeStore = writable(edges);
-
+  let keyPressed = "";
   /**
    * {
    *  "1":{ source: [], target: [2]},
@@ -54,7 +54,10 @@
 
   function onNodeMouseEnter(event){
     const nodeId = event.detail.node.id;
-    const selection = traverseConnections(nodeId, connections);
+    let selectDirection = 2;
+    if (keyPressed === 'Shift') selectDirection = 0;
+    else if (keyPressed === 'Control') selectDirection = 1;
+    const selection = traverseConnections(nodeId, connections, selectDirection);
     hoveredPathNodes = selection.seletedNodes;
     hoveredPathEdges = selection.seletedEdges;
     highlight(nodes, edges, hoveredPathNodes,hoveredPathEdges);
@@ -83,10 +86,20 @@
     }
     edgeStore.set(edges);
   }
+  
+  function handleKeyDown(event){
+    keyPressed = event.key;
+  };
+  function handleKeyUp(event){
+    keyPressed = "";
+  };
+
+  onMount(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keyup', handleKeyUp);
+  });
 
   let slimoFlow = "";
-
-  
   $: { 
     if(text.length > 0 && slimoFlow !== text){
       slimoFlow = text;
@@ -105,7 +118,7 @@
   }
 </script>
 
-<div {...$$restProps} >
+<div {...$$restProps} > 
   <SvelteFlowProvider >
     <SvelteFlow {nodeTypes} 
     
@@ -118,7 +131,6 @@
     on:nodemouseenter={onNodeMouseEnter}
     on:nodemouseleave={onNodeMouseLeave}
     on:edgeclick={styleEdge}
-
     >
       <div style="position: relative;">Flow: {flowName}</div>
       <DownloadButton nodes={nodes} fileName={flowName}/>
