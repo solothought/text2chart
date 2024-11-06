@@ -1,58 +1,11 @@
-# create-svelte
+# TextChart
 
-Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+`@solothought/textchart` provides an easy way of generating charts from text. It is helpful for developers who doesn't want to spend time in learning charting tools.
 
-Read more about creating a library [in the docs](https://kit.svelte.dev/docs/packaging).
+Another benefit of text charting is version control. You focus on the actual contents and they're easy to track. This is very helpful in organizations where work increases gradually.
 
-## Creating a project
+Your text chart size is small to share or store. and can be converted in a chart(graph) any time.
 
-If you're seeing this, you've probably already done this step. Congrats!
+Currently, this library only supports generating flow chart. The supported format can be found at [#solothought/text2obj](https://github.com/NaturalIntelligence/text2obj) which is used a core dependency for parsing text to intermediate object that helps to draw charts.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
-
-## Building
-
-To build your library:
-
-```bash
-npm run package
-```
-
-To create a production version of your showcase app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
-
-## Publishing
-
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
-
-To publish your library to [npm](https://www.npmjs.com):
-
-```bash
-npm publish
-```
