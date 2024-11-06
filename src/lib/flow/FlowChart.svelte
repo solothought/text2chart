@@ -11,7 +11,7 @@
   import '@xyflow/svelte/dist/style.css';
   import StepNode from './Step.svelte';
   import DownloadButton from './../DownloadButton.svelte';
-  import {convert} from './NodesAndEdgesBuilder.js';
+  import {convert as flowText2Obj} from './NodesAndEdgesBuilder.js';
 
   import {highlight, 
     traverseConnections, 
@@ -47,6 +47,8 @@
   let hoveredPathNodes = new Set();
   let hoveredPathEdges = new Set();
 
+  let flowsData = []; // All flows parsed from text
+  let selectedFlowIndex = 0; // Track selected flow, defaulting to the first
 
   function onNodeMouseEnter(event){
     const nodeId = event.detail.node.id;
@@ -90,6 +92,11 @@
     keyPressed = "";
   };
 
+   // Update flow data when user selects a different flow
+  function handleFlowChange(event) {
+    updateSelectedFlow(parseInt(event.target.value));
+  }
+
   onMount(() => {
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('keyup', handleKeyUp);
@@ -97,25 +104,35 @@
 
   let slimoFlow = "";
   $: { 
-    if(text.length > 0 && slimoFlow !== text){
-      slimoFlow = text;
-      const flowsData = convert(text);
-      if(flowsData.length > 0){ //TODO: support multiple flows
-        nodes = flowsData[0].nodes;
-        edges = flowsData[0].edges;
-        connections = flowsData[0].connections;
-        flowName = flowsData[0].flowName;
-      }
+    if (text.length > 0) {
+      flowsData = flowText2Obj(text);
+      updateSelectedFlow(0); // Set first flow by default
     }
-    
-    nodeStore.set(nodes);
-    edgeStore.set(edges);
+  }
 
+  function updateSelectedFlow(index) {
+    selectedFlowIndex = index;
+    if (flowsData[selectedFlowIndex]) {
+      const selectedFlow = flowsData[selectedFlowIndex];
+      nodes = selectedFlow.nodes;
+      edges = selectedFlow.edges;
+      connections = selectedFlow.connections;
+      flowName = selectedFlow.flowName;
+
+      nodeStore.set(nodes);
+      edgeStore.set(edges);
+    }
   }
 </script>
 
 <div {...$$restProps} > 
   <SvelteFlowProvider >
+    <!-- Flow Selector -->
+    <select on:change={handleFlowChange}>
+      {#each flowsData as flow, index}
+        <option value={index} selected={index === selectedFlowIndex}>{flow.flowName}</option>
+      {/each}
+    </select>
     <SvelteFlow {nodeTypes} 
     
     bind:nodes={nodeStore} bind:edges={edgeStore} fitView 
@@ -128,7 +145,9 @@
     on:nodemouseleave={onNodeMouseLeave}
     on:edgeclick={styleEdge}
     >
-      <div style="position: relative;">Flow: {flowName}</div>
+      
+      
+
       <DownloadButton nodes={nodes} fileName={flowName}/>
       <Controls />
       <Background />
