@@ -1,8 +1,7 @@
 TODO
 
 P1
-- render multiple flows
-- control node highlighting from outside dynamically
+- hghlight node of that flow only
 - icons for different type of nodes: ERR
 - release as a package
 

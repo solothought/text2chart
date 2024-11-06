@@ -31,6 +31,7 @@
   export let edges = [];
   export let text = "";
   export let flowName = "";
+  export let selection = [];
 
   // Convert the arrays to writable stores
   let nodeStore = writable(nodes);
@@ -49,8 +50,10 @@
 
   let flowsData = []; // All flows parsed from text
   let selectedFlowIndex = 0; // Track selected flow, defaulting to the first
+  let hoveredState = false;
 
   function onNodeMouseEnter(event){
+    hoveredState = true;
     const nodeId = event.detail.node.id;
     let selectDirection = 2;
     if (keyPressed === 'Shift') selectDirection = 0;
@@ -64,6 +67,7 @@
     edgeStore.set(edges);
   }
   function onNodeMouseLeave(){
+    hoveredState=false;
     unhighlight(nodes, edges, hoveredPathNodes,hoveredPathEdges);
     hoveredPathNodes.clear();
     hoveredPathEdges.clear();
@@ -123,9 +127,20 @@
       edgeStore.set(edges);
     }
   }
+let selected = [];
+$: {
+  if(selection.length){ //TODO: accept flow number. Ignore if selected flow is different 
+    console.log(selection, selected);
+    unhighlight(nodes,edges,new Set(selected), new Set());
+    nodeStore.set(nodes);
+    selected = selection;
+    highlight(nodes,edges,new Set(selection), new Set());
+    nodeStore.set(nodes);
+  }
+}
 </script>
 
-<div {...$$restProps} > 
+<div {...$$restProps} id="solothought-flow" > 
   <SvelteFlowProvider >
     <!-- Flow Selector -->
     <select on:change={handleFlowChange}>
@@ -133,7 +148,7 @@
         <option value={index} selected={index === selectedFlowIndex}>{flow.flowName}</option>
       {/each}
     </select>
-    <SvelteFlow {nodeTypes} 
+    <SvelteFlow  {nodeTypes}
     
     bind:nodes={nodeStore} bind:edges={edgeStore} fitView 
     defaultEdgeOptions={{
