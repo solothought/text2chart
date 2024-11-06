@@ -11,11 +11,14 @@ export function getSelectedLines(textarea, key, withShift) {
   let endLine = 0;
   let currentPos = 0;
   let lineCount = 0;
+  let flowIndex = -1
 
   for (let i = 0; i < lines.length; i++) {
     const trimmedLine = lines[i].trim();
-    if(trimmedLine.startsWith("FLOW:")) lineCount = -1;
-    else if(trimmedLine.length !== 0 && trimmedLine[0] !== "#") lineCount++;
+    if(trimmedLine.startsWith("FLOW:")) { 
+      lineCount = -1;
+      flowIndex++;
+    }else if(trimmedLine.length !== 0 && trimmedLine[0] !== "#") lineCount++;
 
     const lineLength = lines[i].length + 1; // +1 for the newline character
     if (currentPos <= start && currentPos + lineLength > start && startLine === 0) {
@@ -55,7 +58,7 @@ export function getSelectedLines(textarea, key, withShift) {
 
   // return lines.slice(startLine, endLine + 1);
   // console.log(start, end);
-  return generateSequence(startLine, endLine);
+  return {flowIndex: flowIndex, nodeIds: generateSequence(startLine, endLine)};
 }
 
 function generateSequence(from, to) {

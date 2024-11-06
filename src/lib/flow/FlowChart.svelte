@@ -110,7 +110,7 @@
   $: { 
     if (text.length > 0) {
       flowsData = flowText2Obj(text);
-      updateSelectedFlow(0); // Set first flow by default
+      updateSelectedFlow(selectedFlowIndex); // Set first flow by default
     }
   }
 
@@ -127,15 +127,19 @@
       edgeStore.set(edges);
     }
   }
-let selected = [];
+let selected = {}; //{flowIndex:number,nodeIds:string[]}
 $: {
-  if(selection.length){ //TODO: accept flow number. Ignore if selected flow is different 
-    console.log(selection, selected);
-    unhighlight(nodes,edges,new Set(selected), new Set());
-    nodeStore.set(nodes);
-    selected = selection;
-    highlight(nodes,edges,new Set(selection), new Set());
-    nodeStore.set(nodes);
+  if(selection && selection.nodeIds && selection.nodeIds.length){ //TODO: accept flow number. Ignore if selected flow is different 
+    // console.log(selection, selected);
+    if(selection.flowIndex === selectedFlowIndex){
+
+      unhighlight(nodes,edges,new Set(selected.nodeIds), new Set());
+      nodeStore.set(nodes);
+      selected = selection;
+      highlight(nodes,edges,new Set(selection.nodeIds), new Set());
+      nodeStore.set(nodes);
+
+    }
   }
 }
 </script>
@@ -143,9 +147,9 @@ $: {
 <div {...$$restProps} id="solothought-flow" > 
   <SvelteFlowProvider >
     <!-- Flow Selector -->
-    <select on:change={handleFlowChange}>
+    <select on:change={handleFlowChange} bind:value={selectedFlowIndex}>
       {#each flowsData as flow, index}
-        <option value={index} selected={index === selectedFlowIndex}>{flow.flowName}</option>
+        <option value={index} >{flow.flowName}</option>
       {/each}
     </select>
     <SvelteFlow  {nodeTypes}
