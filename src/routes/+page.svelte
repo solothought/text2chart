@@ -1,28 +1,80 @@
 <script>
-  import SlimoChart from '$lib/SlimoChart.svelte';
+  // import { onMount } from 'svelte';
+  import FlowChart from '$lib/flow/FlowChart.svelte';
+  let initialAlgo = `
+
+FLOW: passed as parameter
+here you go
+IF go in loop
+  LOOP until
+    you're safe here even with a long sentence
+    IF not
+      but
+    ELSE_IF else if
+      STOP
+    ELSE
+      SKIP
+finsh here
+  `
+  let flowText = '';
   
-  // Initialize nodes and edges
-  let nodes = [
-    { id: '1', type: 'step', position: { x: 250, y: 0 }, data: { msg: 'Start', isStart: true } },
-    { id: '2', type: 'step', position: { x: 250, y: 150 }, data: { msg: 'Process', isEnd: false } }
-  ];
-  let edges = [
-      { id: '1-2', source: '1', target: '2', data:{} }
-  ];
+  function handleKeyDown(event) {
+    const textarea = event.target;
+    let text = textarea.value;  // Bound to the textarea
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
 
-  // Initialize nodes and edges
-  let nodes1 = [
-    { id: '1', type: 'step', position: { x: 250, y: 0 }, data: { msg: 'Start', isStart: true } },
-    { id: '2', type: 'step', position: { x: 250, y: 150 }, data: { msg: 'Process', isEnd: false } }
-  ];
-  let edges1 = [
-      { id: '1-2', source: '1', target: '2', data:{} }
-  ];
+    if (event.key === "Enter") {
+      event.preventDefault();
+      const beforeCursor = text.substring(0, start);
+      const afterCursor = text.substring(end);
+      // console.log(beforeCursor.length)
+      const previousLine = beforeCursor.split("\n").pop() || "";
+      const leadingSpaces = previousLine.match(/^\s*/)[0] || "";
 
+      textarea.value = `${beforeCursor}\n${leadingSpaces}${afterCursor}`;
+      const newCursorPosition = beforeCursor.length + 1 + leadingSpaces.length;
+      textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+    }
+    else if (event.key === "Tab") {
+      event.preventDefault();
+      // const TAB_SIZE = 2;
+      const spaces = "  ";
+
+      const beforeCursor = text.substring(0, start);
+      const afterCursor = text.substring(end);
+
+      textarea.value = `${beforeCursor}${spaces}${afterCursor}`;
+      const newCursorPosition = beforeCursor.length + spaces.length;
+      textarea.setSelectionRange(newCursorPosition, newCursorPosition);
+    }
+  }
+  function handleKeyUp(event) {
+    flowText = event.target.value;
+    
+  }
+$: flowText = initialAlgo;
 </script>
-  
-<SlimoChart id="quarterChart" bind:nodes={nodes1} bind:edges={edges1} /> style working due to id
-<SlimoChart id="chart2" class="halfChart" nodes={nodes} edges={edges} />  style working due to class
-<SlimoChart class="halfChart" bind:nodes={nodes} bind:edges={edges} /> style working due to class
-<SlimoChart style="width:50%; height:50vh" bind:nodes={nodes} bind:edges={edges} /> style working due to inline css
 
+<style>
+  .container {
+    display: flex;
+  }
+  .text-area {
+    width: 30%;
+    height: 100vh;
+  }
+</style>
+
+<div class="container">
+  <textarea 
+    class="text-area" 
+    on:keyup={handleKeyUp} 
+    on:keydown={handleKeyDown} 
+    
+    >{initialAlgo}
+
+  </textarea>
+  
+  <FlowChart style="padding-left:10px; width:65vw; height:100vh" bind:text={flowText} />
+</div>

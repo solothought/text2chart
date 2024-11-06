@@ -1,7 +1,7 @@
 <script>
   import { Handle, Position } from '@xyflow/svelte';
   import { onMount, afterUpdate } from 'svelte';
-  import { nodeSize } from './config.js';
+  import { nodeSize } from './../config.js';
 
   export const fontSize = {desire: 15, min: 10, max: 80}
 

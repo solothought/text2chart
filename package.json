@@ -1,5 +1,5 @@
 {
-	"name": "@solothought/flowchart",
+	"name": "@solothought/textchart",
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "vite dev",
@@ -14,7 +14,8 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js"
-		}
+		},
+		"./flow": "./dist/flow/index.js"
 	},
 	"files": [
 		"dist",

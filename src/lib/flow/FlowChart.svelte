@@ -10,10 +10,8 @@
 
   import '@xyflow/svelte/dist/style.css';
   import StepNode from './Step.svelte';
-  // import CustomEdge from './CustomEdge.svelte';
-  import DownloadButton from './DownloadButton.svelte';
+  import DownloadButton from './../DownloadButton.svelte';
   import {convert} from './NodesAndEdgesBuilder.js';
-  // import config from './config.js';
 
   import {highlight, 
     traverseConnections, 
@@ -33,8 +31,6 @@
   export let edges = [];
   export let text = "";
   export let flowName = "";
-  // export let nodeSize = {width: 180, height:72};
-  // config.nodeSize = nodeSize;
 
   // Convert the arrays to writable stores
   let nodeStore = writable(nodes);

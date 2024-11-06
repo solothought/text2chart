@@ -31,7 +31,7 @@
         }
       }).then((dataUrl) => {
         const link = document.createElement('a');
-        link.download = `${fileName || ''}_slimo-chart.png`;
+        link.download = `${fileName || ''}_solothought-flowchart.png`;
         link.href = dataUrl;
         link.click();
       });

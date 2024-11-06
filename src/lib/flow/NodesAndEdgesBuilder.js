@@ -1,5 +1,5 @@
 import parse from "@solothought/text2obj/flow";
-import { nodeSize } from './config.js';
+import { nodeSize } from './../config.js';
 
 const nodeWidth = nodeSize.width;
 const nodeHeight = nodeSize.height;
