@@ -42,7 +42,7 @@
 	"types": "./dist/index.d.ts",
 	"type": "module",
 	"dependencies": {
-		"@solothought/text2obj": "^1.0.1",
+		"@solothought/text2obj": "^1.0.2",
 		"@xyflow/svelte": "^0.1.20",
 		"html-to-image": "^1.11.11"
 	}
