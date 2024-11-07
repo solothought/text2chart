@@ -46,3 +46,5 @@ This will copy the contents to `dist` folder which is referred from `package.jso
 
 You can preview the production build with `npm run preview`.
 
+This will also build static site to "build" folder that can be launched in browser. Github pages config need to set from a folder to launch it as `solothought.com/text2chart/flow`
+
