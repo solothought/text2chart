@@ -16,7 +16,7 @@ const config = {
       fallback: null  // Use this if you want to configure a fallback page (e.g., for SPA behavior)
 		}),
 		paths:{
-			base:""
+			base:"/text2chart"
 		}
 	}
 };
