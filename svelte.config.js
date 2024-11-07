@@ -16,7 +16,8 @@ const config = {
       fallback: null  // Use this if you want to configure a fallback page (e.g., for SPA behavior)
 		}),
 		paths:{
-			base:"/text2chart"
+			base:"/text2chart",
+			assets: 'https://solothought.com/text2chart'
 		}
 	}
 };
