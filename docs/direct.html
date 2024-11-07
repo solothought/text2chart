@@ -5,17 +5,17 @@
 		<link rel="icon" href="./favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		
-		<link href="./_app/immutable/assets/3.B2_epnEx.css" rel="stylesheet">
-		<link href="./_app/immutable/assets/FlowChart.BrTehDBl.css" rel="stylesheet">
-		<link rel="modulepreload" href="./_app/immutable/entry/start.C8y6upjY.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/entry.D1eFyknY.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/scheduler.DPAPgQ84.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/index.Qi2KszwJ.js">
-		<link rel="modulepreload" href="./_app/immutable/entry/app.C6XmlXSx.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/index.DEEc51ur.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/0.C3Brntxj.js">
-		<link rel="modulepreload" href="./_app/immutable/nodes/3.S8BrFYkH.js">
-		<link rel="modulepreload" href="./_app/immutable/chunks/FlowChart.BIC5NNmK.js">
+		<link href="./app/immutable/assets/3.B2_epnEx.css" rel="stylesheet">
+		<link href="./app/immutable/assets/FlowChart.BrTehDBl.css" rel="stylesheet">
+		<link rel="modulepreload" href="./app/immutable/entry/start.DUQTCJ2M.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/entry.DDNjba1N.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/scheduler.DPAPgQ84.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/index.Qi2KszwJ.js">
+		<link rel="modulepreload" href="./app/immutable/entry/app.DCczWcQO.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/index.DEEc51ur.js">
+		<link rel="modulepreload" href="./app/immutable/nodes/0.C3Brntxj.js">
+		<link rel="modulepreload" href="./app/immutable/nodes/3.Di1Sckl_.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/FlowChart.btWzCthy.js">
 	</head>
 	<body data-sveltekit-preload-data="hover">
 		<div>  <div id="quarterChart"></div> style working
@@ -26,7 +26,7 @@
 			
 			<script>
 				{
-					__sveltekit_i4m8pr = {
+					__sveltekit_9pmx00 = {
 						base: new URL(".", location).pathname.slice(0, -1),
 						assets: "/text2chart"
 					};
@@ -36,8 +36,8 @@
 					const data = [null,null];
 
 					Promise.all([
-						import("./_app/immutable/entry/start.C8y6upjY.js"),
-						import("./_app/immutable/entry/app.C6XmlXSx.js")
+						import("./app/immutable/entry/start.DUQTCJ2M.js"),
+						import("./app/immutable/entry/app.DCczWcQO.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element, {
 							node_ids: [0, 3],
