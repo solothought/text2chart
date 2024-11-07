@@ -4,7 +4,6 @@
   import {getSelectedLines} from '$lib/selection.js';
   let nodesToHighlight = [];
   let initialAlgo = `
-
 FLOW: passed as parameter
 here you go
 IF go in loop
@@ -23,9 +22,6 @@ finsh here
   function handleKeyDown(event) {
     const textarea = event.target;
     if("text-area" === textarea.id){
-
-      console.log(textarea.id);
-      // console.log(event.key, event.shiftKey, event.ctrlKey)
       const selectedLines =getSelectedLines(event.target, event.key, event.shiftKey);
       nodesToHighlight = selectedLines;
       let text = textarea.value;  // Bound to the textarea
@@ -64,6 +60,13 @@ finsh here
       flowText = event.target.value;
     }
   }
+  function handleClick(event) {
+    const textarea = event.target;
+    if("text-area" === textarea.id){
+      const selectedLines =getSelectedLines(event.target, event.key, event.shiftKey);
+      nodesToHighlight = selectedLines;
+    }
+  }
 
 
   
@@ -71,7 +74,7 @@ $: flowText = initialAlgo;
 </script>
 
 <style>
-  .container {
+  .workspace {
     margin-top:80px;
     display: flex;
     height: calc(100vh - 100px);
@@ -83,8 +86,8 @@ $: flowText = initialAlgo;
   }
 </style>
 
-<div class="container">
-  <textarea id="text-area" on:keyup={handleKeyUp} on:keydown={handleKeyDown} >
+<div class="workspace">
+  <textarea id="text-area" on:keyup={handleKeyUp} on:keydown={handleKeyDown} on:mouseup={handleClick} >
     {initialAlgo}
   </textarea>
   
