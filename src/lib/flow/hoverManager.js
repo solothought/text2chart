@@ -73,12 +73,12 @@ function traverseDownwards(currentNode, connections, nodeSet, edgeSet) {
  */
 export function highlight(nodes, edges, nodeIds, edgeIds) {
   updateNodesStyle(nodes, nodeIds, true);
-  updateEdgesStyle(edges, edgeIds, highlightEdge);
+  if(edgeIds) updateEdgesStyle(edges, edgeIds, highlightEdge);
 }
 
 export function unhighlight(nodes, edges, nodeIds, edgeIds) {
   updateNodesStyle(nodes, nodeIds, false);
-  updateEdgesStyle(edges, edgeIds, unhighlightEdge);
+  if(edgeIds) updateEdgesStyle(edges, edgeIds, unhighlightEdge);
 }
 
 export function updateNodesStyle(nodes,nodeIds,shouldHighlight){

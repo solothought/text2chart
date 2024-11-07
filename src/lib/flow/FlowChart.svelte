@@ -131,12 +131,12 @@ let selected = {}; //{flowIndex:number,nodeIds:string[]}
 $: {
   if(selection && selection.nodeIds && selection.nodeIds.length){ //TODO: accept flow number. Ignore if selected flow is different 
     // console.log(selection, selected);
+    unhighlight(nodes,edges,new Set(selected.nodeIds));
     if(selection.flowIndex === selectedFlowIndex){
 
-      unhighlight(nodes,edges,new Set(selected.nodeIds), new Set());
       nodeStore.set(nodes);
       selected = selection;
-      highlight(nodes,edges,new Set(selection.nodeIds), new Set());
+      highlight(nodes,edges,new Set(selection.nodeIds));
       nodeStore.set(nodes);
 
     }
