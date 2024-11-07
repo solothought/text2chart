@@ -46,5 +46,11 @@ This will copy the contents to `dist` folder which is referred from `package.jso
 
 You can preview the production build with `npm run preview`.
 
-This will also build static site to "build" folder that can be launched in browser. Github pages config need to set from a folder to launch it as `solothought.com/text2chart/flow`
+## Deploy
+Since Github pages config supports only root folder or "/docs" folder, we are building the static site to docs folder. 
 
+```bash
+npm run build
+```
+
+This will build static site to "docs" folder, as configured in `svelte.config.js`. This can be launched in browser.

@@ -10,8 +10,9 @@ const config = {
 		adapter: adapterStatic({
 			strict: false, //to ignore prerender static route error
 			// Default options to output static files in the "build" folder
-      pages: 'build',
-      assets: 'build',
+      // pages: 'build',
+      pages: 'docs',
+      assets: 'docs',
       fallback: null  // Use this if you want to configure a fallback page (e.g., for SPA behavior)
 		}),
 		paths:{
