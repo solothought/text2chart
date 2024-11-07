@@ -72,22 +72,21 @@ $: flowText = initialAlgo;
 
 <style>
   .container {
+    margin-top:80px;
     display: flex;
+    height: calc(100vh - 100px);
   }
   #text-area {
     width: 30%;
-    height: 100vh;
+    height: 100%;
+    border:0;
   }
 </style>
 
 <div class="container">
-  <textarea id="text-area"
-    on:keyup={handleKeyUp} 
-    on:keydown={handleKeyDown} 
-    
-    >{initialAlgo}
-
+  <textarea id="text-area" on:keyup={handleKeyUp} on:keydown={handleKeyDown} >
+    {initialAlgo}
   </textarea>
   
-  <FlowChart style="padding-left:10px; width:65vw; height:100vh" bind:text={flowText} bind:selection={nodesToHighlight}/>
+  <FlowChart style="padding-left:10px; width:65vw; height:100%" bind:text={flowText} bind:selection={nodesToHighlight}/>
 </div>
