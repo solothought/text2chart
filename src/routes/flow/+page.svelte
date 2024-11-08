@@ -1,17 +1,23 @@
 <script>
-  // import { onMount } from 'svelte';
   import FlowChart from '$lib/flow/FlowChart.svelte';
   import {getSelectedLines} from '$lib/selection';
   import {algos} from './algos';
+
+  let previousText = '';
   let nodesToHighlight = [];
-  let initialAlgo = algos["Binary Search"];
-  let flowText = '';
-  
+  let flowText = algos["Binary Search"];
+
+  /**
+   * Ease text editing & to highlight current  step on graph
+   * @param event
+   */
   function handleKeyDown(event) {
     const textarea = event.target;
     if("text-area" === textarea.id){
+      
       const selectedLines =getSelectedLines(event.target, event.key, event.shiftKey);
       nodesToHighlight = selectedLines;
+
       let text = textarea.value;  // Bound to the textarea
       const start = textarea.selectionStart;
       const end = textarea.selectionEnd;
@@ -42,25 +48,37 @@
       }
     }
   }
+
+  /**
+   * Update graph if flow gets change
+   * @param event
+   */
   function handleKeyUp(event) {
     const textarea = event.target;
     if("text-area" === textarea.id){
-      flowText = event.target.value;
+      if (flowText.length !== previousText.length || flowText !== previousText) {
+        previousText = flowText;
+      }
     }
   }
+
+  /**
+   * Highlight current step on graph
+   * @param event
+   */
   function handleClick(event) {
     const textarea = event.target;
     if("text-area" === textarea.id){
+      
       const selectedLines =getSelectedLines(event.target, event.key, event.shiftKey);
       nodesToHighlight = selectedLines;
     }
   }
 
   function loadAlgo(event){
-    initialAlgo = algos[event.target.value];
+    flowText = algos[event.target.value];
   }
   
-$: flowText = initialAlgo;
 </script>
 
 <style>
@@ -80,16 +98,17 @@ $: flowText = initialAlgo;
 <div class="workspace">
   <div class="left-panel">
     <div >Load Example Flow of 
-      <select on:change={loadAlgo}>
+      <select on:change={loadAlgo} style="margin-left: 10px; padding:4px">
         {#each Object.keys(algos) as algoName}
           <option value={algoName} >{algoName}</option>
         {/each}
       </select>
 
     </div>
-    <textarea id="text-area" on:keyup={handleKeyUp} on:keydown={handleKeyDown} on:mouseup={handleClick} >
-      {initialAlgo}
-    </textarea>
+    <textarea id="text-area" bind:value={flowText} 
+      on:keyup={handleKeyUp} 
+      on:keydown={handleKeyDown} 
+      on:mouseup={handleClick} />
   </div>
   <FlowChart style="padding-left:10px; width:65vw; height:100%" bind:text={flowText} bind:selection={nodesToHighlight}/>
 </div>
