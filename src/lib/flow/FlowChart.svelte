@@ -79,6 +79,7 @@
     nodeStore.set(nodes);
     edgeStore.set(edges);
   }
+  
 
   const selectedEdges = new Set();
   function styleEdge(event){
@@ -104,6 +105,20 @@
     updateProperty(nodes,nodeConfig);
     nodeStore.set(nodes);
   }
+
+
+  function onNodeCick(event){ 
+    const node = event.detail.node.data;
+    if(node.type === "FOLLOW"){
+      //change flow
+      flowsData.forEach((flow,i )=> {
+        if(flow.flowName === node.msg){
+          selectedFlowIndex = i;
+        }
+      });
+    }
+  }
+
    // Update flow data when user selects a different flow
   function handleFlowChange(event) {
     updateSelectedFlow(parseInt(event.target.value));
@@ -173,6 +188,7 @@ $: {
     }} 
     on:nodemouseenter={onNodeMouseEnter}
     on:nodemouseleave={onNodeMouseLeave}
+    on:nodeclick={onNodeCick}
     on:edgeclick={styleEdge}
     >
       <Controls />

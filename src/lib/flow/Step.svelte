@@ -56,7 +56,7 @@
       <span style="font-size: 1.25em;">⛔</span>
     {/if}
     {#if data.type === "FOLLOW" }
-      <span style="font-size: 1.25em;">↖</span>
+      <span style="font-size: 1.5em;">↖</span>
     {/if}
   </div>
   <!-- <Handle class="hndl" id="tt" type="target" position={Position.Top} /> -->
