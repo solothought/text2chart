@@ -52,6 +52,12 @@
     {#if data.type === "IF" || data.type === "ELSE_IF"}
       <svg class="icon {data.isEnd ? 'invert':''}" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="78px" height="112px" viewBox="-0.5 -0.5 78 112"><g><g data-cell-id="0"><g data-cell-id="1"><g data-cell-id="cL7QPJKOe-qMU4ihb_zf-2"/><g data-cell-id="cL7QPJKOe-qMU4ihb_zf-5"><g><path d="M 11 21 Q 11 61 57 61" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2" stroke-miterlimit="10" pointer-events="stroke"/></g></g><g data-cell-id="cL7QPJKOe-qMU4ihb_zf-6"><g><path d="M 11 21 L 11 91" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2" stroke-miterlimit="10" pointer-events="stroke"/></g></g><g data-cell-id="cL7QPJKOe-qMU4ihb_zf-3"><g><ellipse cx="11" cy="11" rx="10" ry="10" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2" pointer-events="all"/></g></g><g data-cell-id="cL7QPJKOe-qMU4ihb_zf-4"><g><ellipse cx="67" cy="61" rx="10" ry="10" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2" pointer-events="all"/></g></g><g data-cell-id="cL7QPJKOe-qMU4ihb_zf-8"><g><ellipse cx="11" cy="101" rx="10" ry="10" fill="none" stroke="rgb(0, 0, 0)" stroke-width="2" pointer-events="all"/></g></g></g></g></g></svg>
     {/if}
+    {#if data.type === "ERR" }
+      <span style="font-size: 1.25em;">⛔</span>
+    {/if}
+    {#if data.type === "FOLLOW" }
+      <span style="font-size: 1.25em;">↖</span>
+    {/if}
   </div>
   <!-- <Handle class="hndl" id="tt" type="target" position={Position.Top} /> -->
   <Handle class="hndl" id="t" type="target" position={Position.Top} />
