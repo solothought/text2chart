@@ -1,22 +1,10 @@
 <script>
   // import { onMount } from 'svelte';
   import FlowChart from '$lib/flow/FlowChart.svelte';
-  import {getSelectedLines} from '$lib/selection.js';
+  import {getSelectedLines} from '$lib/selection';
+  import {algos} from './algos';
   let nodesToHighlight = [];
-  let initialAlgo = `
-FLOW: passed as parameter
-here you go
-IF go in loop
-  LOOP until
-    you're safe here even with a long sentence
-    IF not
-      but
-    ELSE_IF else if
-      STOP
-    ELSE
-      SKIP
-finsh here
-  `
+  let initialAlgo = algos["Binary Search"];
   let flowText = '';
   
   function handleKeyDown(event) {
@@ -68,7 +56,9 @@ finsh here
     }
   }
 
-
+  function loadAlgo(event){
+    initialAlgo = algos[event.target.value];
+  }
   
 $: flowText = initialAlgo;
 </script>
@@ -79,17 +69,27 @@ $: flowText = initialAlgo;
     display: flex;
     height: calc(100vh - 100px);
   }
+  .left-panel{width: 30vw; height: 100%; border-right: 1px dashed black;}
   #text-area {
-    width: 30%;
+    width: 100%;
     height: 100%;
     border:0;
   }
 </style>
 
 <div class="workspace">
-  <textarea id="text-area" on:keyup={handleKeyUp} on:keydown={handleKeyDown} on:mouseup={handleClick} >
-    {initialAlgo}
-  </textarea>
-  
+  <div class="left-panel">
+    <div >Load Example Flow of 
+      <select on:change={loadAlgo}>
+        {#each Object.keys(algos) as algoName}
+          <option value={algoName} >{algoName}</option>
+        {/each}
+      </select>
+
+    </div>
+    <textarea id="text-area" on:keyup={handleKeyUp} on:keydown={handleKeyDown} on:mouseup={handleClick} >
+      {initialAlgo}
+    </textarea>
+  </div>
   <FlowChart style="padding-left:10px; width:65vw; height:100%" bind:text={flowText} bind:selection={nodesToHighlight}/>
 </div>
