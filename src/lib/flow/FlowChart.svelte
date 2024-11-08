@@ -154,14 +154,16 @@ $: {
 
 <div {...$$restProps} id="solothought-flow" > 
   <SvelteFlowProvider >
-    <!-- Flow Selector -->
-    <select on:change={handleFlowChange} bind:value={selectedFlowIndex}>
-      {#each flowsData as flow, index}
-        <option value={index} >{flow.flowName}</option>
-      {/each}
-    </select>
-    <span on:click={hideNodeMsgDetail} class={nodeConfig.hideMsgDetail ? 'toggled' : ''} style="cursor: pointer;">👁</span>
-
+    <div class="toolbar">
+      <!-- Flow Selector -->
+      <select class="st-flow-chart-tool" on:change={handleFlowChange} bind:value={selectedFlowIndex}>
+        {#each flowsData as flow, index}
+          <option value={index} >{flow.flowName}</option>
+        {/each}
+      </select>
+      <span on:click={hideNodeMsgDetail} class='st-flow-chart-tool {nodeConfig.hideMsgDetail ? 'toggled' : ''}'>👁</span>
+      <DownloadButton class="st-flow-chart-tool" nodes={nodes} fileName={flowName}/>
+    </div>
     <SvelteFlow  {nodeTypes}
     bind:nodes={nodeStore} bind:edges={edgeStore} fitView 
     defaultEdgeOptions={{
@@ -173,10 +175,6 @@ $: {
     on:nodemouseleave={onNodeMouseLeave}
     on:edgeclick={styleEdge}
     >
-      
-      
-
-      <DownloadButton nodes={nodes} fileName={flowName}/>
       <Controls />
       <Background />
       <MiniMap />
@@ -187,5 +185,15 @@ $: {
 <style>
   .toggled{
     opacity: 50%;
+  }
+  .toolbar{
+    height: 36px;
+  }
+  :global(.st-flow-chart-tool){
+    padding: 5px;
+    cursor: pointer;
+  }
+  :global(.st-flow-chart-tool:hover){
+    outline: 1px dashed black;
   }
 </style>
