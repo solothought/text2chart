@@ -12,13 +12,13 @@
   import StepNode from './Step.svelte';
   import DownloadButton from './../DownloadButton.svelte';
   import {convert as flowText2Obj} from './NodesAndEdgesBuilder.js';
+  import {updateProperty} from './nodeUpdater.js';
 
   import {highlight, 
     traverseConnections, 
     unhighlight, 
     edgeStyle, 
     edgeMarkerStyle, 
-    // highlightedEdgeMarkerStyle, 
     unhighlightEdge, 
     updateEdgesStyle,
     highlightEdge} from './hoverManager.js';
@@ -51,6 +51,10 @@
   let flowsData = []; // All flows parsed from text
   let selectedFlowIndex = 0; // Track selected flow, defaulting to the first
   let hoveredState = false;
+  let nodeConfig = {
+    hideMsgDetail: false,
+    standardShape: false
+  }
 
   function onNodeMouseEnter(event){
     hoveredState = true;
@@ -61,14 +65,14 @@
     const selection = traverseConnections(nodeId, connections, selectDirection);
     hoveredPathNodes = selection.seletedNodes;
     hoveredPathEdges = selection.seletedEdges;
-    highlight(nodes, edges, hoveredPathNodes,hoveredPathEdges);
+    highlight(nodes, hoveredPathNodes, nodeConfig, edges,hoveredPathEdges);
 
     nodeStore.set(nodes);
     edgeStore.set(edges);
   }
   function onNodeMouseLeave(){
     hoveredState=false;
-    unhighlight(nodes, edges, hoveredPathNodes,hoveredPathEdges);
+    unhighlight(nodes, hoveredPathNodes, nodeConfig, edges, hoveredPathEdges);
     hoveredPathNodes.clear();
     hoveredPathEdges.clear();
 
@@ -95,7 +99,11 @@
   function handleKeyUp(event){
     keyPressed = "";
   };
-
+  function hideNodeMsgDetail(){
+    nodeConfig.hideMsgDetail = !nodeConfig.hideMsgDetail;
+    updateProperty(nodes,nodeConfig);
+    nodeStore.set(nodes);
+  }
    // Update flow data when user selects a different flow
   function handleFlowChange(event) {
     updateSelectedFlow(parseInt(event.target.value));
@@ -122,7 +130,7 @@
       edges = selectedFlow.edges;
       connections = selectedFlow.connections;
       flowName = selectedFlow.flowName;
-
+      updateProperty(nodes,nodeConfig);
       nodeStore.set(nodes);
       edgeStore.set(edges);
     }
@@ -131,12 +139,12 @@ let selected = {}; //{flowIndex:number,nodeIds:string[]}
 $: {
   if(selection && selection.nodeIds && selection.nodeIds.length){ //TODO: accept flow number. Ignore if selected flow is different 
     // console.log(selection, selected);
-    unhighlight(nodes,edges,new Set(selected.nodeIds));
+    unhighlight(nodes,new Set(selected.nodeIds), nodeConfig);
     if(selection.flowIndex === selectedFlowIndex){
 
       nodeStore.set(nodes);
       selected = selection;
-      highlight(nodes,edges,new Set(selection.nodeIds));
+      highlight(nodes,new Set(selection.nodeIds),nodeConfig);
       nodeStore.set(nodes);
 
     }
@@ -152,8 +160,9 @@ $: {
         <option value={index} >{flow.flowName}</option>
       {/each}
     </select>
+    <span on:click={hideNodeMsgDetail} class={nodeConfig.hideMsgDetail ? 'toggled' : ''} style="cursor: pointer;">👁</span>
+
     <SvelteFlow  {nodeTypes}
-    
     bind:nodes={nodeStore} bind:edges={edgeStore} fitView 
     defaultEdgeOptions={{
       type: 'smoothstep',
@@ -175,3 +184,8 @@ $: {
   </SvelteFlowProvider>
 
 </div>
+<style>
+  .toggled{
+    opacity: 50%;
+  }
+</style>

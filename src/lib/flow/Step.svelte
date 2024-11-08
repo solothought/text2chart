@@ -57,7 +57,7 @@
   <Handle class="hndl" id="t" type="target" position={Position.Top} />
   <div class="container" style="width:{nodeSize.width}px; height:{nodeSize.height}px;" bind:this={containerElement}>
     <div class="msgWrapper">
-      <p bind:this={textElement}>{data.msg}</p>
+      <p bind:this={textElement}>{data.hideMsgDetail ? data.msg : data.rawMsg}</p>
     </div>
   </div>
   <Handle class="hndl" id="b" type="source" position={Position.Bottom} />

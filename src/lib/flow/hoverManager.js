@@ -1,6 +1,7 @@
 import { 
   MarkerType
   } from '@xyflow/svelte';
+  import {updateProperty} from './nodeUpdater.js';
 
 // TODO: when an edge is highlighted by click, set it's z-index to 1 then reset to 0;
 export const edgeStyle = "stroke-width: 2px; stroke: #cac2c2;";
@@ -71,26 +72,18 @@ function traverseDownwards(currentNode, connections, nodeSet, edgeSet) {
  * @param {Set<string>} edgeIds 
  * @returns 
  */
-export function highlight(nodes, edges, nodeIds, edgeIds) {
-  updateNodesStyle(nodes, nodeIds, true);
+export function highlight(nodes, nodeIds, nodesState, edges, edgeIds) {
+  updateNodesStyle(nodes, nodeIds,nodesState,{highlight: true});
   if(edgeIds) updateEdgesStyle(edges, edgeIds, highlightEdge);
 }
 
-export function unhighlight(nodes, edges, nodeIds, edgeIds) {
-  updateNodesStyle(nodes, nodeIds, false);
+export function unhighlight(nodes, nodeIds, nodesState, edges, edgeIds) {
+  updateNodesStyle(nodes, nodeIds,nodesState,{highlight: false});
   if(edgeIds) updateEdgesStyle(edges, edgeIds, unhighlightEdge);
 }
 
-export function updateNodesStyle(nodes,nodeIds,shouldHighlight){
-  nodes.forEach(node => {
-    if(nodeIds.has(node.id)){
-      //This creates a new object that ensures that Svelte's reactivity system detects the change
-      node.data = {
-        ...node.data,
-        highlight: shouldHighlight
-      };
-    }
-  })
+function updateNodesStyle(nodes,nodeIds, nodesState, highlight){
+  updateProperty(nodes,nodesState,highlight,nodeIds)
 }
 
 /**

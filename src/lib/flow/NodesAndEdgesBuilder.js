@@ -123,7 +123,8 @@ function mapStepsToNodes(flow){
 
       //Add node
       const node = SvelteFlowNode(nodeId, { 
-        msg: step.rawMsg, 
+        msg: step.msg, 
+        rawMsg: step.rawMsg, 
         type: step.type, 
         }, position )
       nodes.push(node);
