@@ -54,3 +54,7 @@ npm run build
 ```
 
 This will build static site to "docs" folder, as configured in `svelte.config.js`. This can be launched in browser.
+
+## Publish
+
+To publish it on npm, run `npm run package`. It'll generate all require files in `dist` folder. `files` property in `package.json` has the list of files to be published. So if you're referring any image in README.md, remember to include it in `files`.
