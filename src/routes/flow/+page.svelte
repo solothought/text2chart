@@ -1,11 +1,46 @@
 <script>
+  import { onMount } from 'svelte';
+  import { writable } from 'svelte/store';
+  const storeKey = 'st-flow-algo';
+  const storedValue = writable('');
+  let updateLocalStorageDebounced;
+  // export let windowAvailable = false;
+
   import FlowChart from '$lib/flow/FlowChart.svelte';
   import {getSelectedLines} from '$lib/selection';
   import {algos} from './algos';
+  import {handleEditing} from './text-editor.js';
 
   let previousText = '';
   let nodesToHighlight = [];
   let flowText = algos["Binary Search"];
+
+  onMount(async () => {
+    if (typeof window !== 'undefined') {
+      // windowAvailable = true;
+
+      const valFromStorage = localStorage.getItem(storeKey);
+      flowText = valFromStorage || algos["Binary Search"];
+  
+      updateLocalStorageDebounced = (value) => {
+        clearTimeout(updateLocalStorageDebounced.timeout);
+        updateLocalStorageDebounced.timeout = setTimeout(() => {
+          localStorage.setItem(storeKey, value);
+        }, 500);
+      }
+  
+      // Subscribe to changes in storedValue and update localStorage with debouncing
+      const unsubscribe = storedValue.subscribe(value => {
+        updateLocalStorageDebounced(value);
+      });
+  
+      // Cleanup function to unsubscribe
+      return () => {
+        unsubscribe();
+        clearTimeout(updateLocalStorageDebounced.timer);
+      };
+    }
+  });
 
   /**
    * Ease text editing & to highlight current  step on graph
@@ -14,39 +49,14 @@
   function handleKeyDown(event) {
     const textarea = event.target;
     if("text-area" === textarea.id){
-      
-      const selectedLines =getSelectedLines(event.target, event.key, event.shiftKey);
-      nodesToHighlight = selectedLines;
-
-      let text = textarea.value;  // Bound to the textarea
-      const start = textarea.selectionStart;
-      const end = textarea.selectionEnd;
-      
-      
-      if (event.key === "Enter") {
-        event.preventDefault();
-        const beforeCursor = text.substring(0, start);
-        const afterCursor = text.substring(end);
-        const previousLine = beforeCursor.split("\n").pop() || "";
-        const leadingSpaces = previousLine.match(/^\s*/)[0] || "";
-        
-        textarea.value = `${beforeCursor}\n${leadingSpaces}${afterCursor}`;
-        moveCursor(beforeCursor.length + 1 + leadingSpaces.length);
-      }
-      else if (event.key === "Tab") {
-        event.preventDefault();
-        const spaces = "  "; //2
-        const beforeCursor = text.substring(0, start);
-        const afterCursor = text.substring(end);
-  
-        textarea.value = `${beforeCursor}${spaces}${afterCursor}`;
-        moveCursor(beforeCursor.length + spaces.length);
-      }
-  
-      function moveCursor(position){
-        textarea.setSelectionRange(position, position); //from and to are same
-      }
+      highlightCurrentStepNode(event)
+      handleEditing(event);
     }
+  }
+
+  function highlightCurrentStepNode(event){
+    const selectedLines =getSelectedLines(event.target, event.key, event.shiftKey);
+    nodesToHighlight = selectedLines;
   }
 
   /**
@@ -57,6 +67,8 @@
     const textarea = event.target;
     if("text-area" === textarea.id){
       if (flowText.length !== previousText.length || flowText !== previousText) {
+        storedValue.set(flowText);
+        updateLocalStorageDebounced(flowText);
         previousText = flowText;
       }
     }
@@ -69,9 +81,7 @@
   function handleClick(event) {
     const textarea = event.target;
     if("text-area" === textarea.id){
-      
-      const selectedLines =getSelectedLines(event.target, event.key, event.shiftKey);
-      nodesToHighlight = selectedLines;
+      highlightCurrentStepNode(event);
     }
   }
 
