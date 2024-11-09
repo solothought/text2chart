@@ -40,5 +40,5 @@
 </script>
 
 <!-- <Panel position="top-right"> -->
-  <span {...$$restProps} on:click={handleClick} alt="save as image" aria-roledescription="save chart as image">💾</span>
+  <button {...$$restProps} on:click={handleClick} alt="save as image" placeholder="save chart as image">💾</button>
 <!-- </Panel> -->

@@ -9,6 +9,7 @@
     SvelteFlowProvider} from '@xyflow/svelte';
 
   import '@xyflow/svelte/dist/style.css';
+  // import './toolbox-style.css';
   import StepNode from './Step.svelte';
   import DownloadButton from './../DownloadButton.svelte';
   import {convert as flowText2Obj} from './NodesAndEdgesBuilder.js';
@@ -169,15 +170,15 @@ $: {
 
 <div {...$$restProps} id="solothought-flow" > 
   <SvelteFlowProvider >
-    <div class="toolbar">
+    <div class="st-toolbox">
       <!-- Flow Selector -->
       <select class="st-flow-chart-tool" on:change={handleFlowChange} bind:value={selectedFlowIndex}>
         {#each flowsData as flow, index}
           <option value={index} >{flow.flowName}</option>
         {/each}
       </select>
-      <span on:click={hideNodeMsgDetail} class='st-flow-chart-tool {nodeConfig.hideMsgDetail ? 'toggled' : ''}'>👁</span>
-      <DownloadButton class="st-flow-chart-tool" nodes={nodes} fileName={flowName}/>
+      <button on:click={hideNodeMsgDetail} class='{nodeConfig.hideMsgDetail ? 'passive' : ''}'>👁</button>
+      <DownloadButton nodes={nodes} fileName={flowName}/>
     </div>
     <SvelteFlow  {nodeTypes}
     bind:nodes={nodeStore} bind:edges={edgeStore} fitView 
@@ -199,17 +200,19 @@ $: {
 
 </div>
 <style>
-  .toggled{
+  .passive{
     opacity: 50%;
   }
-  .toolbar{
-    height: 36px;
+  :global(.st-toolbox){
+    height: 40px;
   }
-  :global(.st-flow-chart-tool){
+  :global(.st-toolbox button){
+    background-color: #FFFFFF;
+    border-width: 0;
     padding: 5px;
     cursor: pointer;
   }
-  :global(.st-flow-chart-tool:hover){
+  :global(.st-toolbox button:hover){
     outline: 1px dashed black;
   }
 </style>
