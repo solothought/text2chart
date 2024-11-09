@@ -7,7 +7,7 @@
   // export let windowAvailable = false;
 
   import FlowChart from '$lib/flow/FlowChart.svelte';
-  import {getSelectedLines} from '$lib/selection';
+  import {getSelectedLines} from './selection.js';
   import {algos} from './algos';
   import {handleEditing} from './text-editor.js';
 
