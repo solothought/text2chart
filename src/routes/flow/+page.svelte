@@ -104,21 +104,22 @@
     border:0;
   }
 </style>
+<div class="container-fluid">
+  <div class="workspace">
+    <div class="left-panel">
+      <div >Load Example Flow of 
+        <select on:change={loadAlgo} style="margin-left: 10px; padding:4px">
+          {#each Object.keys(algos) as algoName}
+            <option value={algoName} >{algoName}</option>
+          {/each}
+        </select>
 
-<div class="workspace">
-  <div class="left-panel">
-    <div >Load Example Flow of 
-      <select on:change={loadAlgo} style="margin-left: 10px; padding:4px">
-        {#each Object.keys(algos) as algoName}
-          <option value={algoName} >{algoName}</option>
-        {/each}
-      </select>
-
+      </div>
+      <textarea id="text-area" bind:value={flowText} 
+        on:keyup={handleKeyUp} 
+        on:keydown={handleKeyDown} 
+        on:mouseup={handleClick} />
     </div>
-    <textarea id="text-area" bind:value={flowText} 
-      on:keyup={handleKeyUp} 
-      on:keydown={handleKeyDown} 
-      on:mouseup={handleClick} />
+    <FlowChart style="padding-left:10px; width:65vw; height:100%" bind:text={flowText} bind:selection={nodesToHighlight}/>
   </div>
-  <FlowChart style="padding-left:10px; width:65vw; height:100%" bind:text={flowText} bind:selection={nodesToHighlight}/>
 </div>
