@@ -1,4 +1,4 @@
-export function handleEditing(event, textarea){
+export function handleEditing(event){
   const textarea = event.target;
   let text = textarea.value;  // Bound to the textarea
   const start = textarea.selectionStart;
