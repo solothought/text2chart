@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text2Chart Test</title>
+  <link rel="stylesheet" href="/bundle.css" />
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- Import the bundled JavaScript file -->
+  <script src="/text2chart.min.js"></script>
+
+  <script>
+    // Access FlowChart from the global object
+    // console.log(Text2Chart.FlowChart);  // Should log the FlowChart component
+    const text = `
+      FLOW: testing cjs
+      step 1
+      and last
+    `;
+    // Optionally, you can render it to the page
+    new Text2Chart.FlowChart({
+      target: document.getElementById('app'),
+      props: {
+        text: text
+        // any props you want to pass to the FlowChart component
+      }
+    });
+  </script>
+</body>
+</html>

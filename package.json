@@ -1,72 +1,89 @@
 {
 	"name": "@solothought/text2chart",
-	"version": "0.0.1",
+	"version": "1.0.1",
 	"description": "Generate interactive diagrams from text input",
 	"keywords": [
-    "text",
-    "algo",
-    "algorithm",
-    "flow",
-    "flowchart",
-    "interactive",
-    "svelte"
-  ],
+		"text",
+		"algo",
+		"algorithm",
+		"flow",
+		"flowchart",
+		"interactive",
+		"svelte"
+	],
 	"repository": {
-    "type": "git",
-    "url": "https://github.com/solothought/text2chart"
-  },
+		"type": "git",
+		"url": "https://github.com/solothought/text2chart"
+	},
 	"author": "Amit Gupta (https://solothought.com)",
-  "license": "MIT",
-	"funding": [{
-    "type": "github",
-    "url": "https://github.com/sponsors/solothought/"
-  },{
-    "type": "paypal",
-    "url": "https://paypal.me/naturalintelligence"
-  }],
+	"license": "MIT",
+	"funding": [
+		{
+			"type": "github",
+			"url": "https://github.com/sponsors/solothought/"
+		},
+		{
+			"type": "paypal",
+			"url": "https://paypal.me/naturalintelligence"
+		}
+	],
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
+		"bundle": "rollup -c",
 		"preview": "vite preview",
 		"package": "svelte-kit sync && svelte-package && publint",
 		"prepublishOnly": "npm run package",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json --watch"
 	},
+	"publishConfig": {
+		"access": "public"
+	},
 	"types": "./dist/index.d.ts",
 	"svelte": "./dist/index.js",
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
-			"svelte": "./dist/index.js"
-
+			"svelte": "./dist/index.js",
+			"import": "./dist_/index.mjs",
+			"require": "./dist_/text2chart.min.js"
 		},
 		"./Flow.svelte": {
 			"types": "./dist/flow/FlowChart.svelte.d.ts",
 			"svelte": "./dist/flow/FlowChart.svelte"
 		},
 		"./flow": {
-      "types": "./dist/flow/index.d.ts",
-      "svelte": "./dist/flow/index.js"
-    }
+			"types": "./dist/flow/index.d.ts",
+			"svelte": "./dist/flow/index.js"
+		}
 	},
 	"files": [
 		"dist",
+		"dist_",
 		"!dist/**/*.test.*",
 		"!dist/**/*.spec.*",
 		"README.md",
-    "LICENSE"
+		"LICENSE"
 	],
 	"peerDependencies": {
-		"svelte": "^4.0.0"
+		"svelte": "^4.0.0 || ^5.0.0"
 	},
 	"devDependencies": {
+		"@rollup/plugin-commonjs": "^28.0.1",
+		"@rollup/plugin-node-resolve": "^15.3.0",
+		"@rollup/plugin-replace": "^6.0.1",
+		"@rollup/plugin-typescript": "^12.1.1",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/adapter-static": "^3.0.6",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/package": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"publint": "^0.2.0",
+		"rollup-plugin-css-only": "^4.5.2",
+		"rollup-plugin-postcss": "^4.0.2",
+		"rollup-plugin-svelte": "^7.2.2",
+		"rollup-plugin-terser": "^7.0.2",
 		"svelte": "^4.2.7",
 		"svelte-check": "^4.0.0",
 		"typescript": "^5.0.0",
