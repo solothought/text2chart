@@ -1,31 +1,30 @@
 TODO
 
 P1
-- save to browser memory
-- text2obj: calculate mid ((low + high) / 2)
+- let user ember the chart in readonly mode
+- let user hide toolbar
+- Article
+  - How to use
+- flowchart specific shapes
+  - with toggle button
 - branding
   - an article for documentation
-  - Read Me page for donation
-  - Footer links
-- release as a package
-  - check in other project if importing
 - build and deploy
 
 P2
 - ?  load the flow as per cursor moving
 - improve code of FlowChart.svelte
+- support browser debugging
 
 P2
 - improve icons, remove SVG
-- highlight a particular step according to the cursor position in textarea
 - optimization
-  - don't update flow text if no change in text
   - have multiples flows and just show hide selected flow
-  - save the algo to browser memory for accidental crash/loading
 - text area events
   - shift delete
   - shift tab
   - Ctrl + / to comment/uncomment
 - live flow monitoring
+
+P3
 - increase/decrease size of text area/ font
-- loading examples

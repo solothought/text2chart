@@ -10,11 +10,20 @@ Your support will help us innovating. <a href="https://github.com/sponsors/solot
   <img src="https://raw.githubusercontent.com/NaturalIntelligence/ThankYouBackers/main/github_sponsor.png" width="180" />
 </a>
 
+---
 
 Install
 ```
 $ npm install @solothought/text2chart
 ```
+choose as per your need
+- Minified Browser bundle: 250kb
+- Minified CJS module: 250kb
+- Minified MJS module: 250kb
+- Minified CSS: 20kb
+- package size: 750kb
+- unpack size: 2.5mb
+
 
 Import
 ```
@@ -69,4 +78,6 @@ new FlowChart({
 - `text`: This is an important property that contains your algorithm which is parsed and charted.
 - `selection`: This is an object of `{flowIndex: number, nodeIds: number[]}` type. `flowIndex` is used to load the chart for a particular flow when multiple flows are given in input algorithm. `nodeIds` is used to highlight nodes of given Id.
 
+---
+[Demo](https://solothought.com/text2chart/flow)
 ![Text2Chart Flow: Binary Search](./static/sampleflow.png)

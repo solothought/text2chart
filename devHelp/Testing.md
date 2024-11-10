@@ -226,8 +226,8 @@ module.exports = [
 ```
 main.js
 ```
-const {FlowChart} = require('@solothought/text2chart');
-require('@solothought/text2chart/style.css');
+import {FlowChart} from '@solothought/text2chart';
+import '@solothought/text2chart/style.css';
 
 new FlowChart({
   target: document.getElementById('app'),
