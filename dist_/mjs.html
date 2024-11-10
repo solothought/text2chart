@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text2Chart Test</title>
+  <link rel="stylesheet" href="/bundle.css" />
+</head>
+<body>
+  <div id="app"></div>
+
+  <script type="module">
+    import { FlowChart } from '/index.mjs'; // Adjust path as needed
+
+    const text = `
+      FLOW: testing cjs
+      step 1
+      and last
+    `;
+    // Optionally, you can render it to the page
+    new FlowChart({
+      target: document.getElementById('app'),
+      props: {
+        text: text
+        // any props you want to pass to the FlowChart component
+      }
+    });
+  </script>
+</body>
+</html>

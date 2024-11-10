@@ -5,7 +5,7 @@ Install basic dependencies
 $ npm install -D rollup-plugin-svelte rollup-plugin-terser @rollup/plugin-node-resolve @rollup/plugin-commonjs @rollup/plugin-typescript
 ```
 
-Install CSS dependecies
+Install CSS dependencies
 ```bash
 $ npm install --save-dev rollup-plugin-css-only rollup-plugin-postcss
 ```
@@ -31,8 +31,10 @@ export default [
   {
     input: 'src/lib/index.js',
     output: [
-      { file: 'dist_/index.mjs', format: 'es' },
-      // { file: 'dist_/index.js', format: 'cjs' }
+      { file: 'dist_/index.mjs', format: 'es',, sourcemap: true },
+      //file must be saved as cjs because the package.json of this project has set package type to "module".
+      // So Common js packages can't import it until it is cjs file
+      { file: 'dist_/index.cjs', format: 'cjs', sourcemap: true } 
       {
         file: 'dist_/index.js',
         format: 'iife',  // IIFE format exposes to global scope
@@ -59,10 +61,13 @@ export default [
     ]
   }
 ];
-
-
-
 ```
+
+Run `npx rollup -c` or `npm run bundle` to create output bundle in `_dist` folder.
+
+
+---
+
 Use `postcss` for advance CSS use
 
 ```js
@@ -84,5 +89,3 @@ export default {
 };
 
 ```
-
-Run `npx rollup -c` to create output bundle in `_dist` folder.

@@ -58,12 +58,3 @@ This will build static site to "docs" folder, as configured in `svelte.config.js
 ## Publish
 
 To publish it on npm, run `npm run package`. It'll generate all require files in `dist` folder. `files` property in `package.json` has the list of files to be published. So if you're referring any image in README.md, remember to include it in `files`.
-
-# Testing
-
-CJS testing
-```bash
-$ npm run bundle
-```
-
-This will generate `dist_/text2chart.min.js` and `text2chart.min.mjs` files. Open `_dist\index.html` in browser to test cjs module.
