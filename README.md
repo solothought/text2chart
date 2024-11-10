@@ -6,7 +6,10 @@ Our library adds a unique focus on interactivity, creating diagrams that remain 
 
 Currently, this library only supports generating flow chart. The supported format can be found at [@solothought/text2obj](https://github.com/NaturalIntelligence/text2obj) which is used a core dependency for parsing text to intermediate object that helps to draw charts.
 
-<iframe src="https://github.com/sponsors/solothought/card" title="Sponsor solothought" height="225" width="600" style="border: 0;"></iframe>
+Your support will help us innovating. <a href="https://github.com/sponsors/solothought/"> 
+  <img src="https://raw.githubusercontent.com/NaturalIntelligence/ThankYouBackers/main/github_sponsor.png" width="180" />
+</a>
+
 
 Install
 ```
