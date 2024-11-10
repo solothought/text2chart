@@ -1,6 +1,6 @@
 {
 	"name": "@solothought/text2chart",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Generate interactive diagrams from text input",
 	"keywords": [
 		"text",
