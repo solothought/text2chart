@@ -168,7 +168,7 @@ $: {
 }
 </script>
 
-<div {...$$restProps} id="solothought-flow" > 
+<div {...$$restProps} class="solothought_text2chart_flow"> 
   <SvelteFlowProvider >
     <div class="st-toolbox">
       <!-- Flow Selector -->
@@ -180,7 +180,7 @@ $: {
       <button on:click={hideNodeMsgDetail} class='{nodeConfig.hideMsgDetail ? 'passive' : ''}'>👁</button>
       <DownloadButton nodes={nodes} fileName={flowName}/>
     </div>
-    <SvelteFlow  {nodeTypes}
+    <SvelteFlow  {nodeTypes} style="min-height: 200px;"
     bind:nodes={nodeStore} bind:edges={edgeStore} fitView 
     defaultEdgeOptions={{
       type: 'smoothstep',
