@@ -11,8 +11,8 @@ export default [
   {
     input: 'src/lib/index.js',
     output: [
-      { file: 'dist_/index.mjs', format: 'es' },
-      // { file: 'dist_/index.js', format: 'cjs' }
+      { file: 'dist_/index.mjs', format: 'es', sourcemap: true },
+      { file: 'dist_/index.cjs', format: 'cjs', sourcemap: true },
       {
         file: 'dist_/text2chart.min.js',
         format: 'iife',  // IIFE format exposes to global scope

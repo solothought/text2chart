@@ -47,7 +47,7 @@
 			"types": "./dist/index.d.ts",
 			"svelte": "./dist/index.js",
 			"import": "./dist_/index.mjs",
-			"require": "./dist_/text2chart.min.js"
+			"require": "./dist_/index.cjs"
 		},
 		"./Flow.svelte": {
 			"types": "./dist/flow/FlowChart.svelte.d.ts",
@@ -55,8 +55,10 @@
 		},
 		"./flow": {
 			"types": "./dist/flow/index.d.ts",
-			"svelte": "./dist/flow/index.js"
-		}
+			"svelte": "./dist/flow/index.js",
+			"require": "./dist_/index.cjs"
+		},
+		"./style.css": "./dist_/bundle.css"
 	},
 	"files": [
 		"dist",
