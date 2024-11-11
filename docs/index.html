@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" href="./favicon.png" />
+		<link rel="icon" href="https://solothought.com/favicon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-4812VFLT3M"></script>
     <script>
@@ -22,17 +22,23 @@
     <link href="https://solothought.com/assets/css/main.css" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Righteous&family=Poppins" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/css?family=Righteous&family=Poppins" rel="stylesheet"> -->
 
 		
-		<link rel="modulepreload" href="./app/immutable/entry/start.BUZAhn_A.js">
-		<link rel="modulepreload" href="./app/immutable/chunks/entry.CYSf6-Ao.js">
-		<link rel="modulepreload" href="./app/immutable/chunks/scheduler.DWOLFMnV.js">
-		<link rel="modulepreload" href="./app/immutable/chunks/index.9T-3Ep38.js">
-		<link rel="modulepreload" href="./app/immutable/entry/app.QuqDmy0Z.js">
-		<link rel="modulepreload" href="./app/immutable/chunks/index.DeeQCrJW.js">
-		<link rel="modulepreload" href="./app/immutable/nodes/0.yOXHvih-.js">
-		<link rel="modulepreload" href="./app/immutable/nodes/2.BtG1kJVg.js">
+		<link href="./app/immutable/assets/2.CfdqiLl3.css" rel="stylesheet">
+		<link rel="modulepreload" href="./app/immutable/entry/start.BWiVB4PV.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/entry.CPh5-Hzh.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/scheduler.RmzKSWap.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/index.X6h1T_c5.js">
+		<link rel="modulepreload" href="./app/immutable/entry/app.BCMLiPtV.js">
+		<link rel="modulepreload" href="./app/immutable/chunks/index.D8l_s2E6.js">
+		<link rel="modulepreload" href="./app/immutable/nodes/0.LA6K0Yox.js">
+		<link rel="modulepreload" href="./app/immutable/nodes/2.Ce1jpcgD.js">
+    <style>
+      main{
+        /* font-size: 1.2rem; */
+      }
+    </style>
 	</head>
 	<body data-sveltekit-preload-data="hover">
     <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top mediumnavigation nav-down">
@@ -47,7 +53,18 @@
   
       <div class="collapse navbar-collapse" id="navbarSolo">
           <ul class="navbar-nav ms-auto">
-              <li class="nav-item"><a class="nav-link" href="https://solothought.com/text2chart">Text2Chart</a></li>
+              <a href="https://github.com/sponsors/solothought?o=esb" aria-label="Sponsor @solothought" target="_top" data-view-component="true" class="Button--secondary Button--medium Button Button--fullWidth">  
+                <button type="button" class="btn btn-dark">
+                  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" data-view-component="true" style="fill:red">
+                    <path d="m8 14.25.345.666a.75.75 0 0 1-.69 0l-.008-.004-.018-.01a7.152 7.152 0 0 1-.31-.17 22.055 22.055 0 0 1-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.066 22.066 0 0 1-3.744 2.584l-.018.01-.006.003h-.002ZM4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.58 20.58 0 0 0 8 13.393a20.58 20.58 0 0 0 3.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.749.749 0 0 1-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5Z"></path>
+                  </svg>
+                  <span class="Button-label">Sponsor</span>
+                </button>
+              </a>
+              <li><a href="https://github.com/solothought/text2chart">
+                <img src="./github-logo.svg" style="height: 48px; padding: 5px; position: absolute; top:0; right:0;"/>
+              </a></li>
+              <li class="nav-item"><a class="nav-link" href="/text2chart">Text2Chart</a></li>
               <li class="nav-item"><a class="nav-link" href="https://solothought.com/index.html">Blog</a></li>
               <li class="nav-item"><a class="nav-link" href="https://solothought.com/about">About</a></li>
           </ul>
@@ -55,11 +72,11 @@
   
       </div>
     </nav>
-		<div class="container-fluid">  Nothing here 
+		<div style="margin-top: 70px;">  <main data-svelte-h="svelte-wc90t4"><div class="container"><h1>Text 2 Chart</h1> <p class="">With respect to all existing text-to-diagram libraries, this library shares a similar purpose: building diagrams from text. By using text-based inputs, you gain the advantage of version control, enabling you to track changes, integrate with approval cycles, and share diagrams without concerns about file size.</p> <p>Our library adds a unique focus on interactivity, creating diagrams that remain manageable and navigable as they expand. Currently, we’re launching FlowChart and have plan to add more type of diagrams on your feedback and requests. Follow and bookmark our GitHub repository to stay updated on new diagrams and enhanced features.</p> <br> <div class="container"><div class="row"><div class="col"><div class="card" style="width: 18rem;"><div class="card-body"><h4 class="card-title">FlowChart</h4> <p class="card-text svelte-3r4ri5">Draw a flow chart from an algorithm. Highlight nodes, edges, and path in different directions. Export as an image, Toggle the node detail and much more.</p></div> <ul class="list-group list-group-flush"><li class="list-group-item"><a href="/text2chart/flow">Online Application</a></li> <li class="list-group-item"><a href="https://github.com/solothought/text2chart">Github Repository</a></li> <li class="list-group-item"><a href="https://www.npmjs.com/package/@solothought/text2chart">NPM package</a></li> <li class="list-group-item"><a href="https://solothought.com/tutorial/flowchart-from-text/">How to Guide</a></li></ul></div></div> <div class="col"></div> <div class="col"></div></div></div></div> </main> 
 			
 			<script>
 				{
-					__sveltekit_g9nv1w = {
+					__sveltekit_15iyt33 = {
 						base: new URL(".", location).pathname.slice(0, -1),
 						assets: "/text2chart"
 					};
@@ -69,8 +86,8 @@
 					const data = [null,null];
 
 					Promise.all([
-						import("./app/immutable/entry/start.BUZAhn_A.js"),
-						import("./app/immutable/entry/app.QuqDmy0Z.js")
+						import("./app/immutable/entry/start.BWiVB4PV.js"),
+						import("./app/immutable/entry/app.BCMLiPtV.js")
 					]).then(([kit, app]) => {
 						kit.start(app, element, {
 							node_ids: [0, 2],

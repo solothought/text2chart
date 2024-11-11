@@ -19,8 +19,8 @@
           <ul class="list-group list-group-flush">
             <li class="list-group-item"><a href="/text2chart/flow">Online Application</a></li>
             <li class="list-group-item"><a href="https://github.com/solothought/text2chart">Github Repository</a></li>
-            <li class="list-group-item"><a href="https://github.com/solothought/text2chart">NPM package</a></li>
-            <li class="list-group-item"><a href="https://github.com/solothought/text2chart">How to Guide</a></li>
+            <li class="list-group-item"><a href="https://www.npmjs.com/package/@solothought/text2chart">NPM package</a></li>
+            <li class="list-group-item"><a href="https://solothought.com/tutorial/flowchart-from-text/">How to Guide</a></li>
           </ul>
         </div>
       </div>
