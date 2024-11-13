@@ -24,7 +24,16 @@
       </div>
     </div>
     <div class="col">
-      <!-- One of three columns -->
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h4 class="card-title">Text2Chart VSCode Ext</h4>
+          <p class="card-text">Draw a flow chart from an algorithm in VSCode IDE. Save a flow with `.stflow` extension and view the flowchart on the spot.</p>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item"><a href="https://github.com/solothought/text2chart-vs-ext">Github Repository</a></li>
+          <li class="list-group-item"><a href="https://marketplace.visualstudio.com/items?itemName=SoloThought.text2chart">VSCode Marketplace</a></li>
+        </ul>
+      </div>
     </div>
     <div class="col">
       <!-- One of three columns -->
