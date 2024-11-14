@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flow Chart Preview</title>
+    <!-- <link rel="stylesheet" href="bundle.css"> -->
+    <link rel="stylesheet" href="https://raw.githubusercontent.com/solothought/text2chart/refs/heads/main/dist_/bundle.css">
+</head>
+<body>
+    <div id="app" ></div>
+    
+    <!-- Load Text2Chart library -->
+    <!-- <script src="text2chart.min.js"></script> -->
+    <script src="https://raw.githubusercontent.com/solothought/text2chart/refs/heads/main/dist_/text2chart.min.js"></script>
+    <script>
+        window.addEventListener('message', function(event) {
+        //   if (event.origin !== 'https://example.com') return; // Make sure the message comes from a trusted source
+          
+          const textData = event.data.text; // Get the text data passed from the parent
+          const chartContainer = document.getElementById("app");
+    
+          new Text2Chart.FlowChart({
+            target: chartContainer,
+            props: {
+              text: textData,
+              style: "width: 100vw; height: 100vh;"
+            }
+          });
+        });
+    </script>
+</body>
+</html>
