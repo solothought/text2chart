@@ -1,17 +1,18 @@
 TODO
 
 P1
-- let user ember the chart in readonly mode
-- let user hide toolbar
-- Article
-  - How to use
-- flowchart specific shapes
-  - with toggle button
-- branding
-  - an article for documentation
-- build and deploy
+
 
 P2
+- dark mode
+- events when a node is clicked, hovered. It'll be helpful to show some detail or highlight line in editor
+- tooltip on hover
+- let user set displayConfig
+  - readonly mode
+  - to hide toolbar or particular tool item
+  - CSS classes
+- flowchart specific shapes
+  - with toggle button
 - ?  load the flow as per cursor moving
 - improve code of FlowChart.svelte
 - support browser debugging
