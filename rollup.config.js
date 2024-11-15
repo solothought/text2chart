@@ -16,10 +16,19 @@ export default [
       {
         file: 'dist_/text2chart.min.js',
         format: 'iife',  // IIFE format exposes to global scope
-        name: 'Text2Chart', // This will expose your component globally as 'FlowChartLib'
+        name: 'Text2Chart', // This will expose your component globally as 'Text2Chart'
         globals: {
           'svelte': 'Svelte' // if you use Svelte as a dependency
-        }
+        },
+        sourcemap: true
+      },{
+        file: 'static/cdn/text2chart.min.js', //for iframe purpose
+        format: 'iife',  // IIFE format exposes to global scope
+        name: 'Text2Chart', // This will expose your component globally as 'Text2Chart'
+        globals: {
+          'svelte': 'Svelte' // if you use Svelte as a dependency
+        },
+        sourcemap: true
       }
     ],
     plugins: [
@@ -34,7 +43,7 @@ export default [
         dedupe: ['svelte'] // Avoid duplicate Svelte instances
       }),
       commonjs(),
-      typescript({ outDir: 'dist_' }),
+      // typescript({ outDir: 'dist_' }),
       terser()
     ]
   }
