@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Text2Chart GitHub Previewer",
+  "version": "1.0",
+  "description": "Preview .stflow files as charts on GitHub using Text2Chart.js",
+  "author": "SoloThought",
+  "homepage_url": "https://github.com/solothought/Text2Chart",
+  "icons": {
+    "32": "icons/Text2Chart_logo-32.png",
+    "64": "icons/Text2Chart_logo-64.png",
+    "128": "icons/Text2Chart_logo-128.png"
+  },
+  "host_permissions": ["*://github.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["*://github.com/*", "*://www.github.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "solothought.official@gmail.com"
+    }
+  }
+
+}
