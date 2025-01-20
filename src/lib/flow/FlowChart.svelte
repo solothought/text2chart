@@ -1,6 +1,5 @@
 <script>
   import { writable } from 'svelte/store';
-  import { onMount } from 'svelte';
   import Toolbar from './Toolbar.svelte';
 
   import { 
@@ -129,11 +128,6 @@
     updateSelectedFlow(parseInt(event.target.value));
   }
 
-  onMount(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-  });
-
   let slimoFlow = "";
   $: { 
     if (text.length > 0) {
@@ -171,6 +165,8 @@ $: {
   }
 }
 </script>
+
+<svelte:window on:keyup={handleKeyUp} on:keydown={handleKeyDown}  />
 
 <div {...$$restProps} class="solothought_text2chart_flow"> 
   <SvelteFlowProvider >
