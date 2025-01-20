@@ -1,6 +1,8 @@
 <script>
   import { writable } from 'svelte/store';
   import { onMount } from 'svelte';
+  import Toolbar from './Toolbar.svelte';
+
   import { 
     SvelteFlow, 
     Controls, 
@@ -33,6 +35,8 @@
   export let text = "";
   export let flowName = "";
   export let selection = [];
+  export const showDetails = writable(false); // Toggle for detail/summary view
+
 
   // Convert the arrays to writable stores
   let nodeStore = writable(nodes);
@@ -170,16 +174,8 @@ $: {
 
 <div {...$$restProps} class="solothought_text2chart_flow"> 
   <SvelteFlowProvider >
-    <div class="st-toolbox">
-      <!-- Flow Selector -->
-      <select class="st-flow-chart-tool" on:change={handleFlowChange} bind:value={selectedFlowIndex}>
-        {#each flowsData as flow, index}
-          <option value={index} >{flow.flowName}</option>
-        {/each}
-      </select>
-      <button on:click={hideNodeMsgDetail} class='{nodeConfig.hideMsgDetail ? 'passive' : ''}'>👁</button>
-      <DownloadButton nodes={nodes} fileName={flowName}/>
-    </div>
+    <Toolbar {flowsData} bind:selectedFlowIndex bind:showDetails {disableTools} />
+
     <SvelteFlow  {nodeTypes} style="min-height: 200px;"
     bind:nodes={nodeStore} bind:edges={edgeStore} fitView 
     defaultEdgeOptions={{
