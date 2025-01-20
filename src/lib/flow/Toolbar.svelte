@@ -1,63 +1,42 @@
 <script>
-  import DownloadButton from './DownloadButton.svelte'; // Your existing download button component
+  import DownloadButton from './../DownloadButton.svelte'; // Your existing download button component
 
-  // Props
-  export let flowsData = []; // List of flows (e.g., [{ flowName: 'Flow 1' }, { flowName: 'Flow 2' }])
-  export let selectedFlowIndex = 0; // Index of the selected flow
-  export let disableTools = []; // List of disabled tools (e.g., ['flow-selector', 'save-chart'])
-  export let showDetails = false; // Toggle for detail/summary view
+  export let flowsData = [];
+  export let selectedFlowIndex;
+  export let flowName = "";
+  export let nodeConfig = {};
+  export let nodes = [];
 
-  // Handle flow change
-  function handleFlowChange(event) {
-    const index = event.target.value;
-    selectedFlowIndex = index;
-  }
-
-  // Handle toggle details
-  function handleToggleDetails() {
-    showDetails = !showDetails;
-  }
+  // Event handlers passed from the parent
+  export let handleFlowChange;
+  export let hideNodeMsgDetail;
 </script>
 
-<div class="toolbar">
+<div class="st-toolbox">
   <!-- Flow Selector -->
-  {#if !disableTools.includes('flow-selector')}
-    <select class="st-flow-chart-tool" on:change={handleFlowChange} bind:value={selectedFlowIndex}>
-      {#each flowsData as flow, index}
-        <option value={index}>{flow.flowName}</option>
-      {/each}
-    </select>
-  {/if}
-
-  <!-- Toggle Details Button -->
-  {#if !disableTools.includes('toggle-details')}
-    <button class="st-flow-chart-tool" on:click={handleToggleDetails}>
-      {showDetails ? 'Summary' : 'Details'}
-    </button>
-  {/if}
-
-  <!-- Save Chart as Image Button -->
-  {#if !disableTools.includes('save-chart')}
-    <DownloadButton nodes={$nodes} fileName={flowsData[selectedFlowIndex]?.flowName || 'chart'} />
-  {/if}
+  <select class="st-flow-chart-tool" on:change={handleFlowChange} bind:value={selectedFlowIndex}>
+    {#each flowsData as flow, index}
+      <option value={index}>{flow.flowName}</option>
+    {/each}
+  </select>
+  <button on:click={hideNodeMsgDetail} class={nodeConfig.hideMsgDetail ? 'passive' : ''}>👁</button>
+  <DownloadButton {nodes} fileName={flowName} />
 </div>
 
 <style>
-  .toolbar {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+  .passive {
+    opacity: 50%;
   }
-
-  .st-flow-chart-tool {
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    background: white;
+  :global(.st-toolbox) {
+    height: 40px;
+  }
+  :global(.st-toolbox button) {
+    background-color: #FFFFFF;
+    border-width: 0;
+    padding: 5px;
     cursor: pointer;
   }
-
-  .st-flow-chart-tool:hover {
-    border-color: #ff3e00;
-    background: #fff0e6;
+  :global(.st-toolbox button:hover) {
+    outline: 1px dashed black;
   }
 </style>

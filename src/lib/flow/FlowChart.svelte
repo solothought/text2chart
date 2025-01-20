@@ -1,5 +1,6 @@
 <script>
   import { writable } from 'svelte/store';
+  import { onMount, onDestroy } from 'svelte';
   import Toolbar from './Toolbar.svelte';
 
   import { 
@@ -10,9 +11,7 @@
     SvelteFlowProvider} from '@xyflow/svelte';
 
   import '@xyflow/svelte/dist/style.css';
-  // import './toolbox-style.css';
   import StepNode from './Step.svelte';
-  import DownloadButton from './../DownloadButton.svelte';
   import {convert as flowText2Obj} from './NodesAndEdgesBuilder.js';
   import {updateProperty} from './nodeUpdater.js';
 
@@ -34,8 +33,8 @@
   export let text = "";
   export let flowName = "";
   export let selection = [];
-  export const showDetails = writable(false); // Toggle for detail/summary view
-
+  export let showDetails = writable(false); // Toggle for detail/summary view
+  export let disableTools = [];
 
   // Convert the arrays to writable stores
   let nodeStore = writable(nodes);
@@ -164,14 +163,29 @@ $: {
     }
   }
 }
+
+  // Clean up on component destruction
+  // onDestroy(() => {
+  //   nodes = [];
+  //   edges = [];
+  //   hoveredPathNodes.set([]);
+  //   hoveredPathEdges.set([]);
+  // });
 </script>
 
 <svelte:window on:keyup={handleKeyUp} on:keydown={handleKeyDown}  />
 
 <div {...$$restProps} class="solothought_text2chart_flow"> 
   <SvelteFlowProvider >
-    <Toolbar {flowsData} bind:selectedFlowIndex bind:showDetails {disableTools} />
-
+    <Toolbar
+      {flowsData}
+      bind:selectedFlowIndex
+      {flowName}
+      {nodeConfig}
+      {nodes}
+      handleFlowChange={handleFlowChange}
+      hideNodeMsgDetail={hideNodeMsgDetail}
+    />
     <SvelteFlow  {nodeTypes} style="min-height: 200px;"
     bind:nodes={nodeStore} bind:edges={edgeStore} fitView 
     defaultEdgeOptions={{
