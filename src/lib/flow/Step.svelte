@@ -42,6 +42,8 @@
 
 
   export let data;  // Contains the node-specific data
+  export let position;
+  export let id;
 </script>
 
 <div class="{data.highlight ? 'hovered' : ''} {data.isEnd ? 'endStep':'step'}">

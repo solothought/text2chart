@@ -14,6 +14,7 @@
   let previousText = '';
   let nodesToHighlight = [];
   let flowText = algos["Binary Search"];
+  let chartKey = 0; // Used to reinitialize the FlowChart component
 
   onMount(async () => {
     if (typeof window !== 'undefined') {
@@ -87,6 +88,7 @@
 
   function loadAlgo(event){
     flowText = algos[event.target.value];
+    chartKey++;
   }
   
 </script>
@@ -120,6 +122,11 @@
         on:keydown={handleKeyDown} 
         on:mouseup={handleClick} />
     </div>
-    <FlowChart style="padding-left:10px; width:65vw; height:100%" bind:text={flowText} bind:selection={nodesToHighlight}/>
+    {#key chartKey} <!-- Recreate Chart component -->
+    <FlowChart 
+      style="padding-left:10px; width:65vw; height:100%" 
+      bind:text={flowText} 
+      bind:selection={nodesToHighlight}/>
+    {/key}
   </div>
 </div>
