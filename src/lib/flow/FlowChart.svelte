@@ -32,7 +32,7 @@
   export let edges = [];
   export let text = "";
   export let flowName = "";
-  export let selection = [];
+  export let selection = []; //nodes selected by user
   export let showDetails = writable(false); // Toggle for detail/summary view
   export let disableTools = [];
 
@@ -124,6 +124,7 @@
 
    // Update flow data when user selects a different flow
   function handleFlowChange(event) {
+    selection = []; //unselect on flow change
     updateSelectedFlow(parseInt(event.target.value));
   }
 
@@ -135,6 +136,10 @@
     }
   }
 
+  /**
+   * Draw the flow chart for given index
+   * @param index flow index
+   */
   function updateSelectedFlow(index) {
     selectedFlowIndex = index;
     if (flowsData[selectedFlowIndex]) {
@@ -148,29 +153,30 @@
       edgeStore.set(edges);
     }
   }
-let selected = {}; //{flowIndex:number,nodeIds:string[]}
+
+//collection of nodes selected by user by passing the list in tag
+let userSelectedNodes = {}; //{flowIndex:number,nodeIds:string[]}
 $: {
   if(selection && selection.nodeIds && selection.nodeIds.length){ //TODO: accept flow number. Ignore if selected flow is different 
-    // console.log(selection, selected);
-    unhighlight(nodes,new Set(selected.nodeIds), nodeConfig);
-    if(selection.flowIndex === selectedFlowIndex){
+    unhighlight(nodes,new Set(userSelectedNodes.nodeIds), nodeConfig);
 
-      nodeStore.set(nodes);
-      selected = selection;
-      highlight(nodes,new Set(selection.nodeIds),nodeConfig);
-      nodeStore.set(nodes);
-
+    //load the chart of selection.flowIndex
+    if(selection.flowIndex !== selectedFlowIndex){
+      updateSelectedFlow(selection.flowIndex);
     }
+    nodeStore.set(nodes);
+    userSelectedNodes = selection;
+    highlight(nodes,new Set(selection.nodeIds),nodeConfig);
+    nodeStore.set(nodes);
   }
 }
 
   // Clean up on component destruction
-  // onDestroy(() => {
-  //   nodes = [];
-  //   edges = [];
-  //   hoveredPathNodes.set([]);
-  //   hoveredPathEdges.set([]);
-  // });
+  onDestroy(() => {
+    console.debug("destroying")
+    nodeStore.set([]);
+    edgeStore.set([]);
+  });
 </script>
 
 <svelte:window on:keyup={handleKeyUp} on:keydown={handleKeyDown}  />
