@@ -1,5 +1,4 @@
 <script>
-  import { onMount } from 'svelte';
   import Toolbar from './Toolbar.svelte';
   import CoreChart from './CoreChart.svelte';
   import { convert as flowText2Obj } from './NodesAndEdgesBuilder.js';
@@ -73,6 +72,7 @@
   function hideNodeMsgDetail() {
     nodeState.hideMsgDetail = !nodeState.hideMsgDetail;
     updateProperty(nodes, nodeState);
+    coreChartInstance.updateStore(nodes, edges);
   }
 
   $: {
@@ -90,7 +90,7 @@
     {flowsData}
     bind:selectedFlowIndex
     {flowName}
-    nodeConfig={nodeState}
+    {nodeState}
     {nodes}
     handleFlowChange={handleFlowChange}
     hideNodeMsgDetail={hideNodeMsgDetail}

@@ -25,18 +25,14 @@
   export let style = ""; // Accept style as a prop
   export let clazz = ""; // Accept class as a prop
   export let selection = [];
-  let highlighter = new Highlighter(nodes,edges);
+  let highlighter = new Highlighter(nodes,edges, nodeState);
 
   let nodeStore = writable(nodes);
   let edgeStore = writable(edges);
   let keyPressed = "";
 
   
-  /**
-   * Highlight Path based on key pressed
-   * @param event
-   */
-  function onNodeMouseEnter(event) {
+  function highlightPath(event) {
     const nodeId = event.detail.node.id;
     let selectDirection = 2;
     if (keyPressed === 'Shift') selectDirection = 0;
@@ -44,20 +40,15 @@
 
     const selection = traverseConnections(nodeId, connections, selectDirection);
 
-    // highlight(nodes, hoveredPathNodes, nodeState, edges, hoveredPathEdges);
-    highlighter.selectPath(selection.seletedNodes, nodeState, selection.seletedEdges);
+    highlighter.selectPath(selection.seletedNodes, selection.seletedEdges);
     updateStore(nodes, edges);
   }
 
-  /**
-   * unHighlight Path
-   */
-  function onNodeMouseLeave() {
-    highlighter.unselectPath(nodeState);
+  function unHighlightPath() {
+    highlighter.unselectPath();
     updateStore(nodes, edges);
   }
 
-  // Handle edge click
   function styleEdge(event) {
     highlighter.toggleEdge(event.detail.edge.id)
     edgeStore.set(edges);
@@ -83,9 +74,10 @@
 
   // React to changes in selection
   $: {
+    highlighter.nodeState = nodeState;
     if (selection && selection.nodeIds) {
-      highlighter.unselectNodes(nodeState);
-      highlighter.selectNodes( new Set(selection.nodeIds), nodeState);
+      highlighter.unselectNodes(); //any previous selected node
+      highlighter.selectNodes( new Set(selection.nodeIds));
 
       nodeStore.set(nodes);
     }
@@ -113,8 +105,8 @@
       bind:edges={edgeStore}
       fitView
       defaultEdgeOptions={defaultEdgeOptions}
-      on:nodemouseenter={onNodeMouseEnter}
-      on:nodemouseleave={onNodeMouseLeave}
+      on:nodemouseenter={highlightPath}
+      on:nodemouseleave={unHighlightPath}
       on:nodeclick={onNodeClick}
       on:edgeclick={styleEdge}
 

@@ -24,9 +24,10 @@ export const defaultEdgeOptions = {
     style: edgeStyle
   }
 export class Highlighter{
-  constructor(nodes, edges){
-    this.nodes = nodes,
-    this.edges = edges,
+  constructor(nodes, edges, nodeState){
+    this.nodes = nodes;
+    this.edges = edges;
+    this.nodeState = nodeState;
     this.selectedNodes = new Set();
     this.selectedEdges = new Set();
   }
@@ -34,30 +35,30 @@ export class Highlighter{
     this.nodes = nodes;
     this.edges = edges;
   }
-  selectPath(nodeIds, nodeState, edgeIds, edgeState = {}){
-    this.selectNodes(nodeIds, nodeState);
+  selectPath(nodeIds, edgeIds, edgeState = {}){
+    this.selectNodes(nodeIds);
     if(edgeIds) this.selectEdges(edgeIds, highlightEdge);
   }
   
-  selectNodes(selectedIds, currentState){
-    updateProperty(this.nodes, currentState, {highlight: true}, selectedIds);
+  selectNodes(selectedIds){
+    updateProperty(this.nodes, this.nodeState, {highlight: true}, selectedIds);
     this.selectedNodes = selectedIds;
   }
-  selectEdges(selectedIds, currentState){
+  selectEdges(selectedIds){
     updateEdgesStyle(this.edges,  selectedIds, highlightEdge);
     this.selectedEdges = selectedIds;
   }
 
-  unselectPath(nodeState, edgeState = {}){
-    this.unselectNodes(nodeState);
+  unselectPath(){
+    this.unselectNodes();
     if(this.selectedEdges.size > 0) this.unselectEdges(highlightEdge);
   }
 
-  unselectNodes(currentState){
-    updateProperty(this.nodes, currentState, {highlight: false}, this.selectedNodes);
+  unselectNodes(){
+    updateProperty(this.nodes, this.nodeState, {highlight: false}, this.selectedNodes);
     this.selectedNodes.clear();
   }
-  unselectEdges(currentState){
+  unselectEdges(){
     updateEdgesStyle(this.edges, this.selectedEdges, unhighlightEdge);
     this.selectedEdges.clear();
   }

@@ -4,7 +4,7 @@
   export let flowsData = [];
   export let selectedFlowIndex;
   export let flowName = "";
-  export let nodeConfig = {};
+  export let nodeState = {};
   export let nodes = [];
   export let handleFlowChange;
   export let hideNodeMsgDetail;
@@ -16,7 +16,7 @@
       <option value={index}>{flow.flowName}</option>
     {/each}
   </select>
-  <button on:click={hideNodeMsgDetail} class={nodeConfig.hideMsgDetail ? 'passive' : ''}>👁</button>
+  <button on:click={hideNodeMsgDetail} class={nodeState.hideMsgDetail ? 'passive' : ''}>👁</button>
   <DownloadButton {nodes} fileName={flowName} />
 </div>
 
