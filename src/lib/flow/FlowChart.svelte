@@ -15,10 +15,13 @@
   let edges = [];
   let connections = {};
   let flowName = "";
-  let nodeConfig = {
+  let nodeState = {
     hideMsgDetail: false,
     standardShape: false
   };
+
+  // Bind to CoreChart instance
+  let coreChartInstance;
 
   // Update flow data when text changes
   $: {
@@ -28,51 +31,58 @@
     }
   }
 
-  // Update selected flow
+  /**
+   * Draw chart for the given flow index
+   * @param index
+   */
   function updateSelectedFlow(index) {
     selectedFlowIndex = index;
     if (flowsData[selectedFlowIndex]) {
+      console.log(selectedFlowIndex);
       const selectedFlow = flowsData[selectedFlowIndex];
       nodes = selectedFlow.nodes;
       edges = selectedFlow.edges;
       connections = selectedFlow.connections;
       flowName = selectedFlow.flowName;
-      updateProperty(nodes, nodeConfig);
+      updateProperty(nodes, nodeState);
+      
+      if (coreChartInstance && typeof coreChartInstance.updateStore === 'function') {
+        coreChartInstance.updateStore(nodes, edges);
+      }
     }
   }
 
   // Handle flow change from toolbar
   function handleFlowChange(event) {
+    selection = [];
     updateSelectedFlow(parseInt(event.target.value));
   }
 
   function flowChange(e){//triggered by core chart
-
-    if(e.detail.flowName){
+    if(e.detail.flowName){ //When User clicks on a node
       const flowName = e.detail.flowName;
       flowsData.forEach((flow, i) => {
         if (flow.flowName === flowName) {
           updateSelectedFlow(i);
         }
       });
-      
-    }else if(e.detail.flowIndex){
-      const flowIndex = e.detail.flowIndex;
-      if(flowIndex !== selectedFlowIndex){
-        updateSelectedFlow(flowIndex);
-      }
     }
   }
 
   // Toggle node message details
   function hideNodeMsgDetail() {
-    nodeConfig.hideMsgDetail = !nodeConfig.hideMsgDetail;
-    updateProperty(nodes, nodeConfig);
+    nodeState.hideMsgDetail = !nodeState.hideMsgDetail;
+    updateProperty(nodes, nodeState);
   }
 
-  onMount(() => {
-    console.debug("FlowChart mounted");
-  });
+  $: {
+    if (selection && selection.nodeIds && selection.nodeIds.length) {
+      console.debug("update selection")
+      if(selection.flowIndex !== selectedFlowIndex){
+        updateSelectedFlow(selection.flowIndex);
+      }
+    }
+  }
 </script>
 
 <div class="solothought_text2chart_flow">
@@ -80,15 +90,16 @@
     {flowsData}
     bind:selectedFlowIndex
     {flowName}
-    {nodeConfig}
+    nodeConfig={nodeState}
     {nodes}
     handleFlowChange={handleFlowChange}
     hideNodeMsgDetail={hideNodeMsgDetail}
   />
   <CoreChart
+    bind:this={coreChartInstance}
     {nodes}
     {edges}
-    {nodeConfig}
+    {nodeState}
     {connections}
     {...$$restProps}
     {selection}

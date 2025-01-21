@@ -28,7 +28,7 @@
 
   export let nodes = [];
   export let edges = [];
-  export let nodeConfig = {};
+  export let nodeState = {};
   export let connections = {};
   export let style = ""; // Accept style as a prop
   export let clazz = ""; // Accept class as a prop
@@ -55,8 +55,8 @@
     const selection = traverseConnections(nodeId, connections, selectDirection);
     hoveredPathNodes = selection.seletedNodes;
     hoveredPathEdges = selection.seletedEdges;
-    
-    highlight(nodes, hoveredPathNodes, nodeConfig, edges, hoveredPathEdges);
+
+    highlight(nodes, hoveredPathNodes, nodeState, edges, hoveredPathEdges);
 
     updateStore(nodes, edges);
   }
@@ -65,7 +65,7 @@
    * unHighlight Path
    */
   function onNodeMouseLeave() {
-    unhighlight(nodes, hoveredPathNodes, nodeConfig, edges, hoveredPathEdges);
+    unhighlight(nodes, hoveredPathNodes, nodeState, edges, hoveredPathEdges);
     hoveredPathNodes.clear();
     hoveredPathEdges.clear();
 
@@ -108,16 +108,17 @@
   let previouslySelectedNodes = {};
   $: {
     if (selection && selection.nodeIds) {
-      unhighlight(nodes, new Set(previouslySelectedNodes.nodeIds), nodeConfig);
-      dispatch('flowChange', { flowIndex: selection.flowIndex });
+      if(previouslySelectedNodes.nodeIds)
+        unhighlight(nodes, new Set(previouslySelectedNodes.nodeIds), nodeState);
 
       previouslySelectedNodes = selection; //update reference
-      highlight(nodes, new Set(selection.nodeIds), nodeConfig);
+      highlight(nodes, new Set(selection.nodeIds), nodeState);
       nodeStore.set(nodes);
     }
   }
 
-  function updateStore(nodes, edges){
+  export function updateStore(nodes, edges){
+    console.debug("updating store")
     nodeStore.set(nodes);
     edgeStore.set(edges);
   }
@@ -146,6 +147,7 @@
       on:nodemouseleave={onNodeMouseLeave}
       on:nodeclick={onNodeClick}
       on:edgeclick={styleEdge}
+
     >
       <Controls />
       <Background />
