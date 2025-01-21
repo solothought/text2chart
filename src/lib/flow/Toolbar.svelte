@@ -1,19 +1,16 @@
 <script>
-  import DownloadButton from './../DownloadButton.svelte'; // Your existing download button component
+  import DownloadButton from './../DownloadButton.svelte';
 
   export let flowsData = [];
   export let selectedFlowIndex;
   export let flowName = "";
   export let nodeConfig = {};
   export let nodes = [];
-
-  // Event handlers passed from the parent
   export let handleFlowChange;
   export let hideNodeMsgDetail;
 </script>
 
 <div class="st-toolbox">
-  <!-- Flow Selector -->
   <select class="st-flow-chart-tool" on:change={handleFlowChange} bind:value={selectedFlowIndex}>
     {#each flowsData as flow, index}
       <option value={index}>{flow.flowName}</option>

@@ -1,145 +1,34 @@
 <script>
-  import { writable } from 'svelte/store';
-  import { onMount, onDestroy } from 'svelte';
+  import { onMount } from 'svelte';
   import Toolbar from './Toolbar.svelte';
+  import CoreChart from './CoreChart.svelte';
+  import { convert as flowText2Obj } from './NodesAndEdgesBuilder.js';
+  import { updateProperty } from './nodeUpdater.js';
 
-  import { 
-    SvelteFlow, 
-    Controls, 
-    Background, 
-    MiniMap, 
-    SvelteFlowProvider} from '@xyflow/svelte';
-
-  import '@xyflow/svelte/dist/style.css';
-  import StepNode from './Step.svelte';
-  import {convert as flowText2Obj} from './NodesAndEdgesBuilder.js';
-  import {updateProperty} from './nodeUpdater.js';
-
-  import {highlight, 
-    traverseConnections, 
-    unhighlight, 
-    edgeStyle, 
-    edgeMarkerStyle, 
-    unhighlightEdge, 
-    updateEdgesStyle,
-    highlightEdge} from './hoverManager.js';
-
-  const nodeTypes = { step: StepNode };
-  // const edgeTypes = { custom: CustomEdge };
-  
-  // Accept nodes and edges from the parent
-  export let nodes = [];
-  export let edges = [];
   export let text = "";
-  export let flowName = "";
-  export let selection = []; //nodes selected by user
-  export let showDetails = writable(false); // Toggle for detail/summary view
-  export let disableTools = [];
+  export let selection = [];
 
-  // Convert the arrays to writable stores
-  let nodeStore = writable(nodes);
-  let edgeStore = writable(edges);
-  let keyPressed = "";
-  /**
-   * {
-   *  "1":{ source: [], target: [2]},
-   *  "2":{ source: [1], target: [3,4]}
-   * }
-   */
-  let connections = {}; //an intermediate DataType for fast traversing when styling nodes/edges
+  let flowsData = []; //json obj of flows text
+  let selectedFlowIndex = 0; //toolbar
 
-  let hoveredPathNodes = new Set();
-  let hoveredPathEdges = new Set();
-
-  let flowsData = []; // All flows parsed from text
-  let selectedFlowIndex = 0; // Track selected flow, defaulting to the first
-  let hoveredState = false;
+  let nodes = [];
+  let edges = [];
+  let connections = {};
+  let flowName = "";
   let nodeConfig = {
     hideMsgDetail: false,
     standardShape: false
-  }
-
-  function onNodeMouseEnter(event){
-    hoveredState = true;
-    const nodeId = event.detail.node.id;
-    let selectDirection = 2;
-    if (keyPressed === 'Shift') selectDirection = 0;
-    else if (keyPressed === 'Control') selectDirection = 1;
-    const selection = traverseConnections(nodeId, connections, selectDirection);
-    hoveredPathNodes = selection.seletedNodes;
-    hoveredPathEdges = selection.seletedEdges;
-    highlight(nodes, hoveredPathNodes, nodeConfig, edges,hoveredPathEdges);
-
-    nodeStore.set(nodes);
-    edgeStore.set(edges);
-  }
-  function onNodeMouseLeave(){
-    hoveredState=false;
-    unhighlight(nodes, hoveredPathNodes, nodeConfig, edges, hoveredPathEdges);
-    hoveredPathNodes.clear();
-    hoveredPathEdges.clear();
-
-    nodeStore.set(nodes);
-    edgeStore.set(edges);
-  }
-  
-
-  const selectedEdges = new Set();
-  function styleEdge(event){
-    const edgeId = event.detail.edge.id;
-    if(selectedEdges.has(edgeId)){
-      selectedEdges.delete(edgeId);
-      updateEdgesStyle(edges,new Set([event.detail.edge.id]),unhighlightEdge);
-    }else{
-      selectedEdges.add(edgeId);
-      updateEdgesStyle(edges,new Set([event.detail.edge.id]),highlightEdge);
-    }
-    edgeStore.set(edges);
-  }
-  
-  function handleKeyDown(event){
-    keyPressed = event.key;
   };
-  function handleKeyUp(event){
-    keyPressed = "";
-  };
-  function hideNodeMsgDetail(){
-    nodeConfig.hideMsgDetail = !nodeConfig.hideMsgDetail;
-    updateProperty(nodes,nodeConfig);
-    nodeStore.set(nodes);
-  }
 
-
-  function onNodeCick(event){ 
-    const node = event.detail.node.data;
-    if(node.type === "FOLLOW"){
-      //change flow
-      flowsData.forEach((flow,i )=> {
-        if(flow.flowName === node.msg){
-          selectedFlowIndex = i;
-        }
-      });
-    }
-  }
-
-   // Update flow data when user selects a different flow
-  function handleFlowChange(event) {
-    selection = []; //unselect on flow change
-    updateSelectedFlow(parseInt(event.target.value));
-  }
-
-  let slimoFlow = "";
-  $: { 
+  // Update flow data when text changes
+  $: {
     if (text.length > 0) {
       flowsData = flowText2Obj(text);
-      updateSelectedFlow(selectedFlowIndex); // Set first flow by default
+      updateSelectedFlow(selectedFlowIndex);
     }
   }
 
-  /**
-   * Draw the flow chart for given index
-   * @param index flow index
-   */
+  // Update selected flow
   function updateSelectedFlow(index) {
     selectedFlowIndex = index;
     if (flowsData[selectedFlowIndex]) {
@@ -148,83 +37,61 @@
       edges = selectedFlow.edges;
       connections = selectedFlow.connections;
       flowName = selectedFlow.flowName;
-      updateProperty(nodes,nodeConfig);
-      nodeStore.set(nodes);
-      edgeStore.set(edges);
+      updateProperty(nodes, nodeConfig);
     }
   }
 
-//collection of nodes selected by user by passing the list in tag
-let userSelectedNodes = {}; //{flowIndex:number,nodeIds:string[]}
-$: {
-  if(selection && selection.nodeIds && selection.nodeIds.length){ //TODO: accept flow number. Ignore if selected flow is different 
-    unhighlight(nodes,new Set(userSelectedNodes.nodeIds), nodeConfig);
-
-    //load the chart of selection.flowIndex
-    if(selection.flowIndex !== selectedFlowIndex){
-      updateSelectedFlow(selection.flowIndex);
-    }
-    nodeStore.set(nodes);
-    userSelectedNodes = selection;
-    highlight(nodes,new Set(selection.nodeIds),nodeConfig);
-    nodeStore.set(nodes);
+  // Handle flow change from toolbar
+  function handleFlowChange(event) {
+    updateSelectedFlow(parseInt(event.target.value));
   }
-}
 
-  // Clean up on component destruction
-  onDestroy(() => {
-    console.debug("destroying")
-    nodeStore.set([]);
-    edgeStore.set([]);
+  function flowChange(e){//triggered by core chart
+
+    if(e.detail.flowName){
+      const flowName = e.detail.flowName;
+      flowsData.forEach((flow, i) => {
+        if (flow.flowName === flowName) {
+          updateSelectedFlow(i);
+        }
+      });
+      
+    }else if(e.detail.flowIndex){
+      const flowIndex = e.detail.flowIndex;
+      if(flowIndex !== selectedFlowIndex){
+        updateSelectedFlow(flowIndex);
+      }
+    }
+  }
+
+  // Toggle node message details
+  function hideNodeMsgDetail() {
+    nodeConfig.hideMsgDetail = !nodeConfig.hideMsgDetail;
+    updateProperty(nodes, nodeConfig);
+  }
+
+  onMount(() => {
+    console.debug("FlowChart mounted");
   });
 </script>
 
-<svelte:window on:keyup={handleKeyUp} on:keydown={handleKeyDown}  />
-
-<div {...$$restProps} class="solothought_text2chart_flow"> 
-  <SvelteFlowProvider >
-    <Toolbar
-      {flowsData}
-      bind:selectedFlowIndex
-      {flowName}
-      {nodeConfig}
-      {nodes}
-      handleFlowChange={handleFlowChange}
-      hideNodeMsgDetail={hideNodeMsgDetail}
-    />
-    <SvelteFlow  {nodeTypes} style="min-height: 200px;"
-    bind:nodes={nodeStore} bind:edges={edgeStore} fitView 
-    defaultEdgeOptions={{
-      type: 'smoothstep',
-      markerEnd: edgeMarkerStyle,
-      style: edgeStyle
-    }} 
-    on:nodemouseenter={onNodeMouseEnter}
-    on:nodemouseleave={onNodeMouseLeave}
-    on:nodeclick={onNodeCick}
-    on:edgeclick={styleEdge}
-    >
-      <Controls />
-      <Background />
-      <MiniMap />
-    </SvelteFlow>
-  </SvelteFlowProvider>
-
+<div class="solothought_text2chart_flow">
+  <Toolbar
+    {flowsData}
+    bind:selectedFlowIndex
+    {flowName}
+    {nodeConfig}
+    {nodes}
+    handleFlowChange={handleFlowChange}
+    hideNodeMsgDetail={hideNodeMsgDetail}
+  />
+  <CoreChart
+    {nodes}
+    {edges}
+    {nodeConfig}
+    {connections}
+    {...$$restProps}
+    {selection}
+    on:flowChange={flowChange}
+  />
 </div>
-<style>
-  .passive{
-    opacity: 50%;
-  }
-  :global(.st-toolbox){
-    height: 40px;
-  }
-  :global(.st-toolbox button){
-    background-color: #FFFFFF;
-    border-width: 0;
-    padding: 5px;
-    cursor: pointer;
-  }
-  :global(.st-toolbox button:hover){
-    outline: 1px dashed black;
-  }
-</style>

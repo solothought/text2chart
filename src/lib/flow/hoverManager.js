@@ -65,18 +65,26 @@ function traverseDownwards(currentNode, connections, nodeSet, edgeSet) {
 }
 
 /**
- * 
- * @param {[]} nodes 
- * @param {[]} edges 
- * @param {Set<string>} nodeIds 
- * @param {Set<string>} edgeIds 
- * @returns 
+ * Highlight all the given nodes and edges
+ * @param {[]} nodes All nodes
+ * @param {Set<string>} nodeIds nodes to be highlighted 
+ * @param {{}} nodesState node appearance config
+ * @param {[]} edges All edges
+ * @param {Set<string>} edgeIds edges to be highlighted
  */
 export function highlight(nodes, nodeIds, nodesState, edges, edgeIds) {
   updateNodesStyle(nodes, nodeIds,nodesState,{highlight: true});
   if(edgeIds) updateEdgesStyle(edges, edgeIds, highlightEdge);
 }
 
+/**
+ * unHighlight all the given nodes and edges
+ * @param {[]} nodes All nodes
+ * @param {Set<string>} nodeIds nodes to be highlighted 
+ * @param {{}} nodesState node appearance config
+ * @param {[]} edges All edges
+ * @param {Set<string>} edgeIds edges to be highlighted
+ */
 export function unhighlight(nodes, nodeIds, nodesState, edges, edgeIds) {
   updateNodesStyle(nodes, nodeIds,nodesState,{highlight: false});
   if(edgeIds) updateEdgesStyle(edges, edgeIds, unhighlightEdge);
