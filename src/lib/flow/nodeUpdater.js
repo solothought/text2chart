@@ -6,14 +6,24 @@
  * @param {string[]} selectedNodes node ids
  */
 export function updateProperty(nodes, globalState, newProp = {}, selectedNodes = null){
-  nodes.forEach(node => {
-    if(!selectedNodes || selectedNodes.has(node.id)){
-      node.data = {
-        ...node.data,
-        ...globalState,
-        ...newProp
-      };
-    }
-  })
+  if(!selectedNodes){
+    nodes.forEach(node => {
+        node.data = {
+          ...node.data,
+          ...globalState,
+          ...newProp
+        };
+    })
+  }else{
+    nodes.forEach(node => {
+      if(selectedNodes.has(node.id)){
+        node.data = {
+          ...node.data,
+          ...globalState,
+          ...newProp
+        };
+      }
+    })
+  }
   return nodes; //for chaining if needed
 }
