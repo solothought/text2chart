@@ -1,4 +1,5 @@
 <script>
+  import FlowList from './FlowList.svelte';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   const storeKey = 'st-flow-algo';
@@ -8,12 +9,48 @@
 
   import FlowChart from '$lib/flow/FlowChart.svelte';
   import {getSelectedLines} from './selection.js';
-  import {algos} from './algos';
+  import {flows as initialFlows, flowsText} from './SampleFlows.js';
   import {handleEditing} from './text-editor.js';
+
+  // Use a writable store for flows to ensure reactivity
+  let flows = writable([...initialFlows]);
+  let selectedFlowId = 1;
+
+  // Function to handle flow selection
+  function handleFlowSelection(event) {
+    selectedFlowId = event.detail.flowId;
+    // console.log('Selected Flow ID:', selectedFlowId);
+    flowText  = flowsText[selectedFlowId];
+    chartKey++;
+  }
+
+  // Function to handle adding a new flow
+  function handleAddFlow(event) {
+    const newFlowName = event.detail.name;
+
+    flows.update((currentFlows) => {
+      const newFlow = {
+        id: currentFlows.length + 1, // Generate a new ID
+        name: newFlowName,
+        successPercentage: 0, // Default success percentage
+      };
+      console.log('Added Flow:', newFlow);
+      return [...currentFlows, newFlow]; // Update flows immutably
+    });
+  }
+
+  // Function to handle removing a flow
+  function handleRemoveFlow(event) {
+    const flowId = event.detail.flowId;
+    // flows = flows.filter(flow => flow.id !== flowId);
+    flows.update(
+      (currentFlows) => currentFlows.filter(flow => flow.id !== flowId));
+    console.log('Removed Flow ID:', flowId);
+  }
 
   let previousText = '';
   let nodesToHighlight = [];
-  let flowText = algos["Binary Search"];
+  let flowText = flowsText[1];
   let chartKey = 0; // Used to reinitialize the FlowChart component
 
   onMount(async () => {
@@ -21,7 +58,7 @@
       // windowAvailable = true;
 
       const valFromStorage = localStorage.getItem(storeKey);
-      flowText = valFromStorage || algos["Binary Search"];
+      flowText = valFromStorage || flowsText[1];
   
       updateLocalStorageDebounced = (value) => {
         clearTimeout(updateLocalStorageDebounced.timeout);
@@ -86,10 +123,6 @@
     }
   }
 
-  function loadAlgo(event){
-    flowText = algos[event.target.value];
-    chartKey++;
-  }
   
 </script>
 
@@ -109,14 +142,14 @@
 <div class="container-fluid">
   <div class="workspace">
     <div class="left-panel">
-      <div >Load Example Flow of 
-        <select on:change={loadAlgo} style="margin-left: 10px; padding:4px">
-          {#each Object.keys(algos) as algoName}
-            <option value={algoName} >{algoName}</option>
-          {/each}
-        </select>
+      <FlowList
+        {flows}
+        bind:selectedFlowId
+        on:flowSelected={handleFlowSelection}
+        on:addFlow={handleAddFlow}
+        on:removeFlow={handleRemoveFlow}
+      />
 
-      </div>
       <textarea id="text-area" bind:value={flowText} 
         on:keyup={handleKeyUp} 
         on:keydown={handleKeyDown} 

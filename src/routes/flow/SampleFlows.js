@@ -40,7 +40,18 @@ ELSE
   update high to mid - 1
 `
 
-export const algos = {
-  "Binary Search": binarySearch,
-  "Binary Search with Multiple Flows": binarySearchMultipleFlows,
+
+let flows = [
+  { id: 1, name: "Binary Search", successPercentage: 30 },
+  { id: 2, name: "Binary Search with Multiple Flows", successPercentage: 0 }
+];
+
+let flowsText = {
+  1: binarySearch,
+  2: binarySearchMultipleFlows
+}
+
+export {
+  flows,
+  flowsText
 }
