@@ -7,7 +7,7 @@
   export let text = "";
   export let selection = [];
 
-  let flowsData = []; //json obj of flows text
+  export let flowsData = []; //json obj of flows text
   let selectedFlowIndex = 0; //toolbar
 
   let nodes = [];
@@ -22,9 +22,11 @@
   // Bind to CoreChart instance
   let coreChartInstance;
 
-  // Update flow data when text changes
+  // Update flow data when text changes or flows data
   $: {
-    if (text.length > 0) {
+    if (flowsData.length > 0) {
+      updateSelectedFlow(selectedFlowIndex);
+    }else if (text.length > 0) { //called only when text is updated
       flowsData = flowText2Obj(text);
       updateSelectedFlow(selectedFlowIndex);
     }

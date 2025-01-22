@@ -73,8 +73,8 @@
   }
 
   // React to changes in selection
+  $: highlighter.nodeState = nodeState;
   $: {
-    highlighter.nodeState = nodeState;
     if (selection && selection.nodeIds) {
       highlighter.unselectNodes(); //any previous selected node
       highlighter.selectNodes( new Set(selection.nodeIds));
