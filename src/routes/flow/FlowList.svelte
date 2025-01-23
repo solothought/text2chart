@@ -24,8 +24,16 @@
         : b.name.localeCompare(a.name);
     } else if (sortBy === 'successPercentage') {
       return sortDirection === 'asc'
-        ? a.successPercentage - b.successPercentage
-        : b.successPercentage - a.successPercentage;
+        ? (a.successPercentage||0) - (b.successPercentage||0)
+        : (b.successPercentage||0) - (a.successPercentage||0);
+    } else if (sortBy === 'errors') {
+      return sortDirection === 'asc'
+        ? (a.errors||0) - (b.errors||0)
+        : (b.errors||0) - (a.errors||0);
+    } else if (sortBy === 'avgExecutionTime') {
+      return sortDirection === 'asc'
+        ? (a.avgExecutionTime||0) - (b.avgExecutionTime||0)
+        : (b.avgExecutionTime||0) - (a.avgExecutionTime||0);
     }
     return 0;
   });
@@ -70,6 +78,13 @@
   function toggleList() {
     isListExpanded = !isListExpanded;
   }
+
+  // Function to get progress bar color based on success percentage
+  function getProgressBarColor(successPercentage) {
+    if (successPercentage > 90) return '#4caf50'; // Green
+    if (successPercentage < 50) return '#ff4444'; // Red
+    return '#ffc107'; // Yellow
+  }
 </script>
 
 <style>
@@ -99,7 +114,6 @@
     cursor: pointer;
     height: 50px;
     overflow: hidden;
-
   }
 
   .selected-flow:hover {
@@ -149,6 +163,11 @@
   .sort-icons {
     display: flex;
     gap: 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .sort-icon-label {
+    padding: 0.5rem;
   }
 
   .sort-icon {
@@ -157,7 +176,6 @@
     border: 1px solid #ccc;
     border-radius: 4px;
     background-color: #fff;
-    font-size: 0.9rem;
     transition: background-color 0.2s ease;
   }
 
@@ -185,12 +203,27 @@
     padding: 10px;
   }
 
+  .flow-item-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .avg-execution-time {
+    writing-mode: vertical-lr;
+    transform: rotate(180deg);
+    font-size: 0.6rem;
+    color: #555;
+    padding: 0.5rem 0;
+  }
+
   .flow-item {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0.75rem;
-    margin-bottom: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #f9f9f9;
@@ -213,7 +246,6 @@
     top: 0;
     left: 0;
     height: 100%;
-    background-color: #4caf50;
     opacity: 0.3;
     z-index: 1;
     border-radius: 4px;
@@ -233,18 +265,37 @@
     color: #333;
   }
 
-  .flow-percentage {
-    margin-left: 1rem;
-    color: #555;
-    font-size: 0.9rem;
+  .error-badge {
+    position: absolute;
+    top: -25px;
+    right: -10px;
+    background-color: #ff4444;
+    color: white;
+    padding: 0.15rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.6rem;
   }
 
-  .remove-icon {
-    margin-left: 1rem;
-    color: #ff4444;
+  .chart-button {
+    position: absolute;
+    right: 3rem; /* Positioned just before the remove-icon */
     cursor: pointer;
     opacity: 0;
     transition: opacity 0.2s ease;
+    font-size: 2rem; /* Fixed size */
+  }
+
+  .flow-item:hover .chart-button {
+    opacity: 1;
+  }
+
+  .remove-icon {
+    position: absolute;
+    right: 1rem; /* Fixed position */
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    font-size: 1rem; /* Fixed size */
   }
 
   .flow-item:hover .remove-icon {
@@ -338,33 +389,55 @@
           placeholder="Search for a flow"
         />
         <div class="sort-icons">
+          <div class="sort-icon-label">Sort By</div>
           <div
             class="sort-icon {sortBy === 'name' ? 'active' : ''}"
             on:click={() => handleSortChange('name')}
           >
-            Sort by Name {sortBy === 'name' ? (sortDirection === 'asc' ? '▲' : '▼'):''}
+            {sortBy === 'name' ? (sortDirection === 'asc' ? 'Z▲' : 'A▼') : 'AZ'}
           </div>
           <div
             class="sort-icon {sortBy === 'successPercentage' ? 'active' : ''}"
             on:click={() => handleSortChange('successPercentage')}
           >
-            Sort by Success {sortBy === 'successPercentage' ? (sortDirection === 'asc' ? '▲' : '▼'):''}
+            {sortBy === 'successPercentage' ? (sortDirection === 'asc' ? '✔️▲' : '✔️▼') : '✔️'}
+          </div>
+          <div
+            class="sort-icon {sortBy === 'errors' ? 'active' : ''}"
+            on:click={() => handleSortChange('errors')}
+          >
+           {sortBy === 'errors' ? (sortDirection === 'asc' ? '🐞▲' : '🐞▼') : '🐞'}
+          </div>
+          <div
+            class="sort-icon {sortBy === 'avgExecutionTime' ? 'active' : ''}"
+            on:click={() => handleSortChange('avgExecutionTime')}
+          >
+           {sortBy === 'avgExecutionTime' ? (sortDirection === 'asc' ? '⌛▲' : '⌛▼') : '⌛'}
           </div>
         </div>
       </div>
       {#each sortedFlows as flow}
-        <div
-          class="flow-item {selectedFlowId === flow.id ? 'selected' : ''}"
-          on:click={() => handleFlowSelection(flow.id)}
-        >
+        <div class="flow-item-container">
+          <div class="avg-execution-time">
+            {flow.avgExecutionTime || 0} ms
+          </div>
           <div
-            class="flow-progress"
-            style="width: {flow.successPercentage}%;"
-          ></div>
-          <div class="flow-content">
-            <span class="flow-name">{flow.name}</span>
-            <span class="flow-percentage">{flow.successPercentage}%</span>
-            <span class="remove-icon" on:click|stopPropagation={() => handleRemoveFlow(flow.id)}>✕</span>
+            class="flow-item {selectedFlowId === flow.id ? 'selected' : ''}"
+            on:click={() => handleFlowSelection(flow.id)}
+          >
+            <div
+              class="flow-progress"
+              style="width: {flow.successPercentage}%; background-color: {getProgressBarColor(flow.successPercentage)};"
+              title="Success Ratio: {flow.successPercentage}%"
+            ></div>
+            <div class="flow-content">
+              <span class="flow-name">{flow.name}</span>
+              {#if flow.errors}
+                <span class="error-badge">{flow.errors}</span>
+              {/if}
+              <span class="chart-button" on:click|stopPropagation={() => alert('Open charts for ' + flow.name)}>🗠</span>
+              <span class="remove-icon" on:click|stopPropagation={() => handleRemoveFlow(flow.id)}>✕</span>
+            </div>
           </div>
         </div>
       {/each}
