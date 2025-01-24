@@ -26,6 +26,7 @@
   }
   :global(.st-toolbox) {
     height: 40px;
+    padding: 0.2rem 0.5rem;
   }
   :global(.st-toolbox button) {
     background-color: #FFFFFF;
