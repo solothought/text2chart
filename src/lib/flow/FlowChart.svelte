@@ -24,10 +24,13 @@
 
   // Update flow data when text changes or flows data
   $: {
-    if (flowsData.length > 0) {
-      updateSelectedFlow(selectedFlowIndex);
-    }else if (text.length > 0) { //called only when text is updated
+    if (text.length > 0) { //called only when text is updated
       flowsData = flowText2Obj(text);
+      updateSelectedFlow(selectedFlowIndex);
+    }
+  }
+  $: {
+    if (flowsData.length > 0) {
       updateSelectedFlow(selectedFlowIndex);
     }
   }
@@ -39,7 +42,7 @@
   function updateSelectedFlow(index) {
     selectedFlowIndex = index;
     if (flowsData[selectedFlowIndex]) {
-      console.log(selectedFlowIndex);
+      // console.log(selectedFlowIndex);
       const selectedFlow = flowsData[selectedFlowIndex];
       nodes = selectedFlow.nodes;
       edges = selectedFlow.edges;
