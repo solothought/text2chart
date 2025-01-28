@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
 
-  export let flows; // This is a Svelte store
+  export let flows; // This is a Svelte store;  Use $flows to access the value of the store
   export let selectedFlowId;
   export let filterText = '';
   export let sortBy = 'name';
@@ -12,7 +12,10 @@
   let newFlowName = '';
   let isListExpanded = false; // Controls whether the list is expanded or collapsed
 
-  // Use $flows to access the value of the store
+  function isDuplicateFlowName(name) {
+    return $flows.some(flow => flow.name.toLowerCase() === name.toLowerCase());
+  }
+
   $: filteredFlows = $flows.filter(flow =>
     flow.name.toLowerCase().includes(filterText.toLowerCase())
   );
@@ -62,10 +65,15 @@
 
   // Function to submit the new flow name
   function submitNewFlow() {
-    if (newFlowName.trim()) {
-      dispatch('addFlow', { name: newFlowName.trim() });
-      newFlowName = '';
-      showAddFlowPopup = false;
+    const name = newFlowName.trim();
+    if (name) {
+      if (!isDuplicateFlowName(name)) {
+        dispatch('addFlow', { name });
+        newFlowName = '';
+        showAddFlowPopup = false;
+      } else {
+        alert('Flow with this name already exists');
+      }
     }
   }
 
