@@ -1,5 +1,6 @@
 <script>
   import FlowList from './FlowList.svelte';
+  import TextArea from './TextArea.svelte';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import FlowChart from '$lib/flow/FlowChart.svelte';
@@ -104,47 +105,16 @@
     }
   });
 
-  /**
-   * Ease text editing & to highlight current  step on graph
-   * @param event
-   */
-  function handleKeyDown(event) {
-    const textarea = event.target;
-    if("text-area" === textarea.id){
-      highlightCurrentStepNode(event)
-      handleEditing(event);
-    }
+  // Handle text changes from the TextArea component
+  function handleTextChange(event) {
+    flowText = event.detail.text;
+    const selectedFlow = $flows.find(flow => flow.id === selectedFlowId);
+    saveFlowText(selectedFlowId, selectedFlow?.name, flowText);
   }
 
-  function highlightCurrentStepNode(event){
-    const selectedLines =getSelectedLines(event.target, event.key, event.shiftKey);
-    nodesToHighlight = selectedLines;
-  }
-
-  /**
-   * Update graph if flow gets change
-   * @param event
-   */
-   function handleKeyUp(event) {
-    const textarea = event.target;
-    if("text-area" === textarea.id){
-      if (flowText.length !== previousText.length || flowText !== previousText) {
-        const selectedFlow = $flows.find(flow => flow.id === selectedFlowId);
-        saveFlowText(selectedFlowId, selectedFlow?.name, flowText);
-        previousText = flowText;
-      }
-    }
-  }
-
-  /**
-   * Highlight current step on graph
-   * @param event
-   */
-  function handleClick(event) {
-    const textarea = event.target;
-    if("text-area" === textarea.id){
-      highlightCurrentStepNode(event);
-    }
+  // Handle line selection from the TextArea component
+  function handleLineSelection(event) {
+    nodesToHighlight = event.detail.selectedLines;
   }
 
   
@@ -157,11 +127,6 @@
     height: calc(100vh - 100px);
   }
   .left-panel{width: 30vw; height: 100%; border-right: 1px dashed black;}
-  #text-area {
-    width: 100%;
-    height: 100%;
-    border:0;
-  }
 </style>
 <div class="container-fluid">
   <div class="workspace">
@@ -174,10 +139,11 @@
         on:removeFlow={handleRemoveFlow}
       />
 
-      <textarea id="text-area" bind:value={flowText} 
-        on:keyup={handleKeyUp} 
-        on:keydown={handleKeyDown} 
-        on:mouseup={handleClick} />
+      <TextArea
+        bind:text={flowText}
+        on:textChange={handleTextChange}
+        on:lineSelection={handleLineSelection}
+      />
     </div>
     {#key chartKey} <!-- Recreate Chart component -->
     <FlowChart 
