@@ -1,7 +1,6 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
-  import { onMount } from 'svelte';
   export let flows; // This is a Svelte store;  Use $flows to access the value of the store
   export let selectedFlowId;
   export let filterText = '';
@@ -399,25 +398,25 @@
         />
         <div class="sort-icons">
           <div class="sort-icon-label">Sort By</div>
-          <div
+          <div  role="button" tabindex="1"
             class="sort-icon {sortBy === 'name' ? 'active' : ''}"
             on:click={() => handleSortChange('name')}
           >
             {sortBy === 'name' ? (sortDirection === 'asc' ? 'Z▲' : 'A▼') : 'AZ'}
           </div>
-          <div
+          <div  role="button" tabindex="2"
             class="sort-icon {sortBy === 'successPercentage' ? 'active' : ''}"
             on:click={() => handleSortChange('successPercentage')}
           >
             {sortBy === 'successPercentage' ? (sortDirection === 'asc' ? '✔️▲' : '✔️▼') : '✔️'}
           </div>
-          <div
+          <div role="button" tabindex="3"
             class="sort-icon {sortBy === 'errors' ? 'active' : ''}"
             on:click={() => handleSortChange('errors')}
           >
            {sortBy === 'errors' ? (sortDirection === 'asc' ? '🐞▲' : '🐞▼') : '🐞'}
           </div>
-          <div
+          <div role="button" tabindex="4"
             class="sort-icon {sortBy === 'avgExecutionTime' ? 'active' : ''}"
             on:click={() => handleSortChange('avgExecutionTime')}
           >
@@ -430,7 +429,7 @@
           <div class="avg-execution-time">
             {flow.avgExecutionTime || 0} ms
           </div>
-          <div
+          <div  role="combobox" tabindex="0"
             class="flow-item {selectedFlowId === flow.id ? 'selected' : ''}"
             on:click={() => handleFlowSelection(flow.id)}
           >
