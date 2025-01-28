@@ -67,6 +67,7 @@
       const flowName = e.detail.flowName;
       flowsData.forEach((flow, i) => {
         if (flow.flowName === flowName) {
+          selection = [];
           updateSelectedFlow(i);
         }
       });
@@ -82,7 +83,7 @@
 
   $: {
     if (selection && selection.nodeIds && selection.nodeIds.length) {
-      console.debug("update selection")
+      // console.debug("update selection")
       if(selection.flowIndex !== selectedFlowIndex){
         updateSelectedFlow(selection.flowIndex);
       }
