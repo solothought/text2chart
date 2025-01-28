@@ -10,7 +10,7 @@
   import { 
     saveFlowText, 
     loadFlowText, 
-    saveSelectedFlow, 
+    saveSelectedFlowId, 
     loadSelectedFlowId, 
     saveFlowList, 
     loadFlowList 
@@ -43,7 +43,7 @@
     flowText = storedText || flowsText[flowId] || '';
     
     selectedFlowId = flowId;
-    saveSelectedFlow(flowId);
+    saveSelectedFlowId(flowId);
     chartKey++;
   }
 
@@ -66,6 +66,12 @@
         saveFlowText(newFlow.id, newFlow.name, '');
         saveFlowList([...currentFlows, newFlow]);
         
+        // Set the new flow as the selected flow
+        selectedFlowId = newFlow.id;
+        saveSelectedFlowId(newFlow.id);
+        initializeFlowText();
+        chartKey++; // Reinitialize the chart
+
         return [...currentFlows, newFlow];
       });
     } else {
@@ -94,14 +100,14 @@
     if (typeof window !== 'undefined') {
       selectedFlowId = loadSelectedFlowId() ||1;
       
-      flowListComponent.handleFlowSelection(selectedFlowId); //not working
+      // flowListComponent.handleFlowSelection(selectedFlowId); //not working
+      initializeFlowText();
 
       const storedFlows = loadFlowList();
       if (storedFlows) {
         flows.set(storedFlows);
       }
       
-      initializeFlowText();
     }
   });
 

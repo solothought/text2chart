@@ -20,7 +20,7 @@ export function loadFlowText(flowId, flowName) {
            null;
 }
 
-export function saveSelectedFlow(flowId) {
+export function saveSelectedFlowId(flowId) {
     localStorage.setItem(SELECTED_FLOW_KEY, flowId);
 }
 
