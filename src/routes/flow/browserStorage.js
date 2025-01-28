@@ -1,4 +1,3 @@
-// browserStorage.js
 const FLOW_STORAGE_PREFIX = 'flow-text-';
 const SELECTED_FLOW_KEY = 'selected-flow';
 const FLOW_LIST_KEY = 'flow-list';

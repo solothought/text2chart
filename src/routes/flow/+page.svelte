@@ -1,12 +1,10 @@
 <script>
-  import FlowList from './FlowList.svelte';
-  import TextArea from './TextArea.svelte';
+  import FlowList from '$lib/view/FlowList.svelte';
+  import TextArea from '$lib/view/TextArea.svelte';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import FlowChart from '$lib/flow/FlowChart.svelte';
-  import {getSelectedLines} from './selection.js';
   import {flows as initialFlows, flowsText} from './SampleFlows.js';
-  import {handleEditing} from './text-editor.js';
 
   import { 
     saveFlowText, 
