@@ -12,10 +12,6 @@
   let newFlowName = '';
   let isListExpanded = false; // Controls whether the list is expanded or collapsed
 
-  onMount(()=>{
-    console.log(selectedFlowId);
-  })
-
   function isDuplicateFlowName(name) {
     return $flows.some(flow => flow.name.toLowerCase() === name.toLowerCase());
   }
@@ -57,6 +53,7 @@
 
   // Function to handle flow selection
   export function handleFlowSelection(flowId) {
+    console.log("change to",flowId);
     selectedFlowId = flowId;
     isListExpanded = false; // Collapse the list after selection
     dispatch('flowSelected', { flowId });

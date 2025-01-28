@@ -25,7 +25,11 @@ export function saveSelectedFlowId(flowId) {
 }
 
 export function loadSelectedFlowId() {
-    return localStorage.getItem(SELECTED_FLOW_KEY);
+    if (typeof window !== 'undefined') {
+        return Number(localStorage.getItem(SELECTED_FLOW_KEY));
+    }else{
+        return 1;
+    }
 }
 
 export function saveFlowList(flows) {
@@ -33,6 +37,10 @@ export function saveFlowList(flows) {
 }
 
 export function loadFlowList() {
-    const stored = localStorage.getItem(FLOW_LIST_KEY);
-    return stored ? JSON.parse(stored) : null;
+    if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem(FLOW_LIST_KEY);
+        return stored ? JSON.parse(stored) : null;
+    }else{
+        return null;
+    }
 }

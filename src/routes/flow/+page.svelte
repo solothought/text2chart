@@ -18,12 +18,14 @@
 
   // Use a writable store for flows to ensure reactivity
   let flows = writable([...initialFlows]);
-  let selectedFlowId;
-  let flowListComponent;
+  let selectedFlowId = loadSelectedFlowId() ||1;
   let previousText = '';
   let nodesToHighlight = [];
   let flowText = '';
   let chartKey = 0; // Used to reinitialize the FlowChart component
+
+  const storedFlows = loadFlowList();
+  if(storedFlows)   flows.set(storedFlows);
 
   function initializeFlowText() {
     const selectedFlow = $flows.find(flow => flow.id === selectedFlowId);
@@ -98,16 +100,7 @@
   */
   onMount(async () => {
     if (typeof window !== 'undefined') {
-      selectedFlowId = loadSelectedFlowId() ||1;
-      
-      // flowListComponent.handleFlowSelection(selectedFlowId); //not working
       initializeFlowText();
-
-      const storedFlows = loadFlowList();
-      if (storedFlows) {
-        flows.set(storedFlows);
-      }
-      
     }
   });
 
@@ -179,7 +172,6 @@
         on:flowSelected={handleFlowSelection}
         on:addFlow={handleAddFlow}
         on:removeFlow={handleRemoveFlow}
-        bind:this={flowListComponent}
       />
 
       <textarea id="text-area" bind:value={flowText} 
