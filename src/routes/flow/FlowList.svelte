@@ -1,7 +1,7 @@
 <script>
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
-
+  import { onMount } from 'svelte';
   export let flows; // This is a Svelte store;  Use $flows to access the value of the store
   export let selectedFlowId;
   export let filterText = '';
@@ -11,6 +11,10 @@
   let showAddFlowPopup = false;
   let newFlowName = '';
   let isListExpanded = false; // Controls whether the list is expanded or collapsed
+
+  onMount(()=>{
+    console.log(selectedFlowId);
+  })
 
   function isDuplicateFlowName(name) {
     return $flows.some(flow => flow.name.toLowerCase() === name.toLowerCase());
@@ -52,7 +56,7 @@
   }
 
   // Function to handle flow selection
-  function handleFlowSelection(flowId) {
+  export function handleFlowSelection(flowId) {
     selectedFlowId = flowId;
     isListExpanded = false; // Collapse the list after selection
     dispatch('flowSelected', { flowId });

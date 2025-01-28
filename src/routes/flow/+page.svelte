@@ -2,81 +2,106 @@
   import FlowList from './FlowList.svelte';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
-  const storeKey = 'st-flow-algo';
-  const storedValue = writable('');
-  let updateLocalStorageDebounced;
-  // export let windowAvailable = false;
-
   import FlowChart from '$lib/flow/FlowChart.svelte';
   import {getSelectedLines} from './selection.js';
   import {flows as initialFlows, flowsText} from './SampleFlows.js';
   import {handleEditing} from './text-editor.js';
 
+  import { 
+    saveFlowText, 
+    loadFlowText, 
+    saveSelectedFlow, 
+    loadSelectedFlowId, 
+    saveFlowList, 
+    loadFlowList 
+  } from './browserStorage.js';
+
   // Use a writable store for flows to ensure reactivity
   let flows = writable([...initialFlows]);
-  let selectedFlowId = 1;
+  let selectedFlowId;
+  let flowListComponent;
+  let previousText = '';
+  let nodesToHighlight = [];
+  let flowText = '';
+  let chartKey = 0; // Used to reinitialize the FlowChart component
 
-  // Function to handle flow selection
+  function initializeFlowText() {
+    const selectedFlow = $flows.find(flow => flow.id === selectedFlowId);
+    flowText = loadFlowText(selectedFlowId, selectedFlow?.name) || flowsText[selectedFlowId] || '';
+  }
+
+  /**
+   * Load text from browser storage or from memory
+   * @param event
+   */
   function handleFlowSelection(event) {
-    selectedFlowId = event.detail.flowId;
-    // console.log('Selected Flow ID:', selectedFlowId);
-    flowText  = flowsText[selectedFlowId];
+    const flowId = event.detail.flowId;
+    const selectedFlow = $flows.find(flow => flow.id === flowId);
+    
+    // Load text from storage or default
+    const storedText = loadFlowText(flowId, selectedFlow?.name);
+    flowText = storedText || flowsText[flowId] || '';
+    
+    selectedFlowId = flowId;
+    saveSelectedFlow(flowId);
     chartKey++;
   }
 
-  // Function to handle adding a new flow
-  function handleAddFlow(event) {
-    const newFlowName = event.detail.name;
+  /**
+   * Add a new flow with empty algo text and update browser storage
+   * @param event 
+   */
+   function handleAddFlow(event) {
+    const newFlowName = event.detail.name.trim();
+    
+    if (!$flows.some(flow => flow.name.toLowerCase() === newFlowName.toLowerCase())) {
+      flows.update((currentFlows) => {
+        const newFlow = {
+          id: currentFlows.length + 1,
+          name: newFlowName,
+          successPercentage: 0,
+        };
+        
+        // Save empty text for new flow
+        saveFlowText(newFlow.id, newFlow.name, '');
+        saveFlowList([...currentFlows, newFlow]);
+        
+        return [...currentFlows, newFlow];
+      });
+    } else {
+      alert('Flow with this name already exists');
+    }
+  }
 
+  /**
+   * Remove flow from memory and browser storage
+   * @param event 
+   */
+   function handleRemoveFlow(event) {
+    //TODO: confirm before deletion
+    const flowId = event.detail.flowId;
     flows.update((currentFlows) => {
-      const newFlow = {
-        id: currentFlows.length + 1, // Generate a new ID
-        name: newFlowName,
-        successPercentage: 0, // Default success percentage
-      };
-      console.log('Added Flow:', newFlow);
-      return [...currentFlows, newFlow]; // Update flows immutably
+      const updatedFlows = currentFlows.filter(flow => flow.id !== flowId);
+      saveFlowList(updatedFlows);
+      return updatedFlows;
     });
   }
 
-  // Function to handle removing a flow
-  function handleRemoveFlow(event) {
-    const flowId = event.detail.flowId;
-    // flows = flows.filter(flow => flow.id !== flowId);
-    flows.update(
-      (currentFlows) => currentFlows.filter(flow => flow.id !== flowId));
-    console.log('Removed Flow ID:', flowId);
-  }
-
-  let previousText = '';
-  let nodesToHighlight = [];
-  let flowText = flowsText[1];
-  let chartKey = 0; // Used to reinitialize the FlowChart component
-
+  /**
+   * Load flows from browser storage if present
+  */
   onMount(async () => {
     if (typeof window !== 'undefined') {
-      // windowAvailable = true;
+      selectedFlowId = loadSelectedFlowId() ||1;
+      
+      flowListComponent.handleFlowSelection(selectedFlowId); //not working
 
-      const valFromStorage = localStorage.getItem(storeKey);
-      flowText = valFromStorage || flowsText[1];
-  
-      updateLocalStorageDebounced = (value) => {
-        clearTimeout(updateLocalStorageDebounced.timeout);
-        updateLocalStorageDebounced.timeout = setTimeout(() => {
-          localStorage.setItem(storeKey, value);
-        }, 500);
+      const storedFlows = loadFlowList();
+      if (storedFlows) {
+        flows.set(storedFlows);
       }
-  
-      // Subscribe to changes in storedValue and update localStorage with debouncing
-      const unsubscribe = storedValue.subscribe(value => {
-        updateLocalStorageDebounced(value);
-      });
-  
-      // Cleanup function to unsubscribe
-      return () => {
-        unsubscribe();
-        clearTimeout(updateLocalStorageDebounced.timer);
-      };
+      
+      initializeFlowText();
     }
   });
 
@@ -101,12 +126,12 @@
    * Update graph if flow gets change
    * @param event
    */
-  function handleKeyUp(event) {
+   function handleKeyUp(event) {
     const textarea = event.target;
     if("text-area" === textarea.id){
       if (flowText.length !== previousText.length || flowText !== previousText) {
-        storedValue.set(flowText);
-        updateLocalStorageDebounced(flowText);
+        const selectedFlow = $flows.find(flow => flow.id === selectedFlowId);
+        saveFlowText(selectedFlowId, selectedFlow?.name, flowText);
         previousText = flowText;
       }
     }
@@ -144,10 +169,11 @@
     <div class="left-panel">
       <FlowList
         {flows}
-        bind:selectedFlowId
+        {selectedFlowId}
         on:flowSelected={handleFlowSelection}
         on:addFlow={handleAddFlow}
         on:removeFlow={handleRemoveFlow}
+        bind:this={flowListComponent}
       />
 
       <textarea id="text-area" bind:value={flowText} 
