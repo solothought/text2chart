@@ -4,7 +4,7 @@
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import FlowChart from '$lib/flow/FlowChart.svelte';
-  import {flows as initialFlows, flowsText} from './SampleFlows.js';
+  import {flows as initialFlows, flowsText} from '$lib/editor/SampleFlows.js';
 
   import { 
     saveFlowText, 
@@ -13,7 +13,7 @@
     loadSelectedFlowId, 
     saveFlowList, 
     loadFlowList 
-  } from './browserStorage.js';
+  } from '$lib/editor/browserStorage.js';
 
   // Use a writable store for flows to ensure reactivity
   let flows = writable([...initialFlows]);
