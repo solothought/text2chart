@@ -35,12 +35,17 @@
   }
 
   function fitViewToSelection(selectedNodeIds, nodes) {
-    const boundingBox = calculateBoundingBox(selectedNodeIds, nodes);
-    if (boundingBox) {
+    // const boundingBox = calculateBoundingBox(selectedNodeIds, nodes);
+    // if (boundingBox) {
+    if (selectedNodeIds.length > 0) {
       const nd = nodes.filter(node => selectedNodeIds.includes(node.id));
       // console.log(svelteFlowElement.getViewport())
       //TODO: Don't change view if node is already in the view
-      svelteFlowElement.fitView({nodes: nd});
+      svelteFlowElement.fitView({
+        nodes: nd,
+        maxZoom: 1,
+        duration: 200
+      });
     }
   }
 
@@ -48,11 +53,6 @@
     if (selection && selection.nodeIds) {
       fitViewToSelection(selection.nodeIds, nodes);
     }
-  }
-  function adjustViewport(detail) {
-    console.log("adjusting view")
-    const { x, y, width, height } = detail;
-    svelteFlowElement.setViewport({ x, y, width, height }, { padding: 20, duration: 200 });
   }
 
   $: {
