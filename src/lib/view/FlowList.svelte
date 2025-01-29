@@ -6,6 +6,7 @@
   export let filterText = '';
   export let sortBy = 'name';
   export let sortDirection = 'asc';
+  export let mode = "editor"; // editor, monitor
 
   let showAddFlowPopup = false;
   let newFlowName = '';
@@ -376,7 +377,7 @@
         {/if}
       </span>
       <span class="flow-percentage">
-        {#if selectedFlowId}
+        {#if selectedFlowId && mode === "monitor" }
           {$flows.find(flow => flow.id === selectedFlowId)?.successPercentage || 0}%
         {/if}
       </span>
@@ -404,6 +405,7 @@
           >
             {sortBy === 'name' ? (sortDirection === 'asc' ? 'Z▲' : 'A▼') : 'AZ'}
           </div>
+        {#if mode === "monitor" }
           <div  role="button" tabindex="2"
             class="sort-icon {sortBy === 'successPercentage' ? 'active' : ''}"
             on:click={() => handleSortChange('successPercentage')}
@@ -422,28 +424,35 @@
           >
            {sortBy === 'avgExecutionTime' ? (sortDirection === 'asc' ? '⌛▲' : '⌛▼') : '⌛'}
           </div>
+        {/if}
         </div>
       </div>
       {#each sortedFlows as flow}
         <div class="flow-item-container">
+          {#if mode === "monitor" }
           <div class="avg-execution-time">
             {flow.avgExecutionTime || 0} ms
           </div>
+          {/if}
           <div  role="combobox" tabindex="0"
             class="flow-item {selectedFlowId === flow.id ? 'selected' : ''}"
             on:click={() => handleFlowSelection(flow.id)}
           >
+          {#if mode === "monitor"}
             <div
               class="flow-progress"
               style="width: {flow.successPercentage}%; background-color: {getProgressBarColor(flow.successPercentage)};"
               title="Success Ratio: {flow.successPercentage}%"
             ></div>
+          {/if}
             <div class="flow-content">
               <span class="flow-name">{flow.name}</span>
-              {#if flow.errors}
+              {#if flow.errors && mode === "monitor"}
                 <span class="error-badge">{flow.errors}</span>
               {/if}
+              {#if mode === "monitor"}
               <span class="chart-button" on:click|stopPropagation={() => alert('Open charts for ' + flow.name)}>🗠</span>
+              {/if}
               <span class="remove-icon" on:click|stopPropagation={() => handleRemoveFlow(flow.id)}>✕</span>
             </div>
           </div>
