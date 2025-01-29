@@ -1,6 +1,8 @@
 <script>
   import { writable } from 'svelte/store';
   import { onDestroy, createEventDispatcher } from 'svelte';
+  import ViewportAdjuster from './ViewportAdjuster.svelte';
+
   const dispatch = createEventDispatcher();
 
   import {
@@ -25,13 +27,12 @@
   export let style = ""; // Accept style as a prop
   export let clazz = ""; // Accept class as a prop
   export let selection = [];
-  let highlighter = new Highlighter(nodes,edges, nodeState);
 
+  let highlighter = new Highlighter(nodes,edges, nodeState);
   let nodeStore = writable(nodes);
   let edgeStore = writable(edges);
   let keyPressed = "";
 
-  
   function highlightPath(event) {
     const nodeId = event.detail.node.id;
     let selectDirection = 2;
@@ -99,6 +100,7 @@
 
 <div {style} class={clazz}>
   <SvelteFlowProvider>
+    <ViewportAdjuster bind:selection bind:nodes />
     <SvelteFlow
       {nodeTypes}
       bind:nodes={nodeStore}
@@ -109,7 +111,6 @@
       on:nodemouseleave={unHighlightPath}
       on:nodeclick={onNodeClick}
       on:edgeclick={styleEdge}
-
     >
       <Controls />
       <Background />
