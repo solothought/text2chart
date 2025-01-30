@@ -81,6 +81,16 @@
     coreChartInstance.updateStore(nodes, edges);
   }
 
+    // Handle path selection from toolbar
+  function selectNodes(event) {
+    console.log("change selection");
+    selection = {
+      flowIndex: event.detail.flowIndex,
+      nodeIds: event.detail.nodeIds
+    };
+  }
+
+
   $: {
     if (selection && selection.nodeIds && selection.nodeIds.length) {
       // console.debug("update selection")
@@ -100,6 +110,7 @@
     {nodes}
     handleFlowChange={handleFlowChange}
     hideNodeMsgDetail={hideNodeMsgDetail}
+    on:selectionChange={selectNodes}
   />
   <CoreChart
     bind:this={coreChartInstance}

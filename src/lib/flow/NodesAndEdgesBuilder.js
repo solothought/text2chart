@@ -70,6 +70,7 @@ export function convert(flowContent){
         const nAe = mapStepsToNodes(flow);
         // console.log(nAe.edges);
         // console.log(nAe.nodes);
+        // console.log(nAe.paths);
         nodesAndEdges.push(nAe);
       }
     }
@@ -85,7 +86,7 @@ export function convert(flowContent){
 function mapStepsToNodes(flow){
   const nodes=[];
   const edges=[];
-  const connections = {};
+  const connections = {}; // { "node-id": {target: ["node-id"], parent: ["node-id"]} }
   let lastNode;
   const parentStack = [];
   let nodeId = 0, row=-1;
@@ -156,16 +157,42 @@ function mapStepsToNodes(flow){
   // for first node
   nodes[0].data.isStart = true;
   // console.debug(connections);
-  
-  return {flowName:  flow.name, nodes, edges, connections}
+  return {flowName:  flow.name, nodes, edges, connections, paths: findAllPaths(flow.links)}
 }
+
+function findAllPaths(links) {
+  const paths = [];
+
+  function dfs(nodeId, currentPath, visited) {
+      visited.add(nodeId);
+      currentPath.push(String(nodeId));
+
+      if (nodeId === -1) {
+          paths.push([...currentPath]);
+      } else {
+          for (const neighbor of links[nodeId] || []) {
+              if (!visited.has(neighbor)) {
+                  dfs(neighbor, currentPath, visited);
+              }
+          }
+      }
+
+      currentPath.pop();
+      visited.delete(nodeId);
+  }
+
+  dfs(0, [], new Set());
+
+  return paths;
+}
+
 
 const branchSteps=["IF", "ELSE_IF", "LOOP"];
 function isBranchStep(type){
   return branchSteps.indexOf(type) !== -1;
 }
 
-// const flowText = `
+// let flowText = `
 // FLOW: passed as parameter
 // here you go
 // LOOP until
@@ -174,6 +201,26 @@ function isBranchStep(type){
 //     STOP
 //   ELSE
 //     SKIP
+// ` 
+// let flowText = `
+// FLOW: Sample flow 1
+// LOOP (source is) readable
+//   read a character (of input buffer)
+//   IF statement 
+//     IF another statement
+//       THEN found here
+//       AND copy data
+//     ELSE_IF parallel statement
+//       DO nothing
+//       ERR Unexpected end of input
+//       END
+//     ELSE 
+//       last statement
+//   ELSE 
+//     something
+//   IF optional
+//     still step
+// DO in end
 // ` 
 
 // const {nodes,edges} = convert(flowText)
