@@ -382,9 +382,11 @@
         {/if}
       </span>
     </div>
+    {#if mode !== "monitor"}
     <button class="add-flow-button" on:click={handleAddFlow}>
       + 
     </button>
+    {/if}
   </div>
 
   <!-- Expanded list (shown when isListExpanded is true) -->
