@@ -1,14 +1,16 @@
 <script>
   import DownloadButton from './../DownloadButton.svelte';
   import PathsDropdown from './PathsDropdown.svelte';
+  import LongTextIcon from './../icons/longText.svelte';
+  import ShortTextIcon from './../icons/shortText.svelte';
 
   export let flowsData = [];
   export let selectedFlowIndex;
   export let flowName = "";
-  export let nodeState = {};
+  export let stepMsgInDetail = true;
   export let nodes = [];
   export let handleFlowChange;
-  export let hideNodeMsgDetail;
+  export let hideStepMsgDetail;
   
   // Dispatch function to emit custom events
   import { createEventDispatcher } from 'svelte';
@@ -33,7 +35,14 @@
       <option value={index}>{flow.flowName}</option>
     {/each}
   </select>
-  <button on:click={hideNodeMsgDetail} class={nodeState.hideMsgDetail ? 'passive' : ''}>👁</button>
+  <button on:click={hideStepMsgDetail}>
+    {#if stepMsgInDetail}
+      <LongTextIcon height="24px" />
+    {/if}
+    {#if !stepMsgInDetail}
+      <ShortTextIcon height="24px" />
+    {/if}
+  </button>
   <DownloadButton {nodes} fileName={flowName} />
   
   {#if flowsData[selectedFlowIndex] && flowsData[selectedFlowIndex].paths}

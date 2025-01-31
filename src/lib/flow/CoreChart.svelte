@@ -31,23 +31,28 @@
   let highlighter = new Highlighter(nodes,edges, nodeState);
   let nodeStore = writable(nodes);
   let edgeStore = writable(edges);
-  let keyPressed = "";
+  let selectDirection = -1;
 
   function highlightPath(event) {
     const nodeId = event.detail.node.id;
-    let selectDirection = 2;
-    if (keyPressed === 'Shift') selectDirection = 0;
-    else if (keyPressed === 'Control') selectDirection = 1;
+    // let selectDirection = -1;
+    // if (keyPressed === 'Shift') selectDirection = 0;
+    // else if (keyPressed === 'Control') selectDirection = 1;
+    // else if (keyPressed === 'Alt') selectDirection = 2;
 
-    const selection = traverseConnections(nodeId, connections, selectDirection);
-
-    highlighter.selectPath(selection.seletedNodes, selection.seletedEdges);
-    updateStore(nodes, edges);
+    if(selectDirection !== -1){
+      const selection = traverseConnections(nodeId, connections, selectDirection);
+      highlighter.unselectNodes();
+      highlighter.selectPath(selection.seletedNodes, selection.seletedEdges);
+      updateStore(nodes, edges);
+    }
   }
 
   function unHighlightPath() {
-    highlighter.unselectPath();
-    updateStore(nodes, edges);
+    if(selectDirection !== -1){
+      highlighter.unselectPath();
+      updateStore(nodes, edges);
+    }
   }
 
   function styleEdge(event) {
@@ -57,11 +62,13 @@
 
   // Handle key events
   function handleKeyDown(event) {
-    keyPressed = event.key;
+    if(event.ctrlKey && event.shiftKey) selectDirection = 2;
+    else if(event.ctrlKey) selectDirection = 1;
+    else if(event.shiftKey) selectDirection = 0;
   }
 
-  function handleKeyUp() {
-    keyPressed = "";
+  function handleKeyUp(event) {
+    selectDirection = -1;
   }
 
   // Handle node click
@@ -77,7 +84,7 @@
   $: highlighter.nodeState = nodeState;
   $: {
     if (selection && selection.nodeIds) {
-      highlighter.unselectNodes(); //any previous selected node
+      highlighter.unselectAllNodes(); //any previous selected node
       highlighter.selectNodes( new Set(selection.nodeIds));
 
       nodeStore.set(nodes);

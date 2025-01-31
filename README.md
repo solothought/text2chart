@@ -82,8 +82,11 @@ new FlowChart({
 ## Interaction
 
 By default, when you hover a node, it highlights the path passing from that node.
-1. When You press <kbd>Shift</kbd> key then hover a node in chart, it highlights the path up to that node.
-2. When You press <kbd>Ctrl</kbd> key then hover a node in chart, it highlights the path from that node.
+1. When You press <kbd>Shift</kbd> key then hover a node in chart, it highlights the path(s) up to that node.
+2. When You press <kbd>Ctrl</kbd> key then hover a node in chart, it highlights the path(s) from that node.
+3. When You press <kbd>Ctrl</kbd>+<kbd>Shift</kbd> both keys then hover a node in chart, it highlights the full path(s) passing from that node.
+4. Keep the key held and hover out from the node to remove the selection.
+5. Release the held key and hover out to keep the selection
 
 ## Syntax
 
@@ -121,7 +124,7 @@ ELSE
 **Note**
 - a step starting with no keyword is also a normal step
 - you can have multiple flows in single file
-
+- Any detail in parenthesis is considered as extra detail for the step
 
 # Demo
 

@@ -19,6 +19,8 @@
     standardShape: false
   };
 
+  let stepMsgInDetail = true;
+
   // Bind to CoreChart instance
   let coreChartInstance;
 
@@ -75,9 +77,9 @@
   }
 
   // Toggle node message details
-  function hideNodeMsgDetail() {
-    nodeState.hideMsgDetail = !nodeState.hideMsgDetail;
-    updateProperty(nodes, nodeState);
+  function hideStepMsgDetail() {
+    stepMsgInDetail = !stepMsgInDetail;
+    updateProperty(nodes, {hideMsgDetail: !stepMsgInDetail});
     coreChartInstance.updateStore(nodes, edges);
   }
 
@@ -106,10 +108,10 @@
     {flowsData}
     bind:selectedFlowIndex
     {flowName}
-    {nodeState}
+    {stepMsgInDetail}
     {nodes}
     handleFlowChange={handleFlowChange}
-    hideNodeMsgDetail={hideNodeMsgDetail}
+    hideStepMsgDetail={hideStepMsgDetail}
     on:selectionChange={selectNodes}
   />
   <CoreChart

@@ -58,6 +58,10 @@ export class Highlighter{
     updateProperty(this.nodes, this.nodeState, {highlight: false}, this.selectedNodes);
     this.selectedNodes.clear();
   }
+  unselectAllNodes(){
+    updateProperty(this.nodes, this.nodeState, {highlight: false});
+    this.selectedNodes.clear();
+  }
   unselectEdges(){
     updateEdgesStyle(this.edges, this.selectedEdges, unhighlightEdge);
     this.selectedEdges.clear();
