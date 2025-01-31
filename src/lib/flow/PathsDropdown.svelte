@@ -40,7 +40,7 @@
     <div class="paths-dropdown">
       {#each paths as path, index}
         <div class="path-item" on:click={() => handlePathSelect(index)}>
-          Path {index + 1} ({path.filter(nodeId => nodeId !== -1).length} steps)
+          Path {index + 1} ({path.length} steps) ends at Step {path[path.length-1]}
         </div>
       {/each}
     </div>
@@ -61,7 +61,7 @@
     border: 1px solid #ccc;
     z-index: 1000;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    min-width: 200px;
+    min-width: 400px;
   }
 
   .path-item {
