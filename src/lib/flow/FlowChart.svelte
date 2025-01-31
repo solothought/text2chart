@@ -6,6 +6,7 @@
 
   export let text = "";
   export let selection = [];
+  export let focusOn = true;
 
   export let flowsData = []; //json obj of flows text
   let selectedFlowIndex = 0; //toolbar
@@ -18,8 +19,6 @@
     hideMsgDetail: false,
     standardShape: false
   };
-
-  let stepMsgInDetail = true;
 
   // Bind to CoreChart instance
   let coreChartInstance;
@@ -110,6 +109,7 @@
     handleFlowChange={handleFlowChange}
     hideStepMsgDetail={hideStepMsgDetail}
     on:selectionChange={selectNodes}
+    bind:focusOn
   />
   <CoreChart
     bind:this={coreChartInstance}
@@ -119,6 +119,7 @@
     {paths}
     {...$$restProps}
     {selection}
+    {focusOn}
     on:flowChange={flowChange}
   />
 </div>

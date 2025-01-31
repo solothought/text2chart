@@ -6,6 +6,7 @@
   let svelteFlowElement;
   export let selection;
   export let nodes;
+  export let focusOn = true;
 
   function calculateBoundingBox(selectedNodeIds, nodes) {
     if (!selectedNodeIds || selectedNodeIds.length === 0) return null;
@@ -44,13 +45,14 @@
       svelteFlowElement.fitView({
         nodes: nd,
         maxZoom: 1,
-        duration: 200
+        duration: 200,
+        // includeHiddenNodes: true
       });
     }
   }
 
   $: {
-    if (selection && selection.nodeIds) {
+    if (selection && selection.nodeIds && focusOn) {
       fitViewToSelection(selection.nodeIds, nodes);
     }
   }

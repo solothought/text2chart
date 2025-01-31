@@ -33,6 +33,7 @@
   export let style = ""; // Accept style as a prop
   export let clazz = ""; // Accept class as a prop
   export let selection = [];
+  export let focusOn = true;
 
   let highlighter = new Highlighter(nodes,edges, nodeState);
   let nodeStore = writable(nodes);
@@ -128,7 +129,7 @@
 
 <div {style} class={clazz}>
   <SvelteFlowProvider>
-    <ViewportAdjuster bind:selection bind:nodes />
+    <ViewportAdjuster {selection} {nodes} {focusOn}/>
     <SvelteFlow
       {nodeTypes}
       bind:nodes={nodeStore}

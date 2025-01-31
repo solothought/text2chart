@@ -3,6 +3,7 @@
   import PathsDropdown from './PathsDropdown.svelte';
   import LongTextIcon from './../icons/longText.svelte';
   import ShortTextIcon from './../icons/shortText.svelte';
+  import FocusIcon from './../icons/focus.svelte';
 
   export let flowsData = [];
   export let selectedFlowIndex;
@@ -11,7 +12,8 @@
   export let nodes = [];
   export let handleFlowChange;
   export let hideStepMsgDetail;
-  
+  export let focusOn = true;
+
   // Dispatch function to emit custom events
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
@@ -25,6 +27,10 @@
       flowIndex: flowIndex,
       nodeIds: nodeIds
     });
+  }
+
+  function toggleFocus(){
+    focusOn = !focusOn;
   }
   
 </script>
@@ -52,6 +58,9 @@
       on:pathSelected={handlePathSelect}
     />
   {/if}
+  <button on:click={toggleFocus} class="{focusOn?'':'passive'}">
+    <FocusIcon/>
+  </button>
 </div>
 
 <style>
