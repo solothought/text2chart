@@ -7,7 +7,7 @@
   export let flowsData = [];
   export let selectedFlowIndex;
   export let flowName = "";
-  export let stepMsgInDetail = true;
+  export let hideMsgDetail = true;
   export let nodes = [];
   export let handleFlowChange;
   export let hideStepMsgDetail;
@@ -36,10 +36,10 @@
     {/each}
   </select>
   <button on:click={hideStepMsgDetail}>
-    {#if stepMsgInDetail}
+    {#if !hideMsgDetail}
       <LongTextIcon height="24px" />
     {/if}
-    {#if !stepMsgInDetail}
+    {#if hideMsgDetail}
       <ShortTextIcon height="24px" />
     {/if}
   </button>

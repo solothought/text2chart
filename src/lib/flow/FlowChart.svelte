@@ -77,8 +77,8 @@
 
   // Toggle node message details
   function hideStepMsgDetail() {
-    stepMsgInDetail = !stepMsgInDetail;
-    updateProperty(nodes, {hideMsgDetail: !stepMsgInDetail});
+    nodeState.hideMsgDetail = !nodeState.hideMsgDetail;
+    updateProperty(nodes, {hideMsgDetail: nodeState.hideMsgDetail});
     coreChartInstance.updateStore(nodes, edges);
   }
 
@@ -105,7 +105,7 @@
     {flowsData}
     bind:selectedFlowIndex
     {flowName}
-    {stepMsgInDetail}
+    bind:hideMsgDetail={nodeState.hideMsgDetail}
     {nodes}
     handleFlowChange={handleFlowChange}
     hideStepMsgDetail={hideStepMsgDetail}
