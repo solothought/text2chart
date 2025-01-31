@@ -166,15 +166,15 @@ function findAllPaths(links) {
   function dfs(nodeId, currentPath, visited) {
       visited.add(nodeId);
       currentPath.push(String(nodeId));
-
+      
       if (nodeId === -1) {
-          paths.push([...currentPath]);
+        paths.push([...currentPath.slice(0,currentPath.length-1)]);
       } else {
-          for (const neighbor of links[nodeId] || []) {
-              if (!visited.has(neighbor)) {
-                  dfs(neighbor, currentPath, visited);
-              }
-          }
+        for (const neighbor of links[nodeId] || []) {
+            if (!visited.has(neighbor)) {
+                dfs(neighbor, currentPath, visited);
+            }
+        }
       }
 
       currentPath.pop();
@@ -182,7 +182,6 @@ function findAllPaths(links) {
   }
 
   dfs(0, [], new Set());
-
   return paths;
 }
 
