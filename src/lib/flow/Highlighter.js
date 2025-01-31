@@ -66,6 +66,10 @@ export class Highlighter{
     updateEdgesStyle(this.edges, this.selectedEdges, unhighlightEdge);
     this.selectedEdges.clear();
   }
+  unselectAllEdges(){
+    updateEdgesStyle(this.edges, null, unhighlightEdge);
+    this.selectedEdges.clear();
+  }
 
   toggleEdge(id){
     if (this.selectedEdges.has(id)) {
@@ -79,11 +83,17 @@ export class Highlighter{
 }
 
 function updateEdgesStyle(edges,edgeIds, cb){
-  edges.forEach(edge => {
-    if(edgeIds.has(edge.id)){
+  if(edgeIds){
+    edges.forEach(edge => {
+      if(edgeIds.has(edge.id)){
+        cb(edge);
+      }
+    })
+  }else{
+    edges.forEach(edge => {
       cb(edge);
-    }
-  })
+    })
+  }
 }
 
 /**

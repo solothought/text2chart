@@ -86,7 +86,7 @@ export function convert(flowContent){
 function mapStepsToNodes(flow){
   const nodes=[];
   const edges=[];
-  const connections = {}; // { "node-id": {target: ["node-id"], parent: ["node-id"]} }
+  // const connections = {}; // { "node-id": {target: ["node-id"], parent: ["node-id"]} }
   let lastNode;
   const parentStack = [];
   let nodeId = 0, row=-1;
@@ -98,8 +98,8 @@ function mapStepsToNodes(flow){
       let position;
 
       //Build chart connections
-      if(connections[nodeId]) connections[nodeId].target = [...flow.links[nodeId].map(String)];
-      else connections[nodeId] = {target: [...flow.links[nodeId].map(String)], parent: []};
+      // if(connections[nodeId]) connections[nodeId].target = [...flow.links[nodeId].map(String)];
+      // else connections[nodeId] = {target: [...flow.links[nodeId].map(String)], parent: []};
     
       //calculate position
       if(!lastNode) position={x:0,y:0};
@@ -141,8 +141,8 @@ function mapStepsToNodes(flow){
         const targetId = flow.links[nodeId][j];
         
         //Build chart connections
-        if(!connections[targetId]) connections[targetId] = {target:[], parent:[]}
-        if(targetId > nodeId) connections[targetId].parent.push(String(nodeId));
+        // if(!connections[targetId]) connections[targetId] = {target:[], parent:[]}
+        // if(targetId > nodeId) connections[targetId].parent.push(String(nodeId));
 
         if(targetId === -1){
           node.data.isEnd = true;          
@@ -156,8 +156,7 @@ function mapStepsToNodes(flow){
   }
   // for first node
   nodes[0].data.isStart = true;
-  // console.debug(connections);
-  return {flowName:  flow.name, nodes, edges, connections, paths: findAllPaths(flow.links)}
+  return {flowName:  flow.name, nodes, edges, paths: findAllPaths(flow.links)}
 }
 
 function findAllPaths(links) {

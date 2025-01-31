@@ -12,7 +12,7 @@
 
   let nodes = [];
   let edges = [];
-  let connections = {};
+  let paths = [];
   let flowName = "";
   let nodeState = {
     hideMsgDetail: false,
@@ -44,11 +44,10 @@
   function updateSelectedFlow(index) {
     selectedFlowIndex = index;
     if (flowsData[selectedFlowIndex]) {
-      // console.log(selectedFlowIndex);
       const selectedFlow = flowsData[selectedFlowIndex];
       nodes = selectedFlow.nodes;
       edges = selectedFlow.edges;
-      connections = selectedFlow.connections;
+      paths = selectedFlow.paths;
       flowName = selectedFlow.flowName;
       updateProperty(nodes, nodeState);
       
@@ -85,7 +84,6 @@
 
     // Handle path selection from toolbar
   function selectNodes(event) {
-    console.log("change selection");
     selection = {
       flowIndex: event.detail.flowIndex,
       nodeIds: event.detail.nodeIds
@@ -95,7 +93,6 @@
 
   $: {
     if (selection && selection.nodeIds && selection.nodeIds.length) {
-      // console.debug("update selection")
       if(selection.flowIndex !== selectedFlowIndex){
         updateSelectedFlow(selection.flowIndex);
       }
@@ -119,7 +116,7 @@
     {nodes}
     {edges}
     {nodeState}
-    {connections}
+    {paths}
     {...$$restProps}
     {selection}
     on:flowChange={flowChange}

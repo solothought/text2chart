@@ -81,8 +81,14 @@ new FlowChart({
 
 ## Interaction
 
-By default, when you hover a node, it highlights the path passing from that node.
-1. When You press <kbd>Shift</kbd> key then hover a node in chart, it highlights the path(s) up to that node.
+By default, when you hover a node, it highlights the path passing from that node. Following keys can be pressed before hovering node for different selections
+- <kbd>a</kbd>: All paths passing through the hovered step
+- <kbd>q</kbd>: All steps of all paths come **after** the hovered step
+- <kbd>b</kbd>: All steps of all paths come **before** the hovered step
+- <kbd>l</kbd>: All steps of longest path passing through the hovered step. First path would be selected in case of multiple longest paths of same length.
+- <kbd>s</kbd>: All steps of shortest path passing through the hovered step. First path would be selected in case of multiple shortest paths of same length.
+
+1. When You press <kbd>a</kbd> key then hover a node in chart, it highlights the path(s) up to that node.
 2. When You press <kbd>Ctrl</kbd> key then hover a node in chart, it highlights the path(s) from that node.
 3. When You press <kbd>Ctrl</kbd>+<kbd>Shift</kbd> both keys then hover a node in chart, it highlights the full path(s) passing from that node.
 4. Keep the key held and hover out from the node to remove the selection.

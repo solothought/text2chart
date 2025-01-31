@@ -15,7 +15,13 @@
   import '@xyflow/svelte/dist/style.css';
   import StepNode from './Step.svelte';
 
-  import {traverseConnections } from './hoverManager.js';
+  import {
+    getPathsPassingThrough,
+    getStepsBefore,
+    getStepsAfter,
+    getSmallestPath,
+    getLongestPath
+   } from './PathSelector.js';
 
   import {Highlighter, defaultEdgeOptions} from './Highlighter.js';
   const nodeTypes = { step: StepNode };
@@ -23,7 +29,7 @@
   export let nodes = [];
   export let edges = [];
   export let nodeState = {};
-  export let connections = {};
+  export let paths = [];
   export let style = ""; // Accept style as a prop
   export let clazz = ""; // Accept class as a prop
   export let selection = [];
@@ -31,27 +37,40 @@
   let highlighter = new Highlighter(nodes,edges, nodeState);
   let nodeStore = writable(nodes);
   let edgeStore = writable(edges);
-  let selectDirection = -1;
+  let selectionKey = -1;
 
   function highlightPath(event) {
     const nodeId = event.detail.node.id;
-    // let selectDirection = -1;
-    // if (keyPressed === 'Shift') selectDirection = 0;
-    // else if (keyPressed === 'Control') selectDirection = 1;
-    // else if (keyPressed === 'Alt') selectDirection = 2;
 
-    if(selectDirection !== -1){
-      const selection = traverseConnections(nodeId, connections, selectDirection);
-      highlighter.unselectNodes();
-      highlighter.selectPath(selection.seletedNodes, selection.seletedEdges);
-      updateStore(nodes, edges);
+    let seletedNodeIds = null;
+    if(selectionKey !== -1){
+      switch(selectionKey){
+        case 1:
+          seletedNodeIds = getPathsPassingThrough(paths,nodeId);
+          break;
+        case 2:
+          seletedNodeIds = getStepsAfter(paths,nodeId);
+          break;
+        case 3:
+          seletedNodeIds = getStepsBefore(paths,nodeId);
+          break;
+        case 4:
+          seletedNodeIds = getLongestPath(paths,nodeId);
+          break;
+        case 5:
+          seletedNodeIds = getSmallestPath(paths,nodeId);
+          break;
+      }
+      highlighter.unselectAllNodes();
+      highlighter.selectNodes(new Set(seletedNodeIds));
+      nodeStore.set(nodes)
     }
   }
 
   function unHighlightPath() {
-    if(selectDirection !== -1){
-      highlighter.unselectPath();
-      updateStore(nodes, edges);
+    if(selectionKey !== -1){
+      highlighter.unselectAllNodes();
+      nodeStore.set(nodes);
     }
   }
 
@@ -62,13 +81,15 @@
 
   // Handle key events
   function handleKeyDown(event) {
-    if(event.ctrlKey && event.shiftKey) selectDirection = 2;
-    else if(event.ctrlKey) selectDirection = 1;
-    else if(event.shiftKey) selectDirection = 0;
+    if(event.key === "a") selectionKey = 1; //all
+    else if(event.key === "q") selectionKey = 2; //steps after
+    else if(event.key === "b") selectionKey = 3; //steps before
+    else if(event.key === "l") selectionKey = 4; //longest
+    else if(event.key === "s") selectionKey = 5; //smallest
   }
 
   function handleKeyUp(event) {
-    selectDirection = -1;
+    selectionKey = -1;
   }
 
   // Handle node click
@@ -84,7 +105,7 @@
   $: highlighter.nodeState = nodeState;
   $: {
     if (selection && selection.nodeIds) {
-      highlighter.unselectAllNodes(); //any previous selected node
+      highlighter.unselectAllNodes();
       highlighter.selectNodes( new Set(selection.nodeIds));
 
       nodeStore.set(nodes);
