@@ -163,25 +163,27 @@ function mapStepsToNodes(flow){
 function findAllPaths(links) {
   const paths = [];
 
-  function dfs(nodeId, currentPath, visited) {
-      visited.add(nodeId);
+  function dfs(nodeId, currentPath, visitCount) {
       currentPath.push(String(nodeId));
-      
+
       if (nodeId === -1) {
-        paths.push([...currentPath.slice(0,currentPath.length-1)]);
+          paths.push([...currentPath.slice(0, -1)]); // Exclude -1 from final path
       } else {
-        for (const neighbor of links[nodeId] || []) {
-            if (!visited.has(neighbor)) {
-                dfs(neighbor, currentPath, visited);
-            }
-        }
+          for (const neighbor of links[nodeId] || []) {
+              if (visitCount[neighbor] === undefined) visitCount[neighbor] = 0;
+
+              if (visitCount[neighbor] < 2 || neighbor === -1) { // Allow limited revisits
+                  visitCount[neighbor]++;
+                  dfs(neighbor, currentPath, { ...visitCount }); // Pass a copy to avoid mutation issues
+                  visitCount[neighbor]--;
+              }
+          }
       }
 
-      currentPath.pop();
-      visited.delete(nodeId);
+      currentPath.pop(); // Backtrack
   }
 
-  dfs(0, [], new Set());
+  dfs(0, [], { 0: 1 }); // Start DFS with node 0 marked as visited once
   return paths;
 }
 
