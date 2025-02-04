@@ -49,7 +49,6 @@
       paths = selectedFlow.paths;
       flowName = selectedFlow.flowName;
       updateProperty(nodes, nodeState);
-      
       if (coreChartInstance && typeof coreChartInstance.updateStore === 'function') {
         coreChartInstance.updateStore(nodes, edges);
       }
@@ -82,10 +81,10 @@
   }
 
     // Handle path selection from toolbar
-  function selectNodes(event) {
+  function selectPath(event) {
     selection = {
       flowIndex: event.detail.flowIndex,
-      nodeIds: event.detail.nodeIds
+      nodeIndexes: event.detail.nodeIndexes
     };
   }
 
@@ -108,7 +107,7 @@
     {nodes}
     handleFlowChange={handleFlowChange}
     hideStepMsgDetail={hideStepMsgDetail}
-    on:selectionChange={selectNodes}
+    on:pathSelected={selectPath}
     bind:focusOn
   />
   <CoreChart

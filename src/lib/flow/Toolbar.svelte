@@ -20,12 +20,10 @@
 
   // Function to handle path selection from PathsDropdown
   function handlePathSelect(event) {
-    // dispatch('pathSelected', event.detail);
-    const { flowIndex, nodeIds } = event.detail;
-    // Emit the selection to FlowChart
-    dispatch('selectionChange', {
+    const { flowIndex, nodeIndexes } = event.detail;
+    dispatch('pathSelected', {
       flowIndex: flowIndex,
-      nodeIds: nodeIds
+      nodeIndexes: nodeIndexes
     });
   }
 
@@ -53,6 +51,7 @@
   
   {#if flowsData[selectedFlowIndex] && flowsData[selectedFlowIndex].paths}
     <PathsDropdown
+      {nodes}
       paths={flowsData[selectedFlowIndex].paths}
       selectedFlowIndex={selectedFlowIndex}
       on:pathSelected={handlePathSelect}

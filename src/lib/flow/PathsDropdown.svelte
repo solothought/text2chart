@@ -3,6 +3,7 @@
   import BranchIcon from './../icons/branch.svelte'; // Import the BranchIcon
 
   export let paths = [];
+  export let nodes = [];
   export let selectedFlowIndex = 0;
 
   // State to manage dropdown visibility
@@ -22,7 +23,7 @@
       const path = paths[pathIndex];
       dispatch('pathSelected', {
         flowIndex: selectedFlowIndex,
-        nodeIds: path.filter(nodeId => nodeId !== -1) // Filter out the -1 (end of path)
+        nodeIndexes: path.filter(nodeId => nodeId !== -1) // Filter out the -1 (end of path)
       });
     }
     showDropdown = false; // Hide the dropdown after selection
@@ -40,7 +41,7 @@
     <div class="paths-dropdown">
       {#each paths as path, index}
         <div class="path-item" on:click={() => handlePathSelect(index)}>
-          Path {index + 1} ({path.length} steps) ends at Step {path[path.length-1]}
+          Path {index + 1} ({path.length} steps) ends at Step {nodes[path[path.length-1]].id}
         </div>
       {/each}
     </div>

@@ -90,6 +90,8 @@ function mapStepsToNodes(flow){
   let lastNode;
   const parentStack = [];
   let nodeId = 0, row=-1;
+  const nodeIdToIndexMap = {};
+
   for (; nodeId < flow.steps.length; nodeId++) {
     const step = flow.steps[nodeId];
 
@@ -124,11 +126,14 @@ function mapStepsToNodes(flow){
 
       //Add node
       const node = SvelteFlowNode(nodeId, { 
-        msg: step.msg, 
-        rawMsg: step.rawMsg, 
-        type: step.type, 
+          msg: step.msg, 
+          rawMsg: step.rawMsg, 
+          type: step.type, 
+          indent: step.indent
         }, position )
       nodes.push(node);
+      node.data.index = nodes.length - 1;
+      nodeIdToIndexMap[nodeId] = nodes.length - 1;
 
       //to calculate position
       lastNode = node;
@@ -156,30 +161,31 @@ function mapStepsToNodes(flow){
   }
   // for first node
   nodes[0].data.isStart = true;
-  return {flowName:  flow.name, nodes, edges, paths: findAllPaths(flow.links)}
+  return {flowName:  flow.name, nodes, edges, paths: findAllPaths(flow.links, nodeIdToIndexMap)}
 }
 
-function findAllPaths(links) {
+function findAllPaths(links,nodeIdToIndexMap) {
   const paths = [];
 
   function dfs(nodeId, currentPath, visitCount) {
-      currentPath.push(String(nodeId));
+    const nodeIndex = nodeIdToIndexMap[nodeId];
+    currentPath.push(String(nodeIndex));
 
-      if (nodeId === -1) {
-          paths.push([...currentPath.slice(0, -1)]); // Exclude -1 from final path
-      } else {
-          for (const neighbor of links[nodeId] || []) {
-              if (visitCount[neighbor] === undefined) visitCount[neighbor] = 0;
+    if (nodeId === -1) {
+        paths.push([...currentPath.slice(0, -1)]); // Exclude -1 from final path
+    } else {
+        for (const neighbor of links[nodeId] || []) {
+            if (visitCount[neighbor] === undefined) visitCount[neighbor] = 0;
 
-              if (visitCount[neighbor] < 2 || neighbor === -1) { // Allow limited revisits
-                  visitCount[neighbor]++;
-                  dfs(neighbor, currentPath, { ...visitCount }); // Pass a copy to avoid mutation issues
-                  visitCount[neighbor]--;
-              }
-          }
-      }
+            if (visitCount[neighbor] < 2 || neighbor === -1) { // Allow limited revisits
+                visitCount[neighbor]++;
+                dfs(neighbor, currentPath, { ...visitCount }); // Pass a copy to avoid mutation issues
+                visitCount[neighbor]--;
+            }
+        }
+    }
 
-      currentPath.pop(); // Backtrack
+    currentPath.pop(); // Backtrack
   }
 
   dfs(0, [], { 0: 1 }); // Start DFS with node 0 marked as visited once

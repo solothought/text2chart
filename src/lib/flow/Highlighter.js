@@ -1,7 +1,7 @@
 import { 
   MarkerType
   } from '@xyflow/svelte';
-  import {updateProperty} from './nodeUpdater.js';
+  import {updateProperty, updatePropertyByIndexes} from './nodeUpdater.js';
 
 
 export const edgeStyle = "stroke-width: 2px; stroke: #cac2c2;";
@@ -43,6 +43,10 @@ export class Highlighter{
   selectNodes(selectedIds){
     updateProperty(this.nodes, this.nodeState, {highlight: true}, selectedIds);
     this.selectedNodes = selectedIds;
+  }
+  selectNodesByIndexes(selectedIndexes){
+    updatePropertyByIndexes(this.nodes, this.nodeState, {highlight: true}, selectedIndexes);
+    // this.selectedNodes = selectedIds;
   }
   selectEdges(selectedIds){
     updateEdgesStyle(this.edges,  selectedIds, highlightEdge);

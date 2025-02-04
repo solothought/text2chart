@@ -48,6 +48,7 @@
   export let data;  // Contains the node-specific data
   export let position;
   export let id;
+  export let hidden = false;
 </script>
 
 <div style="position: absolute;">

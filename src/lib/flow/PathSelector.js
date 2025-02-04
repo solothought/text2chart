@@ -1,7 +1,7 @@
 
-export function getPathsPassingThrough(paths, nodeId) {
+export function getPathsPassingThrough(paths, nodeIndex) {
   return paths
-      .filter(path => path.includes(String(nodeId)))
+      .filter(path => path.includes(String(nodeIndex)))
       .flat(); // Flatten to return a single array of node IDs
 }
 
@@ -23,6 +23,7 @@ export function getStepsAfter(paths, nodeId) {
       });
 }
 
+
 export function getLongestPath(paths, nodeId) {
   let filteredPaths = paths.filter(path => path.includes(String(nodeId)));
   if (filteredPaths.length === 0) return [];
@@ -42,3 +43,4 @@ export function getSmallestPath(paths, nodeId) {
   );
   return smallestPath;
 }
+
