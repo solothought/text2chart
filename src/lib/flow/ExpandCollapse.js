@@ -1,5 +1,5 @@
-export function toggleNodeCollapse(nodes, edges, node) {
-  toggleHide(nodes, edges,node.data.collapsable,findExpandedChildNodes(nodes, node), node);
+export function toggleNodeCollapse(nodes, edges, node, nodesIndex) {
+  toggleHide(nodes, edges,node.data.collapsable,findExpandedChildNodes(nodes, node), node, nodesIndex);
   node.data = { ...node.data, collapsable: !node.data.collapsable };
 }
 
@@ -51,7 +51,7 @@ function findSiblingOrHigherNodeIndex(nodes, index){
  * @param {string[]} selectedNodeIds indexes of nodes array
  * @param {string} parentNode node clicked
  */
-function toggleHide(nodes, edges, state, selectedNodeIds, parentNode){
+function toggleHide(nodes, edges, state, selectedNodeIds, parentNode, nodesIndex){
   //Show/Hide nodes
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i];
@@ -60,13 +60,13 @@ function toggleHide(nodes, edges, state, selectedNodeIds, parentNode){
   }
 
   //Show/Hide edges
-  if(!state) showEdges(edges,selectedNodeIds,parentNode);
-  else hideEdges(edges,selectedNodeIds,parentNode);
+  if(!state) showEdges(nodes, edges, parentNode, nodesIndex);
+  else hideEdges(nodes, edges,parentNode, nodesIndex);
 }
 
-function showEdges(edges,selectedNodeIds,parentNode){
+function showEdges(nodes, edges, parentNode, nodesIndex){
   edges.forEach(edge => {
-    if(selectedNodeIds.includes(edge.source) && selectedNodeIds.includes(edge.target)){
+    if(!nodes[nodesIndex[edge.target]].hidden && !nodes[nodesIndex[edge.source]].hidden){
       edge.hidden = false;
     }else if(edge.source === parentNode.id){
       edge.hidden = false;
@@ -74,9 +74,9 @@ function showEdges(edges,selectedNodeIds,parentNode){
   })
 }
 
-function hideEdges(edges,selectedNodeIds,parentNode){
+function hideEdges(nodes, edges, parentNode, nodesIndex){
   edges.forEach(edge => {
-    if(selectedNodeIds.includes(edge.source) || selectedNodeIds.includes(edge.target)){
+    if(nodes[nodesIndex[edge.target]].hidden || nodes[nodesIndex[edge.source]].hidden){
       edge.hidden = true;
     }else if(edge.source === parentNode.id){
       edge.hidden = true;
@@ -90,7 +90,7 @@ function hideEdges(edges,selectedNodeIds,parentNode){
  * @param {{}} node 
  * @returns 
  */
-export function collapseAllChildren(nodes, edges, node){
+export function collapseAllChildren(nodes, edges, node, nodesIndex){
   const nodeIds = [];
   const parentIndent = node.data.indent;
   
@@ -106,11 +106,11 @@ export function collapseAllChildren(nodes, edges, node){
     nodeIds.push(currentNode.id);
   }
   
-  toggleHide(nodes, edges,true,nodeIds, node);
+  toggleHide(nodes, edges,true,nodeIds, node, nodesIndex);
   node.data = { ...node.data, collapsable: false };
 }
 
-export function expandAllChildren(nodes, edges, node){
+export function expandAllChildren(nodes, edges, node, nodesIndex){
   const nodeIds = [];
   const parentIndent = node.data.indent;
   
@@ -126,6 +126,6 @@ export function expandAllChildren(nodes, edges, node){
     nodeIds.push(currentNode.id);
   }
   
-  toggleHide(nodes, edges, false, nodeIds, node);
+  toggleHide(nodes, edges, false, nodeIds, node, nodesIndex);
   node.data = { ...node.data, collapsable: true };
 }

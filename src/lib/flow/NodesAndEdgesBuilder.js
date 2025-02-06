@@ -162,7 +162,7 @@ function mapStepsToNodes(flow){
   }
   // for first node
   nodes[0].data.isStart = true;
-  return {flowName:  flow.name, nodes, edges, paths: findAllPaths(flow.links, nodeIdToIndexMap)}
+  return {flowName:  flow.name, nodes, edges, paths: findAllPaths(flow.links, nodeIdToIndexMap), nodesIndex: nodeIdToIndexMap}
 }
 
 function findAllPaths(links,nodeIdToIndexMap) {

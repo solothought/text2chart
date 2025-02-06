@@ -31,6 +31,7 @@
   export let edges = [];
   export let nodeState = {};
   export let paths = [];
+  export let nodesIndex = {};
   export let style = ""; // Accept style as a prop
   export let clazz = ""; // Accept class as a prop
   export let selection = [];
@@ -99,11 +100,11 @@
       dispatch('flowChange', { flowName: node.data.msg });
     } else if (node.data.type === "IF" || node.data.type === "ELSE_IF" || node.data.type === "LOOP") {
       if(selectionKey === "]"){
-        collapseAllChildren(nodes, edges, node);
+        collapseAllChildren(nodes, edges, node, nodesIndex);
       }else if(selectionKey === "["){
-        expandAllChildren(nodes, edges, node);
+        expandAllChildren(nodes, edges, node, nodesIndex);
       }else{
-        toggleNodeCollapse(nodes, edges, node);
+        toggleNodeCollapse(nodes, edges, node, nodesIndex);
       }
       updateStore(nodes,edges);
     }

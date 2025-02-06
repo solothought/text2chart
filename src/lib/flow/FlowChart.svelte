@@ -14,6 +14,7 @@
   let nodes = [];
   let edges = [];
   let paths = [];
+  let nodesIndex = {};
   let flowName = "";
   let nodeState = {
     hideMsgDetail: false,
@@ -47,6 +48,7 @@
       nodes = selectedFlow.nodes;
       edges = selectedFlow.edges;
       paths = selectedFlow.paths;
+      nodesIndex = selectedFlow.nodesIndex;
       flowName = selectedFlow.flowName;
       updateProperty(nodes, nodeState);
       if (coreChartInstance && typeof coreChartInstance.updateStore === 'function') {
@@ -116,6 +118,7 @@
     {edges}
     {nodeState}
     {paths}
+    {nodesIndex}
     {...$$restProps}
     {selection}
     {focusOn}
