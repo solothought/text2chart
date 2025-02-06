@@ -94,6 +94,13 @@ By default, when you hover a node, it highlights the path passing from that node
 4. Keep the key held and hover out from the node to remove the selection.
 5. Release the held key and hover out to keep the selection
 
+### Expand/Collapse
+
+When you click a node in flow chart, it collapse or expand it's child nodes. 
+- If you expand nodes, it will not expand collapsed nodes.
+- If you press ']' and click a node, it'll collapse all nested branches.
+- If you press '[' and click a node, it'll expand all nested branches.
+
 ## Syntax
 
 The supported format can be found at [@solothought/text2obj](https://github.com/NaturalIntelligence/text2obj) which is used a core dependency for parsing text to intermediate object that helps to draw charts.  However, sample algorithm is given below for basic understanding.
