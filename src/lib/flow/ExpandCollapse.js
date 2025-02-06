@@ -90,7 +90,7 @@ function hideEdges(edges,selectedNodeIds,parentNode){
  * @param {{}} node 
  * @returns 
  */
-export function collapseAll(nodes, edges, node){
+export function collapseAllChildren(nodes, edges, node){
   const nodeIds = [];
   const parentIndent = node.data.indent;
   
@@ -107,7 +107,25 @@ export function collapseAll(nodes, edges, node){
   }
   
   toggleHide(nodes, edges,true,nodeIds, node);
-  node.data = { ...node.data, collapsable: !node.data.collapsable };
+  node.data = { ...node.data, collapsable: false };
+}
 
-  return nodeIds;
+export function expandAllChildren(nodes, edges, node){
+  const nodeIds = [];
+  const parentIndent = node.data.indent;
+  
+  for (let i = node.data.index + 1; i < nodes.length; i++) {
+    const currentNode = nodes[i];
+    
+    if (currentNode.data.indent <= parentIndent) break;
+    
+    if (currentNode.data.collapsable === false || currentNode.data.collapsable === true) {
+      currentNode.data = { ...currentNode.data, collapsable: true };
+    }
+    
+    nodeIds.push(currentNode.id);
+  }
+  
+  toggleHide(nodes, edges, false, nodeIds, node);
+  node.data = { ...node.data, collapsable: true };
 }

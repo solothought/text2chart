@@ -24,7 +24,7 @@
    } from './PathSelector.js';
 
   import {Highlighter, defaultEdgeOptions} from './Highlighter.js';
-  import { toggleNodeCollapse, collapseAll } from './ExpandCollapse.js';
+  import { toggleNodeCollapse, collapseAllChildren, expandAllChildren } from './ExpandCollapse.js';
   const nodeTypes = { step: StepNode };
 
   export let nodes = [];
@@ -99,7 +99,9 @@
       dispatch('flowChange', { flowName: node.data.msg });
     } else if (node.data.type === "IF" || node.data.type === "ELSE_IF" || node.data.type === "LOOP") {
       if(selectionKey === "]"){
-        collapseAll(nodes, edges, node);
+        collapseAllChildren(nodes, edges, node);
+      }else if(selectionKey === "["){
+        expandAllChildren(nodes, edges, node);
       }else{
         toggleNodeCollapse(nodes, edges, node);
       }
