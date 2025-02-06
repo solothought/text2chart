@@ -101,6 +101,12 @@ When you click a node in flow chart, it collapse or expand it's child nodes.
 - If you press ']' and click a node, it'll collapse all nested branches.
 - If you press '[' and click a node, it'll expand all nested branches.
 
+### Paths
+
+You will find a tool in toolbar to show all the possible paths in a flow. Each entry tells you number of steps in each path and ending step.
+- You can click on a path to highlight all the nodes in that path on the chart.
+- You can click on play button just before the path detail to highlight the nodes one by one in that path.
+
 ## Syntax
 
 The supported format can be found at [@solothought/text2obj](https://github.com/NaturalIntelligence/text2obj) which is used a core dependency for parsing text to intermediate object that helps to draw charts.  However, sample algorithm is given below for basic understanding.

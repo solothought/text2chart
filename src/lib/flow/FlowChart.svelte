@@ -84,12 +84,42 @@
 
     // Handle path selection from toolbar
   function selectPath(event) {
-    selection = {
-      flowIndex: event.detail.flowIndex,
-      nodeIndexes: event.detail.nodeIndexes
-    };
+    console.log(event);
+    if(event.detail.mode === "play"){
+      playPath(event);
+    }else{
+      selection = {
+        flowIndex: event.detail.flowIndex,
+        nodeIndexes: event.detail.nodeIndexes
+      };
+    }
   }
 
+  function playPath(event) {
+    const flowIndex = event.detail.flowIndex;
+    const path = event.detail.nodeIndexes;
+
+    //TODO: highlight edge between 2 nodes
+    function highlightNextNode(index) {
+      if (index < path.length) {
+        const nextIndex = path[index];
+        selection = {
+          flowIndex: flowIndex,
+          nodeIndexes: [nextIndex]
+        };
+        
+        setTimeout(() => {
+          highlightNextNode(index + 1);
+        }, 400); // 400ms delay
+      } else {
+        // Reset selection after playing the entire path
+        selection = { flowIndex: -1, nodeIndexes: [] };
+      }
+    }
+
+    // Start highlighting the first node
+    highlightNextNode(0);
+  }
 
   $: {
     if (selection && selection.nodeIds && selection.nodeIds.length) {

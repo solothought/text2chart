@@ -18,10 +18,11 @@
   }
 
   // Function to handle path selection
-  function handlePathSelect(pathIndex) {
+  function handlePathSelect(pathIndex, mode = "select") {
     if (paths && paths[pathIndex]) {
       const path = paths[pathIndex];
-      dispatch('pathSelected', {
+      dispatch("pathSelected", {
+        mode: mode,
         flowIndex: selectedFlowIndex,
         nodeIndexes: path.filter(nodeId => nodeId !== -1) // Filter out the -1 (end of path)
       });
@@ -40,8 +41,8 @@
   {#if showDropdown && paths.length > 0}
     <div class="paths-dropdown">
       {#each paths as path, index}
-        <div class="path-item" on:click={() => handlePathSelect(index)}>
-          Path {index + 1} ({path.length} steps) ends at Step {nodes[path[path.length-1]].id}
+        <div class="path-item">
+          <span on:click={() => handlePathSelect(index, "play")}>▶️</span> <span on:click={() => handlePathSelect(index)}>Path {index + 1} ({path.length} steps) ends at Step {nodes[path[path.length-1]].id}</span>
         </div>
       {/each}
     </div>

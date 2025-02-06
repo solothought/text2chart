@@ -20,11 +20,7 @@
 
   // Function to handle path selection from PathsDropdown
   function handlePathSelect(event) {
-    const { flowIndex, nodeIndexes } = event.detail;
-    dispatch('pathSelected', {
-      flowIndex: flowIndex,
-      nodeIndexes: nodeIndexes
-    });
+    dispatch('pathSelected', event.detail);
   }
 
   function toggleFocus(){
