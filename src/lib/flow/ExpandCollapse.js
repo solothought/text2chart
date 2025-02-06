@@ -1,5 +1,5 @@
 export function toggleNodeCollapse(nodes, edges, node) {
-  toggleHide(nodes, edges,node.data.collapsable,findNodes(nodes, node), node);
+  toggleHide(nodes, edges,node.data.collapsable,findExpandedChildNodes(nodes, node), node);
   node.data = { ...node.data, collapsable: !node.data.collapsable };
 }
 
@@ -9,8 +9,8 @@ export function toggleNodeCollapse(nodes, edges, node) {
  * @param {object} node 
  * @returns {number[]} indexes of nodes[]
  */
-function findNodes(nodes, node) {
-  const nodeIndexes = [];
+function findExpandedChildNodes(nodes, node) {
+  const nodeIds = [];
   const parentIndent = node.data.indent;
   
   for (let i = node.data.index + 1; i < nodes.length; i++) {
@@ -23,10 +23,10 @@ function findNodes(nodes, node) {
       i = findSiblingOrHigherNodeIndex(nodes,i);
     }
     
-    nodeIndexes.push(currentNode.id);
+    nodeIds.push(currentNode.id);
   }
   
-  return nodeIndexes;
+  return nodeIds;
 }
 
 /**
@@ -82,4 +82,32 @@ function hideEdges(edges,selectedNodeIds,parentNode){
       edge.hidden = true;
     }
   })
+}
+
+/**
+ * Collapse all nodes under given node
+ * @param {[]} nodes 
+ * @param {{}} node 
+ * @returns 
+ */
+export function collapseAll(nodes, edges, node){
+  const nodeIds = [];
+  const parentIndent = node.data.indent;
+  
+  for (let i = node.data.index + 1; i < nodes.length; i++) {
+    const currentNode = nodes[i];
+    
+    if (currentNode.data.indent <= parentIndent) break;
+    
+    if (currentNode.data.collapsable === false || currentNode.data.collapsable === true) {
+      currentNode.data = { ...currentNode.data, collapsable: false };
+    }
+    
+    nodeIds.push(currentNode.id);
+  }
+  
+  toggleHide(nodes, edges,true,nodeIds, node);
+  node.data = { ...node.data, collapsable: !node.data.collapsable };
+
+  return nodeIds;
 }
