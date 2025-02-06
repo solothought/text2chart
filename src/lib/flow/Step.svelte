@@ -73,6 +73,7 @@
     </div>
   {/if}
 </div>
+
 <div class="{data.highlight ? 'hovered' : ''} {data.isEnd ? 'endStep':'step'} {data.type === 'FOLLOW' ? 'clickable' : ''}">
   <!-- <Handle class="hndl" id="tt" type="target" position={Position.Top} /> -->
   <Handle class="hndl" id="t" type="target" position={Position.Top} />
@@ -87,6 +88,12 @@
   <Handle class="hndl" id="lt" type="target" position={Position.Left} />
   <Handle class="hndl" id="r" type="source" position={Position.Right} />
   <Handle class="hndl" id="rt" type="target" position={Position.Right} />
+
+  {#if data.type === "IF" || data.type === "ELSE_IF" || data.type === "LOOP"}
+    <div>
+      <span class="expand">{data.collapsable ? '-' : '+'}</span>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -134,6 +141,13 @@
     width: 25px;
     height: 25px;
     top: -35px;
+    position: absolute;
+  }
+  .expand{
+    color: black;
+    font-size: 1.5rem;
+    top: -15px;
+    right: -20px;
     position: absolute;
   }
 </style>

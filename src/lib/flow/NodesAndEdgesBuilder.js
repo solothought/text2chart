@@ -131,6 +131,7 @@ function mapStepsToNodes(flow){
           type: step.type, 
           indent: step.indent
         }, position )
+      if(isBranchStep(step.type)) node.data.collapsable = true;
       nodes.push(node);
       node.data.index = nodes.length - 1;
       nodeIdToIndexMap[nodeId] = nodes.length - 1;
