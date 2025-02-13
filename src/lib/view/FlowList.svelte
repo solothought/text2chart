@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
   export let flows; // This is a Svelte store;  Use $flows to access the value of the store
-  export let selectedFlow;
+  export let selectedFlowName;
   export let filterText = '';
   export let sortBy = 'name';
   export let sortDirection = 'asc';
@@ -54,7 +54,7 @@
   // Function to handle flow selection
   export function handleFlowSelection(flowName) {
     // console.log("change to",flowName);
-    selectedFlow = flowName;
+    selectedFlowName = flowName;
     isListExpanded = false; // Collapse the list after selection
     dispatch('flowSelected', { flowName });
   }
@@ -370,15 +370,15 @@
   <div class="flow-header">
     <div class="selected-flow" on:click={toggleList}>
       <span class="flow-name">
-        {#if selectedFlow}
-          {$flows.find(flow => flow.name === selectedFlow)?.name || 'Select a flow'}
+        {#if selectedFlowName}
+          {$flows.find(flow => flow.name === selectedFlowName)?.name || 'Select a flow'}
         {:else}
           Select a flow
         {/if}
       </span>
       <span class="flow-percentage">
-        {#if selectedFlow && mode === "monitor" }
-          {$flows.find(flow => flow.name === selectedFlow)?.successPercentage || 0}%
+        {#if selectedFlowName && mode === "monitor" }
+          {$flows.find(flow => flow.name === selectedFlowName)?.successPercentage || 0}%
         {/if}
       </span>
     </div>
@@ -437,7 +437,7 @@
           </div>
           {/if}
           <div  role="combobox" tabindex="0"
-            class="flow-item {selectedFlow === flow.name ? 'selected' : ''}"
+            class="flow-item {selectedFlowName === flow.name ? 'selected' : ''}"
             on:click={() => handleFlowSelection(flow.name)}
           >
           {#if mode === "monitor"}
