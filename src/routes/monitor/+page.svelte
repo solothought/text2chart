@@ -43,9 +43,9 @@
       const encodedFlowName = encodeURIComponent(flowName); // Handle spaces in URLs
       const response = await fetch(`${host}/flows/sample-app/${encodedFlowName}`);
       if (response.ok) {
-        flowText = await response.text();
+        return await response.text();
       } else {
-        flowText = "Error: Flow not found.";
+        return "Error: Flow not found.";
       }
     } catch (error) {
       console.error("Error fetching flow content:", error);
@@ -100,7 +100,6 @@
         on:flowSelected={handleFlowSelection}
         {mode}
       />
-
       <TextArea
         bind:text={flowText}
         on:lineSelection={handleLineSelection}
