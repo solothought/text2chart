@@ -9,15 +9,15 @@
   import { 
     saveFlowText, 
     loadFlowText, 
-    saveSelectedFlowId, 
-    loadSelectedFlowId, 
+    saveSelectedFlowName, 
+    loadSelectedFlowName, 
     saveFlowList, 
     loadFlowList 
   } from '$lib/editor/browserStorage.js';
 
   // Use a writable store for flows to ensure reactivity
   let flows = writable([...initialFlows]);
-  let selectedFlowId = loadSelectedFlowId() ||1;
+  let selectedFlowName = loadSelectedFlowName() || initialFlows[0]?.name;
   let previousText = '';
   let nodesToHighlight = [];
   let flowText = '';
@@ -27,8 +27,8 @@
   if(storedFlows)   flows.set(storedFlows);
 
   function initializeFlowText() {
-    const selectedFlow = $flows.find(flow => flow.id === selectedFlowId);
-    flowText = loadFlowText(selectedFlowId, selectedFlow?.name) || flowsText[selectedFlowId] || '';
+    const selectedFlow = $flows.find(flow => flow.name === selectedFlowName);
+    flowText = loadFlowText(selectedFlow?.name) || flowsText[selectedFlow] || '';
   }
 
   /**
@@ -36,15 +36,15 @@
    * @param event
    */
   function handleFlowSelection(event) {
-    const flowId = event.detail.flowId;
-    const selectedFlow = $flows.find(flow => flow.id === flowId);
+    const flowName = event.detail.flowName;
+    const selectedFlow = $flows.find(flow => flow.name === flowName);
     
     // Load text from storage or default
-    const storedText = loadFlowText(flowId, selectedFlow?.name);
-    flowText = storedText || flowsText[flowId] || '';
+    const storedText = loadFlowText(flowName, selectedFlow?.name);
+    flowText = storedText || flowsText[flowName] || '';
     
-    selectedFlowId = flowId;
-    saveSelectedFlowId(flowId);
+    selectedFlowName = flowName;
+    saveSelectedFlowName(flowName);
     chartKey++;
   }
 
@@ -58,18 +58,17 @@
     if (!$flows.some(flow => flow.name.toLowerCase() === newFlowName.toLowerCase())) {
       flows.update((currentFlows) => {
         const newFlow = {
-          id: currentFlows.length + 1,
           name: newFlowName,
           successPercentage: 0,
         };
         
         // Save empty text for new flow
-        saveFlowText(newFlow.id, newFlow.name, '');
+        saveFlowText(newFlow.name, '');
         saveFlowList([...currentFlows, newFlow]);
         
         // Set the new flow as the selected flow
-        selectedFlowId = newFlow.id;
-        saveSelectedFlowId(newFlow.id);
+        selectedFlowName = newFlow.name;
+        saveSelectedFlowName(newFlow.name);
         initializeFlowText();
         chartKey++; // Reinitialize the chart
 
@@ -86,9 +85,9 @@
    */
    function handleRemoveFlow(event) {
     //TODO: confirm before deletion
-    const flowId = event.detail.flowId;
+    const flowName = event.detail.flowName;
     flows.update((currentFlows) => {
-      const updatedFlows = currentFlows.filter(flow => flow.id !== flowId);
+      const updatedFlows = currentFlows.filter(flow => flow.name !== flowName);
       saveFlowList(updatedFlows);
       return updatedFlows;
     });
@@ -106,8 +105,8 @@
   // Handle text changes from the TextArea component
   function handleTextChange(event) {
     flowText = event.detail.text;
-    const selectedFlow = $flows.find(flow => flow.id === selectedFlowId);
-    saveFlowText(selectedFlowId, selectedFlow?.name, flowText);
+    const selectedFlow = $flows.find(flow => flow.name === selectedFlow);
+    saveFlowText(selectedFlow, selectedFlow?.name, flowText);
   }
 
   // Handle line selection from the TextArea component
@@ -131,7 +130,7 @@
     <div class="left-panel">
       <FlowList
         {flows}
-        {selectedFlowId}
+        {selectedFlowName}
         on:flowSelected={handleFlowSelection}
         on:addFlow={handleAddFlow}
         on:removeFlow={handleRemoveFlow}

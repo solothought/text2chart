@@ -43,7 +43,6 @@ ELSE
 
 let flows = [
   { 
-    id: 1, 
     name: "Binary Search", 
     successPercentage: 93, 
     errors: 1,
@@ -51,12 +50,13 @@ let flows = [
     avgExecutionTime: 634,
     maxExecutionTime: 1300
    },
-  { id: 2, name: "Binary Search with Multiple Flows", successPercentage: 0 }
+  { 
+    name: "Binary Search with Multiple Flows", successPercentage: 0 }
 ];
 
 let flowsText = {
-  1: binarySearch,
-  2: binarySearchMultipleFlows
+  "Binary Search": binarySearch,
+  "Binary Search with Multiple Flows": binarySearchMultipleFlows
 }
 
 export {

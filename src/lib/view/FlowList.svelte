@@ -2,7 +2,7 @@
   import { createEventDispatcher } from 'svelte';
   const dispatch = createEventDispatcher();
   export let flows; // This is a Svelte store;  Use $flows to access the value of the store
-  export let selectedFlowId;
+  export let selectedFlow;
   export let filterText = '';
   export let sortBy = 'name';
   export let sortDirection = 'asc';
@@ -17,7 +17,7 @@
   }
 
   $: filteredFlows = $flows.filter(flow =>
-    flow.name.toLowerCase().includes(filterText.toLowerCase())
+      flow.name.toLowerCase().includes(filterText.toLowerCase())
   );
 
   $: sortedFlows = filteredFlows.sort((a, b) => {
@@ -52,11 +52,11 @@
   }
 
   // Function to handle flow selection
-  export function handleFlowSelection(flowId) {
-    console.log("change to",flowId);
-    selectedFlowId = flowId;
+  export function handleFlowSelection(flowName) {
+    // console.log("change to",flowName);
+    selectedFlow = flowName;
     isListExpanded = false; // Collapse the list after selection
-    dispatch('flowSelected', { flowId });
+    dispatch('flowSelected', { flowName });
   }
 
   // Function to handle adding a new flow
@@ -79,8 +79,8 @@
   }
 
   // Function to handle flow removal
-  function handleRemoveFlow(flowId) {
-    dispatch('removeFlow', { flowId });
+  function handleRemoveFlow(flowName) {
+    dispatch('removeFlow', { flowName });
   }
 
   // Function to toggle the list expansion
@@ -370,15 +370,15 @@
   <div class="flow-header">
     <div class="selected-flow" on:click={toggleList}>
       <span class="flow-name">
-        {#if selectedFlowId}
-          {$flows.find(flow => flow.id === selectedFlowId)?.name || 'Select a flow'}
+        {#if selectedFlow}
+          {$flows.find(flow => flow.name === selectedFlow)?.name || 'Select a flow'}
         {:else}
           Select a flow
         {/if}
       </span>
       <span class="flow-percentage">
-        {#if selectedFlowId && mode === "monitor" }
-          {$flows.find(flow => flow.id === selectedFlowId)?.successPercentage || 0}%
+        {#if selectedFlow && mode === "monitor" }
+          {$flows.find(flow => flow.name === selectedFlow)?.successPercentage || 0}%
         {/if}
       </span>
     </div>
@@ -437,8 +437,8 @@
           </div>
           {/if}
           <div  role="combobox" tabindex="0"
-            class="flow-item {selectedFlowId === flow.id ? 'selected' : ''}"
-            on:click={() => handleFlowSelection(flow.id)}
+            class="flow-item {selectedFlow === flow.name ? 'selected' : ''}"
+            on:click={() => handleFlowSelection(flow.name)}
           >
           {#if mode === "monitor"}
             <div
@@ -455,7 +455,7 @@
               {#if mode === "monitor"}
               <span class="chart-button" on:click|stopPropagation={() => alert('Open charts for ' + flow.name)}>🗠</span>
               {/if}
-              <span class="remove-icon" on:click|stopPropagation={() => handleRemoveFlow(flow.id)}>✕</span>
+              <span class="remove-icon" on:click|stopPropagation={() => handleRemoveFlow(flow.name)}>✕</span>
             </div>
           </div>
         </div>

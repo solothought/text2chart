@@ -5,27 +5,25 @@ const FLOW_LIST_KEY = 'flow-list';
 // NEW: Debounced function for saving flow text
 let debounceTimeout;
 
-export function saveFlowText(flowId, flowName, text) {
+export function saveFlowText(flowName, text) {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
-        localStorage.setItem(`${FLOW_STORAGE_PREFIX}${flowId}`, text);
         localStorage.setItem(`${FLOW_STORAGE_PREFIX}${flowName}`, text);
     }, 500); // 500ms delay
 }
 
-export function loadFlowText(flowId, flowName) {
-    return localStorage.getItem(`${FLOW_STORAGE_PREFIX}${flowId}`) || 
-           localStorage.getItem(`${FLOW_STORAGE_PREFIX}${flowName}`) || 
+export function loadFlowText(flowName) {
+    return localStorage.getItem(`${FLOW_STORAGE_PREFIX}${flowName}`) || 
            null;
 }
 
-export function saveSelectedFlowId(flowId) {
-    localStorage.setItem(SELECTED_FLOW_KEY, flowId);
+export function saveSelectedFlowName(flowName) {
+    localStorage.setItem(SELECTED_FLOW_KEY, flowName);
 }
 
-export function loadSelectedFlowId() {
+export function loadSelectedFlowName() {
     if (typeof window !== 'undefined') {
-        return Number(localStorage.getItem(SELECTED_FLOW_KEY));
+        return localStorage.getItem(SELECTED_FLOW_KEY);
     }else{
         return 1;
     }
