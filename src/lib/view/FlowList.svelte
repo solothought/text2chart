@@ -1,7 +1,8 @@
 <script>
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
   const dispatch = createEventDispatcher();
   export let flows; // This is a Svelte store;  Use $flows to access the value of the store
+  export let selectedFlow;
   export let selectedFlowName;
   export let filterText = '';
   export let sortBy = 'name';
@@ -52,11 +53,12 @@
   }
 
   // Function to handle flow selection
-  export function handleFlowSelection(flowName) {
+  export function handleFlowSelection(flow) {
     // console.log("change to",flowName);
-    selectedFlowName = flowName;
+    selectedFlow = flow;
+    selectedFlowName = flow.name;
     isListExpanded = false; // Collapse the list after selection
-    dispatch('flowSelected', { flowName });
+    dispatch('flowSelected', { flowName:selectedFlowName });
   }
 
   // Function to handle adding a new flow
@@ -94,6 +96,8 @@
     if (successPercentage < 50) return '#ff4444'; // Red
     return '#ffc107'; // Yellow
   }
+
+  $: selectedFlow = $flows.find(flow => flow.name === selectedFlowName);
 </script>
 
 <style>
@@ -363,6 +367,9 @@
     background-color: #4caf50;
     color: white;
   }
+  .flow-stats .info{
+    padding: 10px
+  }
 </style>
 
 <div class="flow-list">
@@ -388,6 +395,14 @@
     </button>
     {/if}
   </div>
+  {#if mode === "monitor"}
+  <div class="flow-stats">
+      <span class="info"><strong>success</strong>: {selectedFlow?.successPercentage || 0}%</span>
+      <span class="info"><strong>err</strong>: {selectedFlow?.errors || 0}</span>
+      <span class="info"><strong>avg</strong>: {selectedFlow?.avgExecutionTime || 0}ms</span>
+      <span class="info"><strong>max</strong>: {selectedFlow?.maxExecutionTime || 0}ms</span>
+  </div>
+  {/if}
 
   <!-- Expanded list (shown when isListExpanded is true) -->
   {#if isListExpanded}
@@ -438,7 +453,7 @@
           {/if}
           <div  role="combobox" tabindex="0"
             class="flow-item {selectedFlowName === flow.name ? 'selected' : ''}"
-            on:click={() => handleFlowSelection(flow.name)}
+            on:click={() => handleFlowSelection(flow)}
           >
           {#if mode === "monitor"}
             <div
@@ -453,9 +468,11 @@
                 <span class="error-badge">{flow.errors}</span>
               {/if}
               {#if mode === "monitor"}
-              <span class="chart-button" on:click|stopPropagation={() => alert('Open charts for ' + flow.name)}>🗠</span>
+                <span class="chart-button" on:click|stopPropagation={() => alert('Open charts for ' + flow.name)}>🗠</span>
               {/if}
-              <span class="remove-icon" on:click|stopPropagation={() => handleRemoveFlow(flow.name)}>✕</span>
+              {#if mode !== "monitor"}
+                <span class="remove-icon" on:click|stopPropagation={() => handleRemoveFlow(flow.name)}>✕</span>
+              {/if}
             </div>
           </div>
         </div>

@@ -21,20 +21,16 @@
     try {
       const response = await fetch(`${host}/flows/sample-app`);
       const data = await response.json();
-      //TODO: select first flow in the response
-      // selectedFlowName = flows[0].name;
-
       flows.set(data); // Set store with fetched data
-
-      // Select the first flow automatically
-      if (data.length > 0) {
-        handleFlowSelection({ detail: { flowName: data[0].name } });
-      }
-
+      return data;
     } catch (error) {
       console.error("Error fetching flows:", error);
     }
   }
+
+  setInterval(async ()=>{
+    fetchFlows();
+  }, 2000)
 
   // Fetch content for a selected flow
   async function fetchFlowContent(flowName) {
@@ -71,7 +67,10 @@
   */
   onMount(async () => {
     if (typeof window !== 'undefined') {
-      fetchFlows();
+      const data = await fetchFlows();
+      if (data.length > 0) {// Select the first flow automatically
+        handleFlowSelection({ detail: { flowName: data[0].name } });
+      }
     }
   });
 
