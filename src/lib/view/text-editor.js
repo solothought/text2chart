@@ -1,4 +1,4 @@
-export function handleEditing(event){
+export function handleEditing(event) {
   const textarea = event.target;
   let text = textarea.value;  // Bound to the textarea
   const start = textarea.selectionStart;
@@ -13,6 +13,12 @@ export function handleEditing(event){
     
     textarea.value = `${beforeCursor}\n${leadingSpaces}${afterCursor}`;
     moveCursor(textarea, beforeCursor.length + 1 + leadingSpaces.length);
+
+    // Emit a custom event to notify the TextArea component
+    const lineChangeEvent = new CustomEvent("lineChange", {
+      detail: { text: textarea.value }
+    });
+    textarea.dispatchEvent(lineChangeEvent);
   }
   else if (event.key === "Tab") {
     event.preventDefault();

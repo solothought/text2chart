@@ -1,0 +1,63 @@
+#text-area-container {
+  display: flex;
+  width: 100%;
+  height: calc(100vh - 180px);
+  font-family: monospace;
+  background-color: #f9f9f9;
+  overflow: hidden; /* Prevent double scrollbars */
+}
+
+#line-numbers {
+  width: 40px;
+  padding: 10px 5px;
+  text-align: right;
+  border-right: 1px solid #ccc;
+  background-color: #f0f0f0;
+  user-select: none;
+  overflow-y: hidden; /* Disable scrolling */
+  height: 100%; /* Match height of textarea */
+}
+
+#text-area {
+  flex: 1;
+  border: 0;
+  padding: 10px;
+  box-sizing: border-box;
+  resize: none;
+  background-color: transparent;
+  overflow-y: auto; /* Enable scrolling */
+  height: 100%; /* Match height of line numbers */
+}
+
+#text-area:disabled {
+  background-color: #eee;
+  cursor: not-allowed;
+}
+
+.keyword {
+  font-weight: bold;
+}
+
+.branch {
+  color: #d9534f;
+}
+
+.leaving {
+  color: #5bc0de;
+}
+
+.normal {
+  color: #5cb85c;
+}
+
+.other {
+  color: #f0ad4e;
+}
+
+.highlighted {
+  background-color: #e6f3ff;
+}
+
+.collapsed {
+  display: none;
+}
