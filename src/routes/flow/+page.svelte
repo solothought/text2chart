@@ -28,7 +28,7 @@
 
   function initializeFlowText() {
     const selectedFlow = $flows.find(flow => flow.name === selectedFlowName);
-    flowText = loadFlowText(selectedFlow?.name) || flowsText[selectedFlow] || '';
+    flowText = loadFlowText(selectedFlow?.name) || flowsText[selectedFlowName] || '';
   }
 
   /**
@@ -37,10 +37,9 @@
    */
   function handleFlowSelection(event) {
     const flowName = event.detail.flowName;
-    const selectedFlow = $flows.find(flow => flow.name === flowName);
     
     // Load text from storage or default
-    const storedText = loadFlowText(flowName, selectedFlow?.name);
+    const storedText = loadFlowText(flowName);
     flowText = storedText || flowsText[flowName] || '';
     
     selectedFlowName = flowName;
@@ -105,8 +104,7 @@
   // Handle text changes from the TextArea component
   function handleTextChange(event) {
     flowText = event.detail.text;
-    const selectedFlow = $flows.find(flow => flow.name === selectedFlow);
-    saveFlowText(selectedFlow, selectedFlow?.name, flowText);
+    saveFlowText(selectedFlowName, flowText);
   }
 
   // Handle line selection from the TextArea component
