@@ -94,12 +94,13 @@
 
   // Sync scrolling between textarea and line numbers
   function syncScroll(event) {
-    if (lineNumbersContainer) {
-      lineNumbersContainer.scrollTop = event.target.scrollTop;
-    }
-    if (highlightedTextContainer) {
-      highlightedTextContainer.scrollTop = event.target.scrollTop;
-      highlightedTextContainer.scrollLeft = event.target.scrollLeft;
+    const {scrollTop,scrollLeft} = event.target;
+    lineNumbersContainer.scrollTop = scrollTop;
+    highlightedTextContainer.scrollTop = scrollTop;
+    highlightedTextContainer.scrollLeft = scrollLeft;
+    if(highlightedTextContainer.scrollTop !== scrollTop){
+      event.target.scrollTop = highlightedTextContainer.scrollTop;
+      lineNumbersContainer.scrollTop = highlightedTextContainer.scrollTop;
     }
   }
 

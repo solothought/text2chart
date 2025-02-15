@@ -8,6 +8,12 @@
   position: relative;
 }
 
+#highlighted-text, #text-area, #line-numbers {
+  font-family: monospace;
+  font-size: 14px; /* Ensure consistent font size */
+  line-height: 1.5; /* Ensure consistent line height */
+}
+
 #line-numbers {
   width: 40px;
   padding: 10px 5px;
@@ -28,6 +34,7 @@
   bottom: 0;
   padding: 10px;
   box-sizing: border-box;
+  height: 100%;
   pointer-events: none; /* Allow clicks to pass through to the textarea */
   white-space: pre-wrap;
   font-family: monospace;
@@ -41,6 +48,7 @@
   padding: 10px;
   box-sizing: border-box;
   resize: none;
+  height: 100%;
   background-color: transparent;
   overflow-y: auto; /* Enable scrolling */
   height: 100%; /* Match height of line numbers */
