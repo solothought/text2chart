@@ -18,6 +18,8 @@
   let highlightedLines = []; // Array to hold highlighted lines
   let collapsedLines = new Set(); // Set to hold collapsed lines
   let lineNumbersContainer; // Reference to the line numbers container
+  let textarea; // Reference to the textarea element
+  let highlightedTextContainer; // Reference to the highlighted text container
 
   // Emit text change events
   function emitTextChange(newText) {
@@ -54,6 +56,7 @@
         previousText = text;
         emitTextChange(text); // Emit text change
         updateLineNumbers();
+        updateHighlightedText();
       }
     }
   }
@@ -70,6 +73,7 @@
   function handleLineChange(event) {
     text = event.detail.text; // Update the text
     updateLineNumbers(); // Update line numbers
+    updateHighlightedText();
   }
 
   // Update line numbers based on the text content
@@ -93,6 +97,10 @@
   function syncScroll(event) {
     if (lineNumbersContainer) {
       lineNumbersContainer.scrollTop = event.target.scrollTop;
+    }
+    if (highlightedTextContainer) {
+      highlightedTextContainer.scrollTop = event.target.scrollTop;
+      highlightedTextContainer.scrollLeft = event.target.scrollLeft;
     }
   }
 
@@ -132,25 +140,34 @@
     return highlightedText;
   }
 
+  // Update the highlighted text container
+  function updateHighlightedText() {
+    if (highlightedTextContainer) {
+      highlightedTextContainer.innerHTML = highlightKeywords(text);
+    }
+  }
+
   // Update line numbers when the text changes
   $: {
     if (text !== previousText) {
       updateLineNumbers();
       previousText = text;
+      updateHighlightedText();
     }
   }
 
   // Initialize line numbers on mount
   onMount(() => {
     updateLineNumbers();
+    updateHighlightedText();
   });
 
   // Update line numbers after the component updates (e.g., when switching flows)
   afterUpdate(() => {
     updateLineNumbers();
+    updateHighlightedText();
   });
 </script>
-
 
 <div id="text-area-container">
   <div id="line-numbers" bind:this={lineNumbersContainer} on:scroll={preventLineNumberScroll}>
@@ -164,8 +181,10 @@
       {/if}
     {/each}
   </div>
+  <div id="highlighted-text" bind:this={highlightedTextContainer}></div>
   <textarea
     id="text-area"
+    bind:this={textarea}
     bind:value={text}
     {placeholder}
     {disabled}
