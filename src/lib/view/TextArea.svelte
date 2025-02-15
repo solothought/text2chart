@@ -75,13 +75,6 @@
     }
   }
 
-  // Handle line change events (e.g., pressing Enter)
-  function handleLineChange(event) {
-    text = event.detail.text;
-    updateLineNumbers();
-    updateHighlightedText();
-  }
-
   // Update line numbers based on the text content
   function updateLineNumbers() {
     const lines = text.split('\n');
@@ -210,7 +203,6 @@
     on:keyup={handleKeyUp}
     on:keydown={handleKeyDown}
     on:mouseup={handleClick}
-    on:lineChange={handleLineChange}
     on:scroll={syncScroll}
   />
 </div>
