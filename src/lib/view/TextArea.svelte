@@ -35,9 +35,15 @@
   function handleKeyDown(event) {
     const textarea = event.target;
     if (textarea.id === 'text-area') {
-      highlightCurrentStepNode(event);
-      handleEditing(event);
-      updateLineNumbers();
+      handleEditing(event); // Handle editing (e.g., commenting)
+      text = textarea.value;
+      if (text.length !== previousText.length || text !== previousText) {
+        previousText = text;
+        highlightCurrentStepNode(event);
+        emitTextChange(text); // Emit text change
+        updateLineNumbers();
+        updateHighlightedText();
+      }
     }
   }
 
@@ -71,8 +77,8 @@
 
   // Handle line change events (e.g., pressing Enter)
   function handleLineChange(event) {
-    text = event.detail.text; // Update the text
-    updateLineNumbers(); // Update line numbers
+    text = event.detail.text;
+    updateLineNumbers();
     updateHighlightedText();
   }
 
@@ -120,24 +126,38 @@
     }
   }
 
-  // Highlight keywords in the text
+  // Highlight keywords, comments, and FLOW lines
   function highlightKeywords(text) {
-    const keywords = {
-      branch: ["IF", "ELSE_IF", "ELSE", "LOOP"],
-      leaving: ["GOTO", "SKIP", "STOP", "END"],
-      normal: ["AND", "THEN", "BUT", "FOLLOW", "ERR"],
-      other: ["FLOW", "FOLLOW"]
-    };
+    const lines = text.split('\n');
+    const highlightedLines = lines.map(line => {
+      if (line.trim().startsWith('#')) {
+        // Highlight comment lines
+        return `<span class="comment">${line}</span>`;
+      } else if (line.trim().startsWith('FLOW:')) {
+        // Highlight FLOW lines
+        return `<span class="flow">${line}</span>`;
+      } else {
+        // Highlight other keywords
+        const keywords = {
+          branch: ["IF", "ELSE_IF", "ELSE", "LOOP"],
+          leaving: ["GOTO", "SKIP", "STOP", "END"],
+          normal: ["AND", "THEN", "BUT", "FOLLOW", "ERR"],
+          other: ["FLOW", "FOLLOW"]
+        };
 
-    let highlightedText = text;
-    Object.entries(keywords).forEach(([category, words]) => {
-      words.forEach(word => {
-        const regex = new RegExp(`\\b${word}\\b`, 'g');
-        highlightedText = highlightedText.replace(regex, `<span class="keyword ${category}">${word}</span>`);
-      });
+        let highlightedLine = line;
+        Object.entries(keywords).forEach(([category, words]) => {
+          words.forEach(word => {
+            const regex = new RegExp(`\\b${word}\\b`, 'g');
+            highlightedLine = highlightedLine.replace(regex, `<span class="keyword ${category}">${word}</span>`);
+          });
+        });
+
+        return highlightedLine;
+      }
     });
 
-    return highlightedText;
+    return highlightedLines.join('\n');
   }
 
   // Update the highlighted text container
@@ -147,11 +167,10 @@
     }
   }
 
-  // Update line numbers when the text changes
   $: {
+    //Text is not being displayed on load without this code until user click on text area
     if (text !== previousText) {
       updateLineNumbers();
-      previousText = text;
       updateHighlightedText();
     }
   }

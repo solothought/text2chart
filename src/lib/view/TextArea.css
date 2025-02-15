@@ -20,6 +20,7 @@
 }
 
 #highlighted-text {
+  color: inherit;
   position: absolute;
   top: 0;
   left: 40px;
@@ -30,19 +31,8 @@
   pointer-events: none; /* Allow clicks to pass through to the textarea */
   white-space: pre-wrap;
   font-family: monospace;
-  color: transparent; /* Hide the text, only show highlights */
   overflow: hidden;
-}
-
-#text-area {
-flex: 1;
-border: 0;
-padding: 10px;
-box-sizing: border-box;
-resize: none;
-background-color: transparent;
-overflow-y: auto; /* Enable scrolling */
-height: 100%; /* Match height of line numbers */
+  z-index: 2; /* Ensure highlighted text is above the textarea */
 }
 
 #text-area {
@@ -55,7 +45,9 @@ height: 100%; /* Match height of line numbers */
   overflow-y: auto; /* Enable scrolling */
   height: 100%; /* Match height of line numbers */
   position: relative;
-  z-index: 1; /* Ensure textarea is above the highlighted text */
+  z-index: 1; /* Ensure textarea is below the highlighted text */
+  color: transparent; /* Make textarea text transparent */
+  caret-color: black; /* Ensure the caret (cursor) is visible */
 }
 
 #text-area:disabled {
@@ -64,29 +56,38 @@ height: 100%; /* Match height of line numbers */
 }
 
 .keyword {
-font-weight: bold;
+  font-weight: bold;
 }
 
 .branch {
-color: #d9534f;
+  color: #d9534f;
 }
 
 .leaving {
-color: #5bc0de;
+  color: #5bc0de;
 }
 
 .normal {
-color: #5cb85c;
+  color: #5cb85c;
 }
 
 .other {
-color: #f0ad4e;
+  color: #f0ad4e;
 }
 
 .highlighted {
-background-color: #e6f3ff;
+  background-color: #e6f3ff;
 }
 
 .collapsed {
-display: none;
+  display: none;
+}
+
+.comment {
+  color: #888; /* Grey color for comments */
+  font-style: italic;
+}
+
+.flow {
+  font-weight: bold; /* Bold for FLOW lines */
 }
