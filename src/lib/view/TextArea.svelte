@@ -8,6 +8,8 @@
   export let text = ''; // The text content of the textarea
   export let placeholder = ''; // Optional placeholder text
   export let disabled = false; // Whether the textarea is disabled
+  export let stepsExecutionTimes = []; // Execution time data
+  export let mode = "editor"; // editor, monitor
 
   // Events
   import { createEventDispatcher } from 'svelte';
@@ -81,13 +83,32 @@
     let lineCount = 0;
     lineNumbers = lines.map((line, index) => {
       const trimmedLine = line.trim();
+      //TODO: exclude header lines
       if (trimmedLine.startsWith("FLOW:")) {
-        lineCount = 0; // Reset line count for new FLOW
+        lineCount = -1; // Reset line count for new FLOW
         return null; // No line number for FLOW line
       } else if (trimmedLine.length === 0) {
         return null; // No line number for empty lines
       } else {
-        return lineCount++; // Increment line count for non-empty lines
+        lineCount++;
+        let className = "";
+
+        if(mode === "monitor"){
+          // Check execution time for this line
+          const exeTime = $stepsExecutionTimes.find(et => et.id === lineCount);
+          if (exeTime) {
+            const maxThreshold = 400; // Max threshold in ms
+            const avgExeTime = exeTime.avgExeTime;
+            if (avgExeTime >= 0.9 * maxThreshold) {
+              className = "red";
+            } else if (avgExeTime >= 0.75 * maxThreshold) {
+              className = "yellow";
+            } else if (avgExeTime < 0.75 * maxThreshold) {
+              className = "green";
+            }
+          }
+        }
+        return { lineNumber: lineCount, className };
       }
     });
   }
@@ -102,6 +123,7 @@
       event.target.scrollTop = highlightedTextContainer.scrollTop;
       lineNumbersContainer.scrollTop = highlightedTextContainer.scrollTop;
     }
+    // event.preventDefault();
   }
 
   // Prevent scrolling on line numbers
@@ -111,19 +133,10 @@
     }
   }
 
-  // Toggle collapse/expand for branch steps
-  function toggleCollapse(index) {
-    if (collapsedLines.has(index)) {
-      collapsedLines.delete(index);
-    } else {
-      collapsedLines.add(index);
-    }
-  }
-
   // Highlight keywords, comments, and FLOW lines
   function highlightKeywords(text) {
     const lines = text.split('\n');
-    const highlightedLines = lines.map(line => {
+    const highlightedLines = lines.map((line) => {
       if (line.trim().startsWith('#')) {
         // Highlight comment lines
         return `<span class="comment">${line}</span>`;
@@ -147,10 +160,9 @@
           });
         });
 
-        return highlightedLine;
+        return `<span class="steptext">${highlightedLine}</span>`;
       }
     });
-
     return highlightedLines.join('\n');
   }
 
@@ -184,10 +196,10 @@
 
 <div id="text-area-container">
   <div id="line-numbers" bind:this={lineNumbersContainer} on:scroll={preventLineNumberScroll}>
-    {#each lineNumbers as lineNumber, index}
-      {#if lineNumber !== null}
-        <div class:highlighted={highlightedLines.includes(String(lineNumber))} on:click={() => toggleCollapse(index)}>
-          {lineNumber}
+    {#each lineNumbers as line, index}
+      {#if line !== null}
+        <div class:highlighted={highlightedLines.includes(String(line.lineNumber))} class={line.className}>
+          {line.lineNumber}
         </div>
       {:else}
         <div>&nbsp;</div>

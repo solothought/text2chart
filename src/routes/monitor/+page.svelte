@@ -14,6 +14,8 @@
   let chartKey = 0; // Used to reinitialize the FlowChart component
   const mode = "monitor";
 
+  let stepsExecutionTimes = writable([]);
+
   const host = 'http://localhost:3000';
 
   // Fetch the list of flows
@@ -28,9 +30,27 @@
     }
   }
 
+  // Fetch execution time data for the selected flow
+  async function fetchStepsStats(flowName) {
+    try {
+      const encodedFlowName = encodeURIComponent(flowName);
+      const response = await fetch(`${host}/flows/sample-app/${encodedFlowName}/steps`);
+      if (response.ok) {
+        const data = await response.json();
+        stepsExecutionTimes.set(data); // Set store with fetched execution time data
+      } else {
+        console.error("Error fetching execution times:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching execution times:", error);
+    }
+  }
+
   setInterval(async ()=>{
     fetchFlows();
   }, 2000)
+
+
 
   // Fetch content for a selected flow
   async function fetchFlowContent(flowName) {
@@ -59,6 +79,9 @@
     }
     flowText = flowsText[flowName];
     selectedFlowName = flowName;
+
+    // Fetch execution times for the selected flow
+    fetchStepsStats(flowName);
     // chartKey++;
   }
 
@@ -71,6 +94,13 @@
       if (data.length > 0) {// Select the first flow automatically
         handleFlowSelection({ detail: { flowName: data[0].name } });
       }
+
+      // Set interval to fetch execution times every 5 seconds
+      setInterval(() => {
+        if (selectedFlowName) {
+          fetchStepsStats(selectedFlowName);
+        }
+      }, 5000);
     }
   });
 
@@ -90,6 +120,7 @@
   }
   .left-panel{width: 30vw; height: 100%; border-right: 1px dashed black;}
 </style>
+
 <div class="container-fluid">
   <div class="workspace">
     <div class="left-panel">
@@ -102,6 +133,8 @@
       <TextArea
         bind:text={flowText}
         on:lineSelection={handleLineSelection}
+        {stepsExecutionTimes}
+        {mode}
       />
     </div>
     {#key chartKey} <!-- Recreate Chart component -->

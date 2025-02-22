@@ -99,3 +99,19 @@
 .flow {
   font-weight: bold; /* Bold for FLOW lines */
 }
+
+.red {
+  background-color: #ffcccc; /* Light red for high execution time */
+}
+
+.yellow {
+  background-color: #ffffcc; /* Light yellow for medium execution time */
+}
+
+.green {
+  background-color: #ccffcc; /* Light green for low execution time */
+}
+
+.steptext:hover{
+  outline: 1px dashed gray;
+}
