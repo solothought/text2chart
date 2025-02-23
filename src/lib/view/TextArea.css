@@ -112,6 +112,30 @@
   background-color: #ccffcc; /* Light green for low execution time */
 }
 
-.steptext:hover{
-  outline: 1px dashed gray;
+.panel {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000; /* Ensure panel is above other elements */
+  pointer-events: auto; /* Allow interactions with the panel */
+  opacity: 0; /* Hidden by default */
+  transition: opacity 0.2s ease-in-out;
+}
+
+.panel.visible {
+  opacity: 1; /* Visible when hovered */
+}
+
+.panel button{
+  background-color: #FFFFFF;
+  border-width: 0;
+  padding: 5px;
+  cursor: pointer;
+}
+
+.panel button:hover{
+  outline: 1px dashed black;
 }

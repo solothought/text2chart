@@ -3,6 +3,7 @@
   import { handleEditing } from './text-editor.js';
   import { onMount, afterUpdate } from 'svelte';
   import './TextArea.css';
+  import DebugIcon from './../icons/debug.svelte';
 
   // Props
   export let text = ''; // The text content of the textarea
@@ -22,6 +23,54 @@
   let lineNumbersContainer; // Reference to the line numbers container
   let textarea; // Reference to the textarea element
   let highlightedTextContainer; // Reference to the highlighted text container
+
+   // Panel state
+   let panelVisible = false;
+  let panelContent = { min: 0, avg: 0, max: 0 };
+  let panelPosition = { top: 0, left: 0 };
+  let hoveredLineNumber = null; // Track the hovered line number
+
+  // Show panel on hover
+  function showPanel(event, line) {
+    if (line.exeTime) {
+      panelContent = {
+        min: line.exeTime.minExeTime,
+        avg: line.exeTime.avgExeTime,
+        max: line.exeTime.maxExeTime,
+      };
+
+      // Get the bounding rectangle of the hovered line number
+      const lineNumberRect = event.target.getBoundingClientRect();
+      const containerRect = lineNumbersContainer.getBoundingClientRect();
+
+      // Calculate panel position relative to the line number
+      panelPosition = {
+        top: lineNumberRect.top, // Position relative to the container
+        left: lineNumberRect.left + containerRect.width, // Position to the right of the line number
+      };
+
+      hoveredLineNumber = line.lineNumber;
+      panelVisible = true;
+    }
+  }
+
+  // Hide panel
+  function hidePanel() {
+    panelVisible = false;
+    hoveredLineNumber = null;
+  }
+
+  // Handle toggle debug button click
+  function handleToggleDebug() {
+    dispatch('toggleDebug');
+    hidePanel();
+  }
+
+  // Handle logs button click
+  function handleShowLogs() {
+    dispatch('showLogs');
+    hidePanel();
+  }
 
   // Emit text change events
   function emitTextChange(newText) {
@@ -92,23 +141,27 @@
       } else {
         lineCount++;
         let className = "";
+        let exeTime = [];
 
-        if(mode === "monitor"){
-          // Check execution time for this line
-          const exeTime = $stepsExecutionTimes.find(et => et.id === lineCount);
-          if (exeTime) {
-            const maxThreshold = 400; // Max threshold in ms
-            const avgExeTime = exeTime.avgExeTime;
-            if (avgExeTime >= 0.9 * maxThreshold) {
-              className = "red";
-            } else if (avgExeTime >= 0.75 * maxThreshold) {
-              className = "yellow";
-            } else if (avgExeTime < 0.75 * maxThreshold) {
-              className = "green";
+        if(mode==="monitor"){
+          exeTime = $stepsExecutionTimes.find(et => et.id === lineCount);
+  
+          if(mode === "monitor"){
+            // Check execution time for this line
+            if (exeTime) {
+              const maxThreshold = 400; // Max threshold in ms
+              const avgExeTime = exeTime.avgExeTime;
+              if (avgExeTime >= 0.9 * maxThreshold) {
+                className = "red";
+              } else if (avgExeTime >= 0.75 * maxThreshold) {
+                className = "yellow";
+              } else if (avgExeTime < 0.75 * maxThreshold) {
+                className = "green";
+              }
             }
           }
         }
-        return { lineNumber: lineCount, className };
+        return { lineNumber: lineCount, className, exeTime };
       }
     });
   }
@@ -198,7 +251,11 @@
   <div id="line-numbers" bind:this={lineNumbersContainer} on:scroll={preventLineNumberScroll}>
     {#each lineNumbers as line, index}
       {#if line !== null}
-        <div class:highlighted={highlightedLines.includes(String(line.lineNumber))} class={line.className}>
+        <div 
+          class:highlighted={highlightedLines.includes(String(line.lineNumber))} class={line.className}
+          on:mouseenter={(e) => showPanel(e, line)}
+          on:mouseleave={hidePanel}
+          >
           {line.lineNumber}
         </div>
       {:else}
@@ -219,3 +276,22 @@
     on:scroll={syncScroll}
   />
 </div>
+
+<!-- Panel -->
+ {#if mode==="monitor"}
+  <div
+    class="panel"
+    class:visible={panelVisible}
+    style={`top: ${panelPosition.top}px; left: ${panelPosition.left}px`}
+    on:mouseenter={() => (panelVisible = true)}
+    on:mouseleave={hidePanel}
+  >
+    <div>Min: {panelContent.min} ms</div>
+    <div>Avg: {panelContent.avg} ms</div>
+    <div>Max: {panelContent.max} ms</div>
+    <div class="panel-icons">
+      <button class="icon" on:click={handleToggleDebug}><DebugIcon/></button>
+      <button class="icon" on:click={handleShowLogs}>📄</button>
+    </div>
+  </div>
+{/if}
