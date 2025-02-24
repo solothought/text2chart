@@ -64,9 +64,10 @@
   }
 
   // Function to handle application selection
-  function handleAppSelection(app) {
-    selectedApp = app;
+  function handleAppSelection(event) {
+    selectedApp = event.target.value;
     filterText = ''; // Reset filter text when app changes
+    selectedFlowName = ''; // Reset selected flow when app changes
   }
 
   // Function to handle adding a new flow
@@ -116,11 +117,12 @@
   <div class="header-row">
     {#if mode === 'monitor'}
     <div class="app-list">
-      {#each appList as app}
-        <div class="flow-item {selectedApp === app ? 'selected' : ''}" on:click={() => handleAppSelection(app)}>
-          <span class="flow-name">{app}</span>
-        </div>
-      {/each}
+      <select class="app-dropdown" on:change={handleAppSelection}>
+        <option value="">Select an app</option>
+        {#each appList as app}
+          <option value={app} selected={selectedApp === app}>{app}</option>
+        {/each}
+      </select>
     </div>
     {/if}
     <div class="flow-header">
@@ -258,4 +260,3 @@
   </div>
 
 </div>
-
