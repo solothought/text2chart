@@ -1,5 +1,6 @@
 <script>
   import DebugIcon from './../icons/debug.svelte';
+  import LogsIcon from './../icons/logs.svelte';
   import { createEventDispatcher } from 'svelte';
   
   const dispatch = createEventDispatcher();
@@ -85,7 +86,7 @@
   <div>Max: {panelContent.max} ms</div>
   <div class="panel-icons">
     <button class="icon" on:click={handleToggleDebug}><DebugIcon/></button>
-    <button class="icon" on:click={handleShowLogs}>📄</button>
+    <button class="icon" on:click={handleShowLogs}><LogsIcon/></button>
   </div>
 </div>
 
