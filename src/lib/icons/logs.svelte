@@ -5,12 +5,13 @@
 
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  style="background: transparent; background-color: transparent; color-scheme: light dark;"
+  style="background: transparent; background-color: transparent;"
   xmlns:xlink="http://www.w3.org/1999/xlink"
   version="1.1"
   width="{width}"
   height="{height}"
   viewBox="-0.5 -0.5 130 130"
+  fill="#000000"
   ><defs
     ><style type="text/css">
 @import url(https://fonts.googleapis.com/css2?family=Architects+Daughter:wght@400;500);&#xa;
