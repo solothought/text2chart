@@ -2,6 +2,7 @@
   import { getSelectedLines } from './selection.js';
   import { handleEditing } from './text-editor.js';
   import { onMount, afterUpdate } from 'svelte';
+  import { writable } from 'svelte/store';
   import './TextArea.css';
 
   import StepsStatsPanel from './StepsStatsPanel.svelte';
@@ -10,7 +11,7 @@
   export let text = ''; // The text content of the textarea
   export let placeholder = ''; // Optional placeholder text
   export let disabled = false; // Whether the textarea is disabled
-  export let stepsExecutionTimes = []; // Execution time data
+  export let stepsExecutionTimes = writable([]); // Execution time data
   export let mode = "editor"; // editor, monitor
 
   // Events
