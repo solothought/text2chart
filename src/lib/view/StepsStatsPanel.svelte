@@ -7,7 +7,7 @@
    // Panel state
   let panelVisible = false;
   let panelContent = { min: 0, avg: 0, max: 0 };
-  let panelPosition = { top: 0, left: 0 };
+  let panelPosition = { top: 0, left: -100 };
   let hoveredLineNumber = "";
   let panel;
   let displayPanel = false;
