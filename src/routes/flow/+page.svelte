@@ -36,7 +36,7 @@
    * @param event
    */
   function handleFlowSelection(event) {
-    const flowName = event.detail.flowName;
+    const flowName = event.detail.flow.name;
     
     // Load text from storage or default
     const storedText = loadFlowText(flowName);

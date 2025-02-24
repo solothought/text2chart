@@ -7,6 +7,7 @@
 
   // Use a writable store for flows to ensure reactivity
   let flows = writable([]);
+  let selectedFlow;
   let selectedFlowName = "";
   let nodesToHighlight = [];
   const flowsText = [];
@@ -73,6 +74,7 @@
    * @param event
    */
   async function handleFlowSelection(event) {
+    selectedFlow = event.detail.flow;
     const flowName = event.detail.flowName;
     if(!flowsText[flowName]){
       flowsText[flowName] = await fetchFlowContent(flowName) || '';
@@ -109,39 +111,61 @@
     nodesToHighlight = event.detail.selectedLines;
   }
 
-  
+  $: selectedFlow = $flows.find(flow => flow.name === selectedFlowName);
 </script>
 
 <style>
   .workspace {
     margin-top:80px;
-    display: flex;
     height: calc(100vh - 100px);
   }
-  .left-panel{width: 30vw; height: 100%; border-right: 1px dashed black;}
+  .app-flow-toolbar{
+    height: 60px;
+  }
 </style>
 
 <div class="container-fluid">
   <div class="workspace">
-    <div class="left-panel">
-      <FlowList
-        {flows}
-        {selectedFlowName}
-        on:flowSelected={handleFlowSelection}
-        {mode}
-      />
-      <TextArea
-        bind:text={flowText}
-        on:lineSelection={handleLineSelection}
-        {stepsExecutionTimes}
-        {mode}
-      />
+    <div class="row app-flow-toolbar">
+      <div class="col">
+        <FlowList
+          {flows}
+          {selectedFlowName}
+          on:flowSelected={handleFlowSelection}
+          {mode}
+          />
+      </div>
+      <div class="col-8">
+        <div class="stats">
+          {#if mode === "monitor"}
+          <div class="flow-stats">
+            <span class="info"><strong>success</strong>: {selectedFlow?.successPercentage || 0}%</span>
+            <span class="info"><strong>err</strong>: {selectedFlow?.errors || 0}</span>
+            <span class="info"><strong>avg</strong>: {selectedFlow?.avgExecutionTime || 0}ms</span>
+            <span class="info"><strong>max</strong>: {selectedFlow?.maxExecutionTime || 0}ms</span>
+          </div>
+          {/if}
+        </div>
+
+      </div>
     </div>
-    {#key chartKey} <!-- Recreate Chart component -->
-    <FlowChart 
-      style="padding-left:10px; width:65vw; height:100%" 
-      bind:text={flowText} 
-      bind:selection={nodesToHighlight}/>
-    {/key}
+    <div class="row">
+      <div class="col">
+        <TextArea
+          bind:text={flowText}
+          on:lineSelection={handleLineSelection}
+          {stepsExecutionTimes}
+          {mode}
+        />
+      </div>
+      <div class="col-8">
+        {#key chartKey} <!-- Recreate Chart component -->
+        <FlowChart 
+          style="padding-left:10px; height:calc(100vh - 180px); width:65vw" 
+          bind:text={flowText} 
+          bind:selection={nodesToHighlight}/>
+        {/key}
+      </div>
+    </div>
   </div>
 </div>

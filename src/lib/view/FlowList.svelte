@@ -60,7 +60,7 @@
     selectedFlow = flow;
     selectedFlowName = flow.name;
     isListExpanded = false; // Collapse the list after selection
-    dispatch('flowSelected', { flowName: selectedFlowName });
+    dispatch('flowSelected', { flow: flow, flowName: selectedFlowName });
   }
 
   // Function to handle application selection
@@ -153,14 +153,7 @@
     <div class="flow-list ">
 
       <!-- Second Row: Flow Stats -->
-      {#if mode === "monitor"}
-        <div class="flow-stats">
-          <span class="info"><strong>success</strong>: {selectedFlow?.successPercentage || 0}%</span>
-          <span class="info"><strong>err</strong>: {selectedFlow?.errors || 0}</span>
-          <span class="info"><strong>avg</strong>: {selectedFlow?.avgExecutionTime || 0}ms</span>
-          <span class="info"><strong>max</strong>: {selectedFlow?.maxExecutionTime || 0}ms</span>
-        </div>
-      {/if}
+      
     
       <!-- Expanded list (shown when isListExpanded is true) -->
       {#if isListExpanded}

@@ -271,7 +271,7 @@
 
 .flow-stats {
   display: flex;
-  gap: 1rem;
+  /* gap: 1rem; */
   padding: 10px;
   /* background-color: #f9f9f9;
   border: 1px solid #ddd;
