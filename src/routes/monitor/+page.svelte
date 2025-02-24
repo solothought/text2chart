@@ -147,8 +147,12 @@
     text-align: center;
   }
 
-  .view-selector {
-    margin-left: 10px;
+  #view-selector {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    height: 50px;
   }
 </style>
 
@@ -174,7 +178,7 @@
         {/if}
       </div>
       <div class="col-5">
-        <select class="view-selector" on:change={changeView}>
+        <select id="view-selector" on:change={changeView}>
           <option value="FlowChart">Flow chart</option>
           <option value="LogsSearch">Raw Logs</option>
           <option value="ChartsDashboard">Chart Dashboard</option>
