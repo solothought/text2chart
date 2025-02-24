@@ -122,12 +122,22 @@
   .app-flow-toolbar{
     height: 60px;
   }
+  .flow-stats {
+    width: 400px;
+    display: flex;
+    padding: 5px 2px;
+  }
+
+  .flow-stats .info {
+    flex: 1;
+    text-align: center;
+  }
 </style>
 
 <div class="container-fluid">
   <div class="workspace">
     <div class="row app-flow-toolbar">
-      <div class="col">
+      <div class="col-4">
         <FlowList
           {flows}
           {selectedFlowName}
@@ -135,17 +145,17 @@
           {mode}
           />
       </div>
-      <div class="col-8">
-        <div class="stats">
-          {#if mode === "monitor"}
-          <div class="flow-stats">
-            <span class="info"><strong>success</strong>: {selectedFlow?.successPercentage || 0}%</span>
-            <span class="info"><strong>err</strong>: {selectedFlow?.errors || 0}</span>
-            <span class="info"><strong>avg</strong>: {selectedFlow?.avgExecutionTime || 0}ms</span>
-            <span class="info"><strong>max</strong>: {selectedFlow?.maxExecutionTime || 0}ms</span>
-          </div>
-          {/if}
+      <div class="col-3">
+        {#if mode === "monitor"}
+        <div class="flow-stats">
+          <span class="info"><strong>✅</strong>: {selectedFlow?.successPercentage || 0}%</span>
+          <span class="info"><strong>🪳</strong>: {selectedFlow?.errors || 0}</span>
+          <span class="info"><strong>⏱</strong>: {selectedFlow?.avgExecutionTime || 0}ms</span>
+          <span class="info"><strong style="color:red;">⏱!</strong>: {selectedFlow?.maxExecutionTime || 0}ms</span>
         </div>
+        {/if}
+      </div>
+      <div class="col-5">
 
       </div>
     </div>

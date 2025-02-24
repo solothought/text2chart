@@ -269,20 +269,6 @@
   color: white;
 }
 
-.flow-stats {
-  display: flex;
-  /* gap: 1rem; */
-  padding: 10px;
-  /* background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 4px; */
-}
-
-.flow-stats .info {
-  flex: 1;
-  text-align: center;
-}
-
 .header-row {
   display: flex;
   gap: 1rem;
