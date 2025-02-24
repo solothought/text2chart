@@ -1,9 +1,15 @@
 <script>
-  import FlowList from '$lib/view/FlowList.svelte';
-  import TextArea from '$lib/view/TextArea.svelte';
   import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
+  //Icons
+  import BranchIcon from '$lib/icons/branch.svelte';
+  import LogsIcon from '$lib/icons/logs.svelte';
+  //Components
+  import FlowList from '$lib/view/FlowList.svelte';
+  import TextArea from '$lib/view/TextArea.svelte';
   import FlowChart from '$lib/flow/FlowChart.svelte';
+  import ChartsDashboard from '$lib/monitor/ChartsDashboard.svelte';
+  import LogsSearch from '$lib/monitor/LogsSearch.svelte';
 
   // Use a writable store for flows to ensure reactivity
   let flows = writable([]);
@@ -16,6 +22,9 @@
   const mode = "monitor";
 
   let stepsExecutionTimes = writable([]);
+
+  // New store to track the selected view
+  let selectedView = writable('FlowChart');
 
   const host = 'http://localhost:3000';
 
@@ -111,6 +120,11 @@
     nodesToHighlight = event.detail.selectedLines;
   }
 
+  // Handle view change
+  function changeView(event) {
+    selectedView.set(event.target.value);
+  }
+
   $: selectedFlow = $flows.find(flow => flow.name === selectedFlowName);
 </script>
 
@@ -131,6 +145,10 @@
   .flow-stats .info {
     flex: 1;
     text-align: center;
+  }
+
+  .view-selector {
+    margin-left: 10px;
   }
 </style>
 
@@ -156,7 +174,11 @@
         {/if}
       </div>
       <div class="col-5">
-
+        <select class="view-selector" on:change={changeView}>
+          <option value="FlowChart">Flow chart</option>
+          <option value="LogsSearch">Raw Logs</option>
+          <option value="ChartsDashboard">Chart Dashboard</option>
+        </select>
       </div>
     </div>
     <div class="row">
@@ -169,12 +191,18 @@
         />
       </div>
       <div class="col-8">
-        {#key chartKey} <!-- Recreate Chart component -->
-        <FlowChart 
-          style="padding-left:10px; height:calc(100vh - 180px); width:65vw" 
-          bind:text={flowText} 
-          bind:selection={nodesToHighlight}/>
-        {/key}
+        {#if $selectedView === 'FlowChart'}
+          {#key chartKey}
+            <FlowChart 
+              style="padding-left:10px; height:calc(100vh - 180px); width:65vw" 
+              bind:text={flowText} 
+              bind:selection={nodesToHighlight}/>
+          {/key}
+        {:else if $selectedView === 'LogsSearch'}
+          <LogsSearch {selectedFlowName} appName="sample-app" />
+        {:else if $selectedView === 'ChartsDashboard'}
+          <ChartsDashboard {selectedFlowName} appName="sample-app" />
+        {/if}
       </div>
     </div>
   </div>
