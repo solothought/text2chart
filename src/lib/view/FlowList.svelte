@@ -218,9 +218,6 @@
                   {#if flow.errors && mode === "monitor"}
                     <span class="error-badge">{flow.errors}</span>
                   {/if}
-                  {#if mode === "monitor"}
-                    <span class="chart-button" on:click|stopPropagation={() => alert('Open charts for ' + flow.name)}>🗠</span>
-                  {/if}
                   {#if mode !== "monitor"}
                     <span class="remove-icon" on:click|stopPropagation={() => handleRemoveFlow(flow.name)}>✕</span>
                   {/if}
