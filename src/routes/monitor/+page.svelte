@@ -9,7 +9,7 @@
   import TextArea from '$lib/view/TextArea.svelte';
   import FlowChart from '$lib/flow/FlowChart.svelte';
   import ChartsDashboard from '$lib/monitor/ChartsDashboard.svelte';
-  import LogsSearch from '$lib/monitor/LogsSearch.svelte';
+  import LogsSearch from '$lib/monitor/RawLogs.svelte';
 
   // Use a writable store for flows to ensure reactivity
   let flows = writable([]);
@@ -26,12 +26,12 @@
   // New store to track the selected view
   let selectedView = writable('FlowChart');
 
-  const host = 'http://localhost:3000';
+  const host = 'http://localhost:7777';
 
   // Fetch the list of flows
   async function fetchFlows() {
     try {
-      const response = await fetch(`${host}/flows/sample-app`);
+      const response = await fetch(`${host}/flows`);
       const data = await response.json();
       flows.set(data); // Set store with fetched data
       return data;
@@ -44,7 +44,7 @@
   async function fetchStepsStats(flowName) {
     try {
       const encodedFlowName = encodeURIComponent(flowName);
-      const response = await fetch(`${host}/flows/sample-app/${encodedFlowName}/steps`);
+      const response = await fetch(`${host}/flows/Order Service/${encodedFlowName}/steps`);
       if (response.ok) {
         const data = await response.json();
         stepsExecutionTimes.set(data); // Set store with fetched execution time data
@@ -58,7 +58,7 @@
 
   setInterval(async ()=>{
     fetchFlows();
-  }, 2000)
+  }, 30000)
 
 
 
@@ -111,7 +111,7 @@
         if (selectedFlowName) {
           fetchStepsStats(selectedFlowName);
         }
-      }, 5000);
+      }, 10000);
     }
   });
 
