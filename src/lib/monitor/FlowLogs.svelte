@@ -1,6 +1,5 @@
 <script>
   import { onMount } from 'svelte';
-  import { fade } from 'svelte/transition';
   import "./rawlogs.css"
 
   // Props
@@ -8,24 +7,23 @@
   export let appName;
 
   // State
-  export let searchQuery = '';
+  export let searchFlowQuery = '';
   let logs = [];
   let selectedLog = null;
-  let isPopupOpen = false;
 
   const host = 'http://localhost:7777';
 
   // Fetch logs based on the search query
   async function fetchLogs() {
-    console.log(searchQuery);
+    console.log(searchFlowQuery);
     try {
       //TODO: appname, flowname, flow version in q
-      const response = await fetch(`${host}/logs`, {
+      const response = await fetch(`${host}/logs/appName/${selectedFlowName}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ query: searchQuery })
+        body: JSON.stringify({ query: searchFlowQuery })
       });
 
       if (response.ok) {
@@ -72,19 +70,11 @@
     fetchLogs();
   }
 
-  // Close the popup
-  function closePopup() {
-    isPopupOpen = false;
-    selectedLog = null;
-  }
-
   // Fetch logs on component mount
   onMount(() => {
+    console.log(searchFlowQuery);
     fetchLogs();
   });
-  // $: if(searchQuery){
-  //   fetchLogs();
-  // }
 </script>
 
 
@@ -96,7 +86,7 @@
           <input
             type="text"
             placeholder="Search logs... DETAIL=class name && MSG~NULL && KEY="
-            bind:value={searchQuery}
+            bind:value={searchFlowQuery}
           />
         </div>
         <div class="col-1">
@@ -111,41 +101,23 @@
   <table class="logs-table table table-hover">
     <thead>
       <tr>
-        <th class="col-1">Time</th>
-        <th class="col-1">Type</th>
-        <th class="col-2">Key</th>
-        <th class="col-7">Message</th>
-        <th>Detail</th>
+        <th class="col-1">Req ID</th>
+        <th class="col">Status</th>
+        <th class="col-7">Failure Reason</th>
+        <th class="col-2">Reporting Time</th>
+        <th class="col">Duration</th>
       </tr>
     </thead>
     <tbody>
       {#each logs as log}
         <tr>
+          <td>{log.req_id}</td>
+          <td class="text-center">{log.result === 1? "✅" : "❌"}</td>
+          <td>{log.failure_reason ? log.failure_reason : ""}</td>
           <td>{log.log_time}</td>
-          <td><span class="logtype-{log.type}">{log.type === 1? "DEBUG" : log.type === 3 ? "WARN" : "ERROR"}</span></td>
-          <td>{log.key ? log.key : ""}</td>
-          <td>{log.msg}</td>
-          <td>
-            <span class="action-icon" on:click={() => fetchLogDetails(log.appname, log.flowname, log.version, log.type , log.log_time)}>
-              📄
-            </span>
-          </td>
+          <td>{log.exec_time} ms</td>
         </tr>
       {/each}
     </tbody>
   </table>
-
-  {#if isPopupOpen}
-    <div class="popup-backdrop" on:click={closePopup} />
-    <div class="popup" transition:fade>
-      <div class="popup-content">
-        <h3>Log Details</h3>
-        {#if selectedLog}
-          <pre>{selectedLog.raw}</pre>
-        {:else}
-          <p>Loading...</p>
-        {/if}
-      </div>
-    </div>
-  {/if}
 </div>

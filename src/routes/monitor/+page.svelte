@@ -9,7 +9,8 @@
   import TextArea from '$lib/view/TextArea.svelte';
   import FlowChart from '$lib/flow/FlowChart.svelte';
   import ChartsDashboard from '$lib/monitor/ChartsDashboard.svelte';
-  import LogsSearch from '$lib/monitor/RawLogs.svelte';
+  import DetailLogs from '$lib/monitor/RawLogs.svelte';
+  import FlowLogs from '$lib/monitor/FlowLogs.svelte';
 
   // Use a writable store for flows to ensure reactivity
   let flows = writable([]);
@@ -20,6 +21,8 @@
   let flowText = '';
   let chartKey = 0; // Used to reinitialize the FlowChart component
   const mode = "monitor";
+  let searchQuery = "";
+  let searchFlowQuery = "";
 
   let stepsExecutionTimes = writable([]);
 
@@ -83,6 +86,7 @@
    * @param event
    */
   async function handleFlowSelection(event) {
+    // selectedAppName = 
     selectedFlow = event.detail.flow;
     const flowName = event.detail.flowName;
     if(!flowsText[flowName]){
@@ -123,6 +127,16 @@
   // Handle view change
   function changeView(event) {
     selectedView.set(event.target.value);
+  }
+
+  function showLogs(query){
+    searchQuery = query;
+    selectedView.set("DetailLogs");
+  }
+  
+  function showFlowLogs(query){
+    searchFlowQuery = query;
+    selectedView.set("FlowLogs");
   }
 
   $: selectedFlow = $flows.find(flow => flow.name === selectedFlowName);
@@ -170,17 +184,18 @@
       <div class="col-3">
         {#if mode === "monitor"}
         <div class="flow-stats">
-          <span class="info"><strong>✅</strong>: {selectedFlow?.successPercentage || 0}%</span>
-          <span class="info"><strong>🪳</strong>: {selectedFlow?.errors || 0}</span>
+          <span class="info" style="cursor:pointer;" on:click={(e) => showFlowLogs("STATUS=0")} ><strong>❌</strong>: {100 - (selectedFlow?.successPercentage || 0)}%</span>
+          <span class="info" style="cursor:pointer;" on:click={(e) => showLogs("TYPE=ERROR")} ><strong>🪳</strong>: {selectedFlow?.errors || 0}</span>
           <span class="info"><strong>⏱</strong>: {selectedFlow?.avgExecutionTime || 0}ms</span>
-          <span class="info"><strong style="color:red;">⏱!</strong>: {selectedFlow?.maxExecutionTime || 0}ms</span>
+          <span class="info" style="cursor:pointer;" on:click={(e) => showFlowLogs("SLOW")} ><strong style="color:red; cursor:pointer;">⏱!</strong>: {selectedFlow?.maxExecutionTime || 0}ms</span>
         </div>
         {/if}
       </div>
       <div class="col-5">
         <select id="view-selector" on:change={changeView}>
           <option value="FlowChart">Flow chart</option>
-          <option value="LogsSearch">Raw Logs</option>
+          <option value="FlowLogs">Flow Logs</option>
+          <option value="DetailLogs">Detail Logs</option>
           <option value="ChartsDashboard">Chart Dashboard</option>
         </select>
       </div>
@@ -202,8 +217,10 @@
               bind:text={flowText} 
               bind:selection={nodesToHighlight}/>
           {/key}
-        {:else if $selectedView === 'LogsSearch'}
-          <LogsSearch {selectedFlowName} appName="sample-app" />
+        {:else if $selectedView === 'DetailLogs'}
+          <DetailLogs {searchQuery} {selectedFlowName} appName="" />
+        {:else if $selectedView === 'FlowLogs'}
+          <FlowLogs {searchFlowQuery} {selectedFlowName} appName="" />
         {:else if $selectedView === 'ChartsDashboard'}
           <ChartsDashboard {selectedFlowName} appName="sample-app" />
         {/if}
