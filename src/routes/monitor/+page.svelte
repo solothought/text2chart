@@ -193,9 +193,9 @@
       </div>
       <div class="col-5">
         <select id="view-selector" on:change={changeView}>
-          <option value="FlowChart">Flow chart</option>
-          <option value="FlowLogs">Flow Logs</option>
-          <option value="DetailLogs">Detail Logs</option>
+          <option value="FlowChart" selected={$selectedView === "FlowChart"}>Flow chart</option>
+          <option value="FlowLogs" selected={$selectedView === "FlowLogs"}>Flow Logs</option>
+          <option value="DetailLogs" selected={$selectedView === "DetailLogs"}>Detail Logs</option>
           <option value="ChartsDashboard">Chart Dashboard</option>
         </select>
       </div>
