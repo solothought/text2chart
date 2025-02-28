@@ -84,7 +84,7 @@
 
     // Handle path selection from toolbar
   function selectPath(event) {
-    console.log(event);
+    // console.log(event);
     if(event.detail.mode === "play"){
       playPath(event);
     }else{

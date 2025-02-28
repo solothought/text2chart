@@ -85,7 +85,7 @@
         <div class="col">
           <input
             type="text"
-            placeholder="Search logs... DETAIL=class name && MSG~NULL && KEY="
+            placeholder="Search logs... REQID=kfjdnijn && STATUS=1 && REASON~invalid"
             bind:value={searchFlowQuery}
           />
         </div>
