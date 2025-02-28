@@ -2,6 +2,7 @@
   import DebugIcon from './../icons/debug.svelte';
   import LogsIcon from './../icons/logs.svelte';
   import { createEventDispatcher } from 'svelte';
+  import StepDebugPopup from './../monitor/StepDebugPopup.svelte';
   
   const dispatch = createEventDispatcher();
    // Panel state
@@ -12,9 +13,11 @@
   let panel;
   let displayPanel = false;
   let hideTimeout; // Store the timeout ID for clearing
+  let showPopup = false;
 
   // Show panel on hover
   export function showPanel(event, line) {
+    
     if (line.exeTime) {
       panelContent = {
         min: line.exeTime.minExeTime,
@@ -30,8 +33,8 @@
         top: lineNumberRect.top, // Position relative to the container
         left: lineNumberRect.left + lineNumberRect.width, // Position to the right of the line number
       };
-
       hoveredLineNumber = line.lineNumber;
+      
       panelVisible = true;
       displayPanel = true;
       panel.style.pointerEvents = "auto";
@@ -47,13 +50,18 @@
       }
     },100);
     displayPanel = false
-    hoveredLineNumber = null;
+    // hoveredLineNumber = null;
   }
 
   // Handle toggle debug button click
   function handleToggleDebug() {
+    console.log(hoveredLineNumber)
+    showPopup = true;
     dispatch('toggleDebug');
     hidePanel();
+  }
+  function togglePopup() {
+    showPopup = !showPopup;
   }
 
   // Handle logs button click
@@ -89,6 +97,10 @@
     <button class="icon" on:click={handleShowLogs}><LogsIcon/></button>
   </div>
 </div>
+
+{#if showPopup}
+  <StepDebugPopup on:close={togglePopup} bind:stepId={hoveredLineNumber} />
+{/if}
 
 <style>
 
