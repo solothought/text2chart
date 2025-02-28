@@ -2,11 +2,18 @@
   import { onMount } from 'svelte';
   import ChartTile from './ChartTile.svelte';
   import AddChartPopup from './AddChartPopup.svelte';
+  import AddGraphIcon from "./../icons/addGraph.svelte"
 
   // Fixed tile data
   let fixedTileData = {
-    startDate: '', // Build date
-    lastLogsDate: '' // Last logs date
+    versions: {
+      title: 'Versions',
+      content: 'Comparison between current and other versions of the API flow.'
+    },
+    errors: {
+      title: 'Errors',
+      content: 'Error logs and details for debugging.'
+    }
   };
 
   // Dynamic tiles data
@@ -14,13 +21,6 @@
 
   // Popup state
   let showPopup = false;
-
-  // Fetch fixed tile data (API call simulation)
-  onMount(async () => {
-    // Simulate API call to fetch fixed tile data
-    const response = await fetch('/api/fixed-tile-data');
-    fixedTileData = await response.json();
-  });
 
   // Function to handle adding a new chart
   async function addChart(chartDetails) {
@@ -39,6 +39,7 @@
 
       // Add new chart tile
       chartTiles = [...chartTiles, { id: chartId, ...chartData }];
+
     } catch (error) {
       console.error('Error adding chart:', error);
     }
@@ -50,28 +51,52 @@
   }
 </script>
 
-<!-- Fixed Tile -->
-<div class="card mb-3">
-  <div class="card-body">
-    <h5 class="card-title">API Flow Comparison</h5>
-    <p class="card-text">
-      <strong>Start Date:</strong> {fixedTileData.startDate || 'N/A'}<br />
-      <strong>Last Logs Date:</strong> {fixedTileData.lastLogsDate || 'N/A'}
-    </p>
+<!-- Toolbar -->
+<div class="d-flex justify-content-between align-items-center border-bottom">
+  <span class="p-1" on:click={togglePopup} style="cursor: pointer;">
+    <AddGraphIcon />
+  </span>
+</div>
+
+
+
+<!-- Fixed Tiles -->
+<div class="row">
+  <!-- Versions Tile -->
+  <div class="col-4 text-center">
+    <div class="h-100 d-flex flex-column justify-content-center align-items-center">
+      <div class="card-body">
+        <h3 class="card-title p-3">{fixedTileData.versions.title}</h3>
+        <p class="p-4">
+          <img src="versions.png" class="img-fluid" alt="Versions" />
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Errors Tile -->
+  <div class="col-4 text-center">
+    <div class="h-100">
+      <div class="card-body">
+        <h3 class="card-title p-3">{fixedTileData.errors.title}</h3>
+        <p class="card-text">
+          <img src="errors_graph.png" />
+        </p>
+      </div>
+    </div>
   </div>
 </div>
 
 <!-- Dynamic Tiles -->
-<div class="row">
-  {#each chartTiles as tile}
-    <div class="col-md-4 mb-3">
-      <ChartTile {tile} />
-    </div>
-  {/each}
-</div>
-
-<!-- Add Chart Button -->
-<button class="btn btn-primary" on:click={togglePopup}>Add Chart</button>
+{#if chartTiles.length > 0}
+  <div class="row g-3 mt-3">
+    {#each chartTiles as tile}
+      <div class="col-md-4">
+        <ChartTile {tile} />
+      </div>
+    {/each}
+  </div>
+{/if}
 
 <!-- Add Chart Popup -->
 {#if showPopup}

@@ -70,7 +70,7 @@
           <!-- Key -->
           <div class="mb-3">
             <label class="form-label">Key</label>
-            <input type="text" class="form-control" bind:value={chartDetails.key} required />
+            <input type="text" class="form-control" bind:value={chartDetails.key} />
           </div>
 
           <!-- Range From -->
