@@ -14,8 +14,9 @@
   let showAddFlowPopup = false;
   let newFlowName = '';
   let isListExpanded = false; // Controls whether the list is expanded or collapsed
-  let selectedApp = ''; // New variable to store the selected application
-
+  let selectedApp = ''; // New variable to store the selected application   
+  let appFilteredFlows = [];
+  
   function isDuplicateFlowName(name) {
     return $flows.some(flow => flow.name.toLowerCase() === name.toLowerCase());
   }
@@ -24,7 +25,7 @@
       flow.name.toLowerCase().includes(filterText.toLowerCase())
   );
 
-  $: sortedFlows = filteredFlows.sort((a, b) => {
+  $: appFilteredFlows = filteredFlows.sort((a, b) => {
     if (sortBy === 'name') {
       return sortDirection === 'asc'
         ? a.name.localeCompare(b.name)
