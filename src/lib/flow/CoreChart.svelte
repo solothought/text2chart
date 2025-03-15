@@ -138,11 +138,15 @@
   onDestroy(() => {
     updateStore([],[]);
   });
+  $: {
+    console.log("printing style");
+    console.log(style);
+  }
 </script>
 
 <svelte:window on:keyup={handleKeyUp} on:keydown={handleKeyDown} />
 
-<div {style} class={clazz}>
+<div style={style} class={clazz}>
   <SvelteFlowProvider>
     <ViewportAdjuster {selection} {nodes} {focusOn}/>
     <SvelteFlow
