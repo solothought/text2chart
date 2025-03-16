@@ -36,6 +36,7 @@
   export let clazz = ""; // Accept class as a prop
   export let selection = [];
   export let focusOn = true;
+  export let minimap = true;
 
   let highlighter = new Highlighter(nodes,edges, nodeState);
   let nodeStore = writable(nodes);
@@ -158,7 +159,9 @@
     >
       <Controls />
       <Background />
-      <MiniMap />
+      {#if minimap}
+        <MiniMap />
+      {/if}
     </SvelteFlow>
   </SvelteFlowProvider>
 </div>

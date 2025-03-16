@@ -10,8 +10,13 @@
   export let width = '100%';
   export let height = '100%';
   export let flowsData = []; //json obj of flows text
+  export let minimap = true;
+  export let toolbar = true;
+  let coreChartHeight = "";
   
-  const coreChartHeight = `calc(${height} - 50px)`;
+  if (toolbar) coreChartHeight = `calc(${height} - 50px)`;
+  else coreChartHeight = height;
+
   let selectedFlowIndex = 0; //toolbar
   let nodes = [];
   let edges = [];
@@ -22,6 +27,7 @@
     hideMsgDetail: false,
     standardShape: false
   };
+
 
   // Bind to CoreChart instance
   let coreChartInstance;
@@ -133,17 +139,20 @@
 </script>
 
 <div class="solothought_text2chart_flow" style="width: {width}; height: {height};">
-  <Toolbar
-    {flowsData}
-    bind:selectedFlowIndex
-    {flowName}
-    bind:hideMsgDetail={nodeState.hideMsgDetail}
-    {nodes}
-    handleFlowChange={handleFlowChange}
-    hideStepMsgDetail={hideStepMsgDetail}
-    on:pathSelected={selectPath}
-    bind:focusOn
-  />
+  {#if toolbar}
+    <Toolbar
+      {flowsData}
+      bind:selectedFlowIndex
+      {flowName}
+      bind:hideMsgDetail={nodeState.hideMsgDetail}
+      {nodes}
+      handleFlowChange={handleFlowChange}
+      hideStepMsgDetail={hideStepMsgDetail}
+      on:pathSelected={selectPath}
+      bind:focusOn
+    />
+  {/if}
+
   <CoreChart
     bind:this={coreChartInstance}
     {nodes}
@@ -154,7 +163,13 @@
     {...$$restProps}
     {selection}
     {focusOn}
+    {minimap}
     style="width: {width}; height: {coreChartHeight};"
     on:flowChange={flowChange}
   />
 </div>
+<style>
+  /* :global(.svelte-flow__attribution){
+    display: none;
+  } */
+</style>
