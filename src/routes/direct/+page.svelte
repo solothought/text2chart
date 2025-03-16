@@ -1,6 +1,7 @@
 <script>
   import { onMount } from 'svelte';
-  import FlowChart from '$lib/flow/FlowChart.svelte';
+  // import FlowChart from '$lib/flow/FlowChart.svelte';
+  import {FlowChart} from '$lib/index.js';
 
   const text = `
     FLOW: passed as parameter
@@ -26,11 +27,13 @@
     });
     // chart.draw(nodes, edges);
 
-    new FlowChart({ //style working
+    const chart = new FlowChart({ //style working
       target: document.getElementById("quarterChart1"),
       props: {
         text: text,
-        style: "width: 50vw; height: 100vh;"
+        width: "50vw",
+        height: "80vh"
+        // style: "width: 50vw; height: 80vh;"
       }
     });
     
@@ -62,7 +65,7 @@
 <hr>
 <div id="quarterChart2" class="halfChart"></div> style not working
 <div id="quarterChart3"></div> style not working
-<div id="quarterChart4" style="width: 50vw; height: 100vh;"></div> style not working
+<div id="quarterChart4" width="50vw" height="100vh"></div> style working
 
 <style>
   :global(.halfChart){
