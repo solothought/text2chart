@@ -138,10 +138,6 @@
   onDestroy(() => {
     updateStore([],[]);
   });
-  $: {
-    console.log("printing style");
-    console.log(style);
-  }
 </script>
 
 <svelte:window on:keyup={handleKeyUp} on:keydown={handleKeyDown} />

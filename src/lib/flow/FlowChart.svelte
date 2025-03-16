@@ -7,10 +7,12 @@
   export let text = "";
   export let selection = [];
   export let focusOn = true;
-
+  export let width = '100%';
+  export let height = '100%';
   export let flowsData = []; //json obj of flows text
+  
+  const coreChartHeight = `calc(${height} - 50px)`;
   let selectedFlowIndex = 0; //toolbar
-
   let nodes = [];
   let edges = [];
   let paths = [];
@@ -130,7 +132,7 @@
   }
 </script>
 
-<div class="solothought_text2chart_flow">
+<div class="solothought_text2chart_flow" style="width: {width}; height: {height};">
   <Toolbar
     {flowsData}
     bind:selectedFlowIndex
@@ -152,6 +154,7 @@
     {...$$restProps}
     {selection}
     {focusOn}
+    style="width: {width}; height: {coreChartHeight};"
     on:flowChange={flowChange}
   />
 </div>
