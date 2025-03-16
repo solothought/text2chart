@@ -1,6 +1,6 @@
 <script>
   import { Handle, Position } from '@xyflow/svelte';
-  import { onMount, afterUpdate } from 'svelte';
+  import { tick, onMount, afterUpdate } from 'svelte';
   import { nodeSize } from './../config.js';
   import BranchIcon from './../icons/branch.svelte';
   import LoopIcon from './../icons/loop.svelte';
@@ -30,14 +30,15 @@
   let containerElement;
   let textElement;
 
-  function applyFit() {
+  async function applyFit() {
     if (containerElement && textElement) {
+      await tick();
       resizeText(textElement, containerElement);
     }
   }
 
-  onMount(() => {
-    applyFit();
+  onMount(async () => {
+    await applyFit();
   });
 
   afterUpdate(() => {
