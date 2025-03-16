@@ -1,6 +1,7 @@
 <script>
   import { toPng } from 'html-to-image';
   import { Panel, getNodesBounds, getViewportForBounds, Background } from '@xyflow/svelte';
+  import DownloadImg from "./icons/download-image.svelte"
 
   export let nodes=[];
   export let fileName = "";
@@ -40,5 +41,5 @@
 </script>
 
 <!-- <Panel position="top-right"> -->
-  <button {...$$restProps} on:click={handleClick} alt="save as image" placeholder="save chart as image">💾</button>
+  <button {...$$restProps} on:click={handleClick} alt="save as image" placeholder="save chart as image"><DownloadImg /></button>
 <!-- </Panel> -->
