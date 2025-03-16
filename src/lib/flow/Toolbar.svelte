@@ -64,7 +64,10 @@
   }
   :global(.st-toolbox) {
     height: 50px;
-    padding: 0.2rem 0.5rem;
+    /* padding: 0.2rem 0.5rem; */
+    display: flex;
+    align-items: center; /* Ensures vertical alignment */
+    gap: 0.5rem;         /* Adds consistent spacing */
   }
   :global(.st-toolbox button) {
     background-color: #FFFFFF;
@@ -74,5 +77,15 @@
   }
   :global(.st-toolbox button:hover) {
     outline: 1px dashed black;
+  }
+  .st-flow-chart-tool {
+    height: 32px;         /* Match button height */
+    padding: 5px 10px;    /* Adjust padding */
+    border: 1px solid #ccc; /* Optional: To match button border */
+    border-radius: 4px;   /* Optional: For consistency */
+  }
+  .st-flow-chart-tool,
+  .st-toolbox button {
+      vertical-align: middle;
   }
 </style>
