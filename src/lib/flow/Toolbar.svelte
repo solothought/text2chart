@@ -2,6 +2,7 @@
   import DownloadButton from './../DownloadButton.svelte';
   import PathsDropdown from './PathsDropdown.svelte';
   import AnalysisDropdown from './AnalysisDropdown.svelte';
+  import Help from './Help.svelte';
   import LongTextIcon from './../icons/longText.svelte';
   import ShortTextIcon from './../icons/shortText.svelte';
   import FocusIcon from './../icons/focus.svelte';
@@ -64,6 +65,7 @@
   <button on:click={toggleFocus} class="{focusOn?'':'passive'}">
     <FocusIcon/>
   </button>
+  <Help />
 </div>
 
 <style>
