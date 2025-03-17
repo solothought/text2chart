@@ -1,12 +1,11 @@
 <script>
   import { toPng } from 'html-to-image';
-  import { Panel, getNodesBounds, getViewportForBounds, Background } from '@xyflow/svelte';
+  import { getNodesBounds, getViewportForBounds } from '@xyflow/svelte';
   import DownloadImg from "./icons/download-image.svelte"
 
   export let nodes=[];
   export let fileName = "";
 
-  // console.log('Nodes:', nodes);
   const imageWidth = 1024;
   const imageHeight = 768;
 
