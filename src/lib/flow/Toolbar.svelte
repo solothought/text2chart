@@ -1,9 +1,11 @@
 <script>
   import DownloadButton from './../DownloadButton.svelte';
   import PathsDropdown from './PathsDropdown.svelte';
+  import AnalysisDropdown from './AnalysisDropdown.svelte';
   import LongTextIcon from './../icons/longText.svelte';
   import ShortTextIcon from './../icons/shortText.svelte';
   import FocusIcon from './../icons/focus.svelte';
+  
 
   export let flowsData = [];
   export let selectedFlowIndex;
@@ -26,7 +28,7 @@
   function toggleFocus(){
     focusOn = !focusOn;
   }
-  
+
 </script>
 
 <div class="st-toolbox">
@@ -51,6 +53,12 @@
       paths={flowsData[selectedFlowIndex].paths}
       selectedFlowIndex={selectedFlowIndex}
       on:pathSelected={handlePathSelect}
+    />
+  {/if}
+  {#if flowsData[selectedFlowIndex] && flowsData[selectedFlowIndex].stats}
+    <AnalysisDropdown  
+      stats={flowsData[selectedFlowIndex].stats}  
+      paths={flowsData[selectedFlowIndex].paths}
     />
   {/if}
   <button on:click={toggleFocus} class="{focusOn?'':'passive'}">

@@ -46,7 +46,6 @@ function SvelteFlowEdge(sourceId, targetId, i, sourceType="", targetType){ //TOD
     id : `${sourceId}-${targetId}`,
     source : sourceId+"",
     target : targetId+"",
-    label : "",
     data : {},
     sourceHandle: srcHandle,
     targetHandle: targetHandle,
@@ -91,10 +90,11 @@ function mapStepsToNodes(flow){
   const parentStack = [];
   let nodeId = 0, row=-1;
   const nodeIdToIndexMap = {};
+  let decisionPoints = 0;
 
   for (; nodeId < flow.steps.length; nodeId++) {
     const step = flow.steps[nodeId];
-
+    
     if(flow.links[nodeId]){
       row++;
       let position;
@@ -131,7 +131,12 @@ function mapStepsToNodes(flow){
           type: step.type, 
           indent: step.indent
         }, position )
-      if(isBranchStep(step.type)) node.data.collapsable = true;
+      if(isBranchStep(step.type)) {
+        decisionPoints++;
+        node.data.collapsable = true;
+      }else if(step.type === "GOTO"){
+        decisionPoints++;
+      }
       nodes.push(node);
       node.data.index = nodes.length - 1;
       nodeIdToIndexMap[nodeId] = nodes.length - 1;
@@ -162,7 +167,49 @@ function mapStepsToNodes(flow){
   }
   // for first node
   nodes[0].data.isStart = true;
-  return {flowName:  flow.name, nodes, edges, paths: findAllPaths(flow.links, nodeIdToIndexMap), nodesIndex: nodeIdToIndexMap}
+  let paths = findAllPaths(flow.links, nodeIdToIndexMap);
+  paths = paths.sort((p1,p2) => p1.length  - p2.length);
+
+  const stats = {};
+  stats.cyclomaticComplexity = decisionPoints + 1;
+  stats.depth = flow.leveledSteps.length;
+  stats.stepsCount = flow.steps.length;
+  stats.decisionPoints = decisionPoints;
+  stats.nestingLoops = calculateLoopNestingIndices(flow.steps);
+
+  return {flowName:  flow.name, nodes, edges, paths, nodesIndex: nodeIdToIndexMap, stats}
+}
+
+/**
+ * 
+ * @param {[]} steps 
+ * @returns {[number[]]}
+ */
+function calculateLoopNestingIndices(steps) {
+  // Initialize variables
+  const loopNestingIndices = [];
+  let currentNestingLevel = 0;
+
+  // Traverse the steps array
+  steps.forEach((step, index) => {
+    if (step.type === "LOOP") {
+      // Increment the nesting level for this loop
+      currentNestingLevel++;
+
+      // Ensure there's an array for this nesting level
+      if (!loopNestingIndices[currentNestingLevel - 1]) {
+        loopNestingIndices[currentNestingLevel - 1] = [];
+      }
+
+      // Add the step index to the corresponding nesting level
+      loopNestingIndices[currentNestingLevel - 1].push(index);
+    } else if (step.type === "END") {
+      // Decrement the nesting level when exiting a loop
+      currentNestingLevel--;
+    }
+  });
+
+  return loopNestingIndices;
 }
 
 function findAllPaths(links,nodeIdToIndexMap) {
@@ -190,6 +237,7 @@ function findAllPaths(links,nodeIdToIndexMap) {
   }
 
   dfs(0, [], { 0: 1 }); // Start DFS with node 0 marked as visited once
+  
   return paths;
 }
 
@@ -233,3 +281,14 @@ function isBranchStep(type){
 // const {nodes,edges} = convert(flowText)
 // console.log(nodes)
 // console.log(edges);
+
+
+// const steps = [
+//   { msg: "outer loop", type: "LOOP", indent: 0 },
+//   { msg: "inner loop", type: "LOOP", indent: 1 },
+//   { msg: "", type: "END", indent: 1 },
+//   { msg: "innermost loop", type: "LOOP", indent: 2 },
+//   { msg: "", type: "END", indent: 2 },
+//   { msg: "", type: "END", indent: 0 }
+// ];
+// console.log(calculateLoopNestingIndices(steps));
