@@ -13,6 +13,7 @@
   export let disabled = false; // Whether the textarea is disabled
   export let stepsExecutionTimes = writable([]); // Execution time data
   export let mode = "editor"; // editor, monitor
+  export let selection = {};
 
   // Events
   import { createEventDispatcher } from 'svelte';
@@ -26,7 +27,7 @@
   let lineNumbersContainer; // Reference to the line numbers container
   let textarea; // Reference to the textarea element
   let highlightedTextContainer; // Reference to the highlighted text container
-  let stepsStatsPanel = null;
+  let stepsStatsPanel = {}; //instance
 
   // Emit text change events
   function emitTextChange(newText) {
@@ -86,10 +87,12 @@
   function updateLineNumbers() {
     const lines = text.split('\n');
     let lineCount = 0;
+    let currentFlowIndex = -1;
     lineNumbers = lines.map((line, index) => {
       const trimmedLine = line.trim();
       //TODO: exclude header lines
       if (trimmedLine.startsWith("FLOW:")) {
+        currentFlowIndex++;
         lineCount = -1; // Reset line count for new FLOW
         return null; // No line number for FLOW line
       } else if (trimmedLine.length === 0) {
@@ -102,19 +105,23 @@
         if(mode==="monitor"){
           exeTime = $stepsExecutionTimes.find(et => et.id === lineCount);
   
-          if(mode === "monitor"){
-            // Check execution time for this line
-            if (exeTime) {
-              const maxThreshold = 400; // Max threshold in ms
-              const avgExeTime = exeTime.avgExeTime;
-              if (avgExeTime >= 0.9 * maxThreshold) {
-                className = "red";
-              } else if (avgExeTime >= 0.75 * maxThreshold) {
-                className = "yellow";
-              } else if (avgExeTime < 0.75 * maxThreshold) {
-                className = "green";
-              }
+          // Check execution time for this line
+          if (exeTime) {
+            const maxThreshold = 400; // Max threshold in ms
+            const avgExeTime = exeTime.avgExeTime;
+            if (avgExeTime >= 0.9 * maxThreshold) {
+              className = "red";
+            } else if (avgExeTime >= 0.75 * maxThreshold) {
+              className = "yellow";
+            } else if (avgExeTime < 0.75 * maxThreshold) {
+              className = "green";
             }
+          }
+        }else{//editor mode
+          if(selection.flowIndex === currentFlowIndex ){
+            const nodeIds = selection.nodeIndexes || selection.nodeIds;
+            if(nodeIds && nodeIds.indexOf(String(lineCount)) !== -1)
+              className = "green";
           }
         }
         return { lineNumber: lineCount, className, exeTime };
@@ -145,7 +152,7 @@
   // Highlight keywords, comments, and FLOW lines
   function highlightKeywords(text) {
     const lines = text.split('\n');
-    const highlightedLines = lines.map((line) => {
+    const htmlLines = lines.map((line) => {
       if (line.trim().startsWith('#')) {
         // Highlight comment lines
         return `<span class="comment">${line}</span>`;
@@ -161,18 +168,18 @@
           other: ["FLOW", "FOLLOW"]
         };
 
-        let highlightedLine = line;
+        let htmlLine = line;
         Object.entries(keywords).forEach(([category, words]) => {
           words.forEach(word => {
             const regex = new RegExp(`\\b${word}\\b`, 'g');
-            highlightedLine = highlightedLine.replace(regex, `<span class="keyword ${category}">${word}</span>`);
+            htmlLine = htmlLine.replace(regex, `<span class="keyword ${category}">${word}</span>`);
           });
         });
 
-        return `<span class="steptext">${highlightedLine}</span>`;
+        return `<span class="steptext">${htmlLine}</span>`;
       }
     });
-    return highlightedLines.join('\n');
+    return htmlLines.join('\n');
   }
 
   // Update the highlighted text container
@@ -182,6 +189,9 @@
     }
   }
 
+  function showPanel(e){
+    if(mode === "monitor") stepsStatsPanel.showPanel(e, line);
+  }
   $: {
     //Text is not being displayed on load without this code until user click on text area
     if (text !== previousText) {
@@ -209,7 +219,7 @@
       {#if line !== null}
         <div 
           class:highlighted={highlightedLines.includes(String(line.lineNumber))} class={line.className}
-          on:mouseenter={(e) => stepsStatsPanel.showPanel(e, line)}
+          on:mouseenter={showPanel}
           on:mouseleave={stepsStatsPanel.hidePanel}
           >
           {line.lineNumber}

@@ -1,3 +1,10 @@
+/**
+ * 
+ * @param {*} textarea DOM Element
+ * @param {string} key Eg ArrowDown
+ * @param {*} withShift 
+ * @returns {{flowIndex: number, nodeIds: number[]}}
+ */
 export function getSelectedLines(textarea, key, withShift) {
   const text = textarea.value;
   const start = textarea.selectionStart;

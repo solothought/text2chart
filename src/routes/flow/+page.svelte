@@ -18,7 +18,6 @@
   // Use a writable store for flows to ensure reactivity
   let flows = writable([...initialFlows]);
   let selectedFlowName = loadSelectedFlowName() || initialFlows[0]?.name;
-  let previousText = '';
   let nodesToHighlight = [];
   let flowText = '';
   let chartKey = 0; // Used to reinitialize the FlowChart component
@@ -112,7 +111,6 @@
     nodesToHighlight = event.detail.selectedLines;
   }
 
-  
 </script>
 
 <style>
@@ -138,6 +136,7 @@
         bind:text={flowText}
         on:textChange={handleTextChange}
         on:lineSelection={handleLineSelection}
+        selection={nodesToHighlight}
       />
     </div>
     {#key chartKey} <!-- Recreate Chart component -->

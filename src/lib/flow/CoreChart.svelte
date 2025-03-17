@@ -34,9 +34,10 @@
   export let nodesIndex = {};
   export let style = ""; // Accept style as a prop
   export let clazz = ""; // Accept class as a prop
-  export let selection = [];
+  export let selection = {};
   export let focusOn = true;
   export let minimap = true;
+  export let selectedFlowIndex = -1;
 
   let highlighter = new Highlighter(nodes,edges, nodeState);
   let nodeStore = writable(nodes);
@@ -67,7 +68,8 @@
       }
       highlighter.unselectAllNodes();
       highlighter.selectNodesByIndexes(new Set(seletedIndexes));
-      nodeStore.set(nodes)
+      nodeStore.set(nodes);
+      selection = { flowIndex: selectedFlowIndex ,nodeIndexes: seletedIndexes };
     }
   }
 
@@ -75,6 +77,7 @@
     if(selectionKey !== -1){
       highlighter.unselectAllNodes();
       nodeStore.set(nodes);
+      selection = { flowIndex: selectedFlowIndex ,nodeIndexes: [] };
     }
   }
 

@@ -5,7 +5,7 @@
   import { updateProperty } from './nodeUpdater.js';
 
   export let text = "";
-  export let selection = [];
+  export let selection = {};
   export let focusOn = true;
   export let width = '100%';
   export let height = '100%';
@@ -58,6 +58,7 @@
       paths = selectedFlow.paths;
       nodesIndex = selectedFlow.nodesIndex;
       flowName = selectedFlow.flowName;
+      selection = { flowIndex: index, nodesIndex};
       updateProperty(nodes, nodeState);
       if (coreChartInstance && typeof coreChartInstance.updateStore === 'function') {
         coreChartInstance.updateStore(nodes, edges);
@@ -67,7 +68,6 @@
 
   // Handle flow change from toolbar
   function handleFlowChange(event) {
-    selection = [];
     updateSelectedFlow(parseInt(event.target.value));
   }
 
@@ -76,7 +76,6 @@
       const flowName = e.detail.flowName;
       flowsData.forEach((flow, i) => {
         if (flow.flowName === flowName) {
-          selection = [];
           updateSelectedFlow(i);
         }
       });
@@ -152,7 +151,6 @@
       bind:focusOn
     />
   {/if}
-
   <CoreChart
     bind:this={coreChartInstance}
     {nodes}
@@ -160,13 +158,16 @@
     {nodeState}
     {paths}
     {nodesIndex}
+    {selectedFlowIndex}
     {...$$restProps}
-    {selection}
+    bind:selection={selection}
     {focusOn}
     {minimap}
     style="width: {width}; height: {coreChartHeight};"
     on:flowChange={flowChange}
   />
+
+  
 </div>
 <style>
   /* :global(.svelte-flow__attribution){
