@@ -1,6 +1,6 @@
 {
 	"name": "@solothought/text2chart",
-	"version": "1.0.2",
+	"version": "1.0.4",
 	"description": "Generate interactive diagrams from text input",
 	"keywords": [
 		"text",
@@ -21,10 +21,6 @@
 		{
 			"type": "github",
 			"url": "https://github.com/sponsors/solothought/"
-		},
-		{
-			"type": "paypal",
-			"url": "https://paypal.me/naturalintelligence"
 		}
 	],
 	"scripts": {
@@ -61,7 +57,10 @@
 		"./style.css": "./dist_/bundle.css"
 	},
 	"files": [
-		"dist",
+		"dist/flow",
+		"dist/*.js",
+		"dist/*.ts",
+		"dist/*.svelte",
 		"dist_",
 		"!dist/**/*.test.*",
 		"!dist/**/*.spec.*",

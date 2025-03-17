@@ -47,11 +47,11 @@
             <td>O(n<sup>{stats.nestingLoops.length}</sup>)</td>
           </tr>
           <tr>
-            <td>Best Case</td>
+            <td>Shortest path has</td>
             <td>{paths[0].length} Steps</td>
           </tr>
           <tr>
-            <td>Worst Case</td>
+            <td>Longest path has</td>
             <td>{paths[paths.length-1].length} Steps</td>
           </tr>
         </tbody>

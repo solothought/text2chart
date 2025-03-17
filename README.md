@@ -88,11 +88,8 @@ By default, when you hover a node, it highlights the path passing from that node
 - <kbd>l</kbd>: All steps of longest path passing through the hovered step. First path would be selected in case of multiple longest paths of same length.
 - <kbd>s</kbd>: All steps of shortest path passing through the hovered step. First path would be selected in case of multiple shortest paths of same length.
 
-1. When You press <kbd>a</kbd> key then hover a node in chart, it highlights the path(s) up to that node.
-2. When You press <kbd>Ctrl</kbd> key then hover a node in chart, it highlights the path(s) from that node.
-3. When You press <kbd>Ctrl</kbd>+<kbd>Shift</kbd> both keys then hover a node in chart, it highlights the full path(s) passing from that node.
-4. Keep the key held and hover out from the node to remove the selection.
-5. Release the held key and hover out to keep the selection
+1. Keep the key held and hover out from the node to remove the selection.
+2. Release the held key and hover out to keep the selection
 
 ### Expand/Collapse
 
