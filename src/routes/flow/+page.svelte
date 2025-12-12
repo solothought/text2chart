@@ -5,6 +5,7 @@
   import { writable } from 'svelte/store';
   import FlowChart from '$lib/flow/FlowChart.svelte';
   import {flows as initialFlows, flowsText} from '$lib/editor/SampleFlows.js';
+  import AdPopup from '$lib/AdPopup.svelte';
 
   import { 
     saveFlowText, 
@@ -121,6 +122,7 @@
   }
   .left-panel{width: 30vw; height: 100%; border-right: 1px dashed black;}
 </style>
+<AdPopup />
 <div class="container-fluid">
   <div class="workspace">
     <div class="left-panel">
